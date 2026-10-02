@@ -1,0 +1,47 @@
+<div class="blog-page">
+  <section class="blog-hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h1>Innsikt som hjelper deg videre</h1>
+        <p>
+          Oppdag nye perspektiver, praktiske råd og smarte løsninger – alt samlet for å hjelpe
+          deg videre, uansett hvor du er på reisen.
+        </p>
+      </div>
+      <img src="/assets/about-workspace.png" alt="Person utforsker finansieringsmuligheter på en datamaskin" />
+    </div>
+  </section>
+
+  <section class="blog-list section-shell" aria-labelledby="blog-heading">
+    <h2 id="blog-heading">Utforsk de nyeste blogginnleggene</h2>
+
+    <div class="blog-pages-window" aria-live="polite">
+      <div class="blog-pages-track" [style.transform]="'translateX(-' + currentPage() * 100 + '%)'">
+        @for (pageIndex of pageIndexes(); track pageIndex) {
+          <div class="blog-grid-page" [attr.aria-hidden]="pageIndex !== currentPage()">
+            @for (post of pagePosts(pageIndex); track post.title) {
+              <article class="blog-card">
+                <img [src]="post.image" [alt]="post.title" />
+                <div class="blog-card-content">
+                  <p class="blog-date"><i class="pi pi-calendar" aria-hidden="true"></i>{{ post.date }}</p>
+                  <h3>{{ post.title }}</h3>
+                  <a class="read-more" [routerLink]="['/blog', post.slug]">Les Mer</a>
+                </div>
+              </article>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <nav class="blog-pagination" aria-label="Bloggsider">
+      <button type="button" aria-label="Forrige innlegg" (click)="movePage(-1)">
+        <i class="pi pi-angle-left" aria-hidden="true"></i>
+      </button>
+      <!-- <span aria-live="polite">{{ currentPage() + 1 }} / {{ totalPages() }}</span> -->
+      <button type="button" aria-label="Neste innlegg" (click)="movePage(1)">
+        <i class="pi pi-angle-right" aria-hidden="true"></i>
+      </button>
+    </nav>
+  </section>
+</div>

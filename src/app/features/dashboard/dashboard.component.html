@@ -1,0 +1,13 @@
+<main class="dashboard-page">
+  <section class="dashboard-content" aria-labelledby="welcome-title">
+    <h1 id="welcome-title">Velkommen, (Name)</h1>
+    <div class="dashboard-grid">
+      @for (item of items; track item.label) {
+        <article class="dashboard-tile">
+          <i [class]="item.icon" aria-hidden="true"></i>
+          <h2>{{ item.label }}</h2>
+        </article>
+      }
+    </div>
+  </section>
+</main>

@@ -1,0 +1,506 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.crowdfunding-page {
+  color: #111820;
+}
+
+.hero-inner,
+.returns-inner,
+.prospects-inner {
+  width: min(100% - 4rem, 68rem);
+  margin-inline: auto;
+}
+
+.crowdfunding-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #fff;
+}
+
+.crowdfunding-hero::before,
+.crowdfunding-hero::after {
+  position: absolute;
+  z-index: -1;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 50%;
+  background: #fff3f3;
+  content: "";
+}
+
+.crowdfunding-hero::before {
+  top: -1rem;
+  left: -12rem;
+}
+
+.crowdfunding-hero::after {
+  right: -12rem;
+  bottom: -4rem;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.15fr 1.85fr;
+  align-items: center;
+  gap: 3rem;
+  min-height: 20.5rem;
+  padding-block: 2rem;
+}
+
+.hero-copy h1 {
+  max-width: 22rem;
+  margin: 0 0 .7rem;
+  color: #17191d;
+  font-size: clamp(1.6rem, 2.6vw, 2rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+}
+
+.hero-copy p {
+  max-width: 24rem;
+  margin: 0;
+  color: #252a30;
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.offer-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.offer-card {
+  display: flex;
+  min-height: 11.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: .8rem .9rem;
+  border: 1px solid #e6e7e9;
+  border-radius: .85rem;
+  background: #fff;
+  box-shadow: 0 .2rem .75rem rgb(17 24 32 / 7%);
+}
+
+.offer-tag {
+  display: inline-flex;
+  min-height: 1.25rem;
+  align-items: center;
+  padding: .2rem .65rem;
+  border-radius: 1rem;
+  background: #102440;
+  color: #fff;
+  font-size: .54rem;
+  font-weight: 600;
+}
+
+.offer-card p {
+  min-height: 2.1rem;
+  margin: .45rem 0 .3rem;
+  color: #242930;
+  font-size: .67rem;
+  line-height: 1.35;
+}
+
+.offer-card ul {
+  display: grid;
+  gap: .35rem;
+  margin: 0 0 .65rem;
+  padding: 0;
+  list-style: none;
+}
+
+.offer-card li {
+  position: relative;
+  padding-left: .75rem;
+  color: #343941;
+  font-size: .59rem;
+  line-height: 1.25;
+}
+
+.offer-card li::before {
+  position: absolute;
+  top: .23rem;
+  left: 0;
+  width: .35rem;
+  height: .35rem;
+  border-radius: 50%;
+  background: #ff2b18;
+  content: "";
+}
+
+.button {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: .45rem .85rem;
+  border: 1px solid transparent;
+  border-radius: .5rem;
+  font-size: .67rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.button-red {
+  background: #ff2b18;
+  color: #fff;
+}
+
+.button-red:hover {
+  background: #e82412;
+}
+
+.returns-section {
+  padding: 1rem 0 2.8rem;
+  background: #fff;
+  text-align: center;
+}
+
+.returns-inner {
+  max-width: 52rem;
+}
+
+.returns-inner h2 {
+  margin: 0 0 .55rem;
+  color: #17191d;
+  font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+  font-weight: 500;
+}
+
+.returns-inner > p:not(.returns-note) {
+  max-width: 35rem;
+  margin: .35rem auto;
+  color: #30343a;
+  font-size: .72rem;
+  line-height: 1.5;
+}
+
+.returns-chart {
+  display: grid;
+  width: min(100%, 33rem);
+  height: 14rem;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: stretch;
+  gap: .25rem;
+  margin: 1.2rem auto .8rem;
+  /* padding: .35rem .4rem 0;
+  border: 1px dotted #4285ff; */
+}
+
+.chart-column {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.chart-value {
+  margin-bottom: .45rem;
+  color: #102440;
+  font-size: 1.3rem;
+}
+
+.bar {
+  position: relative;
+  width: 4.4rem;
+  height: var(--bar-height);
+  flex: 0 0 var(--bar-height);
+}
+
+.bar span {
+  position: absolute;
+  inset: 0;
+}
+
+.bar-front {
+  clip-path: polygon(0 0, 52% 0, 52% 100%, 0 90%);
+}
+
+.bar-side {
+  clip-path: polygon(52% 0, 100% 0%, 100% 90%, 52% 100%);
+  filter: brightness(.83);
+}
+
+.bar-top {
+  height: 3.25rem;
+  clip-path: polygon(0 0, 52% 0, 100% 0%, 52% 30%);
+  filter: brightness(1.12);
+}
+
+.bar-navy {
+  --bar-height: 3.4rem;
+}
+
+.bar-green {
+  --bar-height: 5.4rem;
+}
+
+.bar-red {
+  --bar-height: 7.6rem;
+}
+
+.bar-gold {
+  --bar-height: 9.7rem;
+}
+
+.bar-navy .bar-front,
+.bar-navy .bar-side,
+.bar-navy .bar-top {
+  background: #343c82;
+}
+
+.bar-green .bar-front,
+.bar-green .bar-side,
+.bar-green .bar-top {
+  background: #cbd51c;
+}
+
+.bar-red .bar-front,
+.bar-red .bar-side,
+.bar-red .bar-top {
+  background: #ed2018;
+}
+
+.bar-gold .bar-front,
+.bar-gold .bar-side,
+.bar-gold .bar-top {
+  background: #ffb52c;
+}
+
+.chart-label {
+  width: 100%;
+  color: #262b31;
+  font-size: .5rem;
+  white-space: nowrap;
+}
+
+.returns-inner .returns-note {
+  max-width: 44rem;
+  margin: 1.15rem auto 0;
+  color: #17191d;
+  font-size: .65rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.prospects-section {
+  padding: 3rem 0 3.5rem;
+  background: #f5f5f5;
+}
+
+.prospects-inner h2 {
+  margin: 0 0 .65rem;
+  color: #17191d;
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  font-weight: 500;
+}
+
+.prospects-intro {
+  max-width: 34rem;
+  margin: 0 0 2.3rem;
+  color: #30343a;
+  font-size: .85rem;
+  line-height: 1.5;
+}
+
+.prospect-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.4rem;
+}
+
+.prospect-card {
+  overflow: hidden;
+  border-radius: .9rem;
+  background: #fff;
+}
+
+.prospect-image {
+  position: relative;
+  height: 10rem;
+  overflow: hidden;
+  background: #d8dde0;
+}
+
+.prospect-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 58%;
+}
+
+.filled-badge {
+  position: absolute;
+  top: .8rem;
+  left: .8rem;
+  padding: .35rem .85rem;
+  border-radius: 1rem;
+  background: #ff2b18;
+  color: #fff;
+  font-size: .63rem;
+}
+
+.prospect-content {
+  padding: .75rem .9rem .85rem;
+}
+
+.prospect-company {
+  margin: 0 0 .4rem;
+  color: #454a50;
+  font-size: .62rem;
+}
+
+.prospect-card h3 {
+  min-height: 3.4rem;
+  margin: 0 0 .8rem;
+  color: #17191d;
+  font-size: .82rem;
+  font-weight: 600;
+  line-height: 1.28;
+}
+
+.prospect-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .7rem .6rem;
+  margin: 0 0 .85rem;
+}
+
+.prospect-facts div {
+  display: grid;
+  gap: .15rem;
+}
+
+.prospect-facts dt {
+  color: #565b61;
+  font-size: .57rem;
+}
+
+.prospect-facts dd {
+  margin: 0;
+  color: #22272d;
+  font-size: .69rem;
+  font-weight: 600;
+}
+
+.progress-track {
+  height: .8rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #f0f0f0;
+}
+
+.progress-track span {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  background: #ff2b18;
+  color: #fff;
+  font-size: .52rem;
+}
+
+.view-all {
+  display: flex;
+  width: 7.2rem;
+  min-height: 2.8rem;
+  margin: 2.4rem auto 0;
+  border-radius: .65rem;
+  font-size: .8rem;
+}
+
+@media (max-width: 48rem) {
+  .hero-inner,
+  .returns-inner,
+  .prospects-inner {
+    width: min(100% - 2rem, 42rem);
+  }
+
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding-block: 1.7rem;
+  }
+
+  .hero-copy h1,
+  .hero-copy p {
+    max-width: 36rem;
+  }
+
+  .prospect-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 36rem) {
+  .hero-inner,
+  .returns-inner,
+  .prospects-inner {
+    width: min(100% - 1.5rem, 30rem);
+  }
+
+  .offer-cards {
+    gap: .65rem;
+  }
+
+  .offer-card {
+    padding: .7rem;
+  }
+
+  .offer-card p {
+    font-size: .63rem;
+  }
+
+  .offer-card li {
+    font-size: .55rem;
+  }
+
+  .returns-section {
+    padding-block: 1.3rem 2rem;
+  }
+
+  .returns-chart {
+      height: 12rem;
+    gap: 0;
+    padding-inline: .15rem;
+  }
+
+  .bar {
+      width: 3.1rem;
+  }
+
+  .chart-value {
+    font-size: .95rem;
+  }
+
+  .chart-label {
+    font-size: .4rem;
+  }
+
+  .prospects-section {
+    padding-block: 2rem;
+  }
+
+  .prospects-intro {
+    margin-bottom: 1.35rem;
+  }
+
+  .prospect-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .prospect-card h3 {
+    min-height: 0;
+  }
+}

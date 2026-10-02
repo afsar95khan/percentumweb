@@ -1,0 +1,285 @@
+.review-card {
+  overflow: hidden;
+  padding: 0;
+}
+
+.review-card > header {
+  display: flex;
+  min-height: 2.4rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: .4rem .8rem;
+  background: #0b213d;
+  color: #fff;
+}
+
+.review-card > header h3 {
+  margin: 0;
+  font-size: .72rem;
+  font-weight: 500;
+}
+
+.review-card > header button {
+  padding: .25rem .5rem;
+  border: 0;
+  border-radius: .3rem;
+  background: #fff;
+  color: #22272d;
+  cursor: pointer;
+  font: inherit;
+  font-size: .62rem;
+}
+
+.review-card dl {
+  display: grid;
+  gap: .1rem;
+  margin: 0;
+  padding: .6rem .85rem;
+}
+
+.review-card dl > div {
+  display: flex;
+  min-height: 1.8rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.review-card dt {
+  color: #737980;
+  font-size: .65rem;
+}
+
+.review-card dd {
+  margin: 0;
+  color: #17191d;
+  font-size: .65rem;
+  font-weight: 500;
+  text-align: right;
+}
+
+.consent-card {
+  display: grid;
+  gap: .7rem;
+  padding: 1rem 1.2rem;
+}
+
+.consent-card label {
+  display: flex;
+  align-items: flex-start;
+  gap: .55rem;
+  color: #656a71;
+  font-size: .72rem;
+  line-height: 1.4;
+}
+
+.consent-card input {
+  width: .95rem;
+  height: .95rem;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: #ff2b18;
+}
+
+.consent-card a {
+  color: #ff2b18;
+  text-decoration: underline;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: .25rem;
+}
+
+.back-button,
+.primary-button {
+  display: inline-flex;
+  min-height: 2.35rem;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: .5rem .8rem;
+  border-radius: .45rem;
+  font: inherit;
+  font-size: .68rem;
+  cursor: pointer;
+}
+
+.back-button {
+  border: 1px solid #c8c9cb;
+  background: transparent;
+  color: #737980;
+}
+
+.back-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.primary-button {
+  border: 1px solid #ff2b18;
+  background: #ff2b18;
+  color: #fff;
+  font-weight: 600;
+}
+
+.primary-button:hover {
+  background: #e82412;
+}
+
+.success-panel {
+  min-height: 18rem;
+  align-content: center;
+  justify-items: center;
+  padding-block: 2.5rem;
+  text-align: center;
+}
+
+.success-icon {
+  display: grid;
+  width: 3.2rem;
+  height: 3.2rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #0b213d;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.success-panel h2 {
+  margin: .25rem 0 0;
+  color: #102440;
+  font-size: 1.3rem;
+}
+
+.success-panel > p {
+  margin: 0;
+  color: #737980;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+
+.success-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .8rem;
+  margin-top: .9rem;
+}
+
+.reference-button {
+  display: inline-flex;
+  min-width: 7.5rem;
+  min-height: 2.35rem;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem .8rem;
+  border: 1px solid #ff2b18;
+  border-radius: .45rem;
+  background: transparent;
+  color: #102440;
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 600;
+  opacity: 1;
+  cursor: default;
+}
+
+@media (max-width: 48rem) {
+  .application-page {
+    width: min(100% - 1.5rem, 42rem);
+    padding-top: 1.8rem;
+  }
+
+  .application-panel {
+    padding: 1.2rem;
+  }
+
+  :host ::ng-deep .application-stepper p-step {
+    min-width: 4.5rem;
+    flex-basis: 4.5rem;
+  }
+
+  :host ::ng-deep .application-stepper .p-step-title {
+    max-width: 5rem;
+    font-size: .53rem;
+    white-space: normal;
+  }
+
+  :host ::ng-deep .application-stepper p-stepper-separator {
+    margin-inline: -1.4rem;
+  }
+}
+
+@media (max-width: 36rem) {
+  .application-page {
+    width: min(100% - 1rem, 30rem);
+    padding-block: 1.3rem 2rem;
+  }
+
+  .application-heading h1 {
+    font-size: 1.5rem;
+  }
+
+  .application-stepper {
+    margin-block: 1.5rem 1rem;
+  }
+
+  .application-panel {
+    gap: .75rem;
+    padding: .85rem;
+    border-radius: .75rem;
+  }
+
+  .form-card,
+  .co-applicant-toggle,
+  .consent-card {
+    padding: .85rem;
+  }
+
+  .field-grid,
+  .economy-grid {
+    grid-template-columns: 1fr;
+    gap: .8rem;
+  }
+
+  .applicant-choices {
+    gap: .55rem;
+  }
+
+  .loan-choices {
+    grid-template-columns: 1fr;
+  }
+
+  .loan-choices .choice-card {
+    min-height: 5rem;
+  }
+
+  .choice-card {
+    padding: .6rem .45rem;
+  }
+
+  .applicant-choices .choice-card small {
+    font-size: .52rem;
+  }
+
+  .review-card dl {
+    padding-inline: .65rem;
+  }
+
+  .review-card dl > div {
+    align-items: flex-start;
+    padding-block: .35rem;
+  }
+
+  .review-card dd {
+    max-width: 58%;
+  }
+
+  .desktop-break {
+    display: none;
+  }
+}

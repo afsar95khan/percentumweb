@@ -1,0 +1,113 @@
+<div class="crowdfunding-page">
+  <section class="crowdfunding-hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h1>Invester i eiendom gjennom lån.</h1>
+        <p>
+          Hos Percentum kan du investere i lån til eiendomsprosjekter og oppnå en avtalt
+          avkastning med sikkerhet i eiendom.
+        </p>
+      </div>
+
+      <div class="offer-cards">
+        <article class="offer-card">
+          <span class="offer-tag">INVESTERE</span>
+          <p>Bli en investor i dag og få umiddelbar tilgang til</p>
+          <ul>
+            <li>Gratis konto</li>
+            <li>Avkastning på forskudd</li>
+            <li>Sikkerhet i eiendom</li>
+            <li>Avkastning på 15 – 18%</li>
+          </ul>
+          <a class="button button-red" routerLink="/application">Bli Investor <span aria-hidden="true">→</span></a>
+        </article>
+
+        <article class="offer-card">
+          <span class="offer-tag">PROSJEKTEIER</span>
+          <p>Søk om et prosjektlån og få fordeler som:</p>
+          <ul>
+            <li>Lånebeløp fra 400.000 NOK</li>
+            <li>Opptil 2 års løpetid</li>
+            <li>Fleksible lånevilkår</li>
+            <li>Prosjektveiledning</li>
+          </ul>
+          <a class="button button-red" routerLink="/application">Søk nå <span aria-hidden="true">→</span></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="returns-section" aria-labelledby="returns-title">
+    <div class="returns-inner">
+      <h2 id="returns-title">Attraktiv avkastning på din investering</h2>
+      <p>
+        Ved investering gjennom vår plattform kan du oppnå langt høyere avkastning enn å sette
+        pengene i bank eller fond.
+      </p>
+      <p>
+        Aksjeinvestering har i tillegg en høyere gevinstbeskatning enn ved andre
+        investeringsalternativer.
+      </p>
+
+      <div class="returns-chart" role="img" aria-label="Sammenligning av avkastning: DNB 3,5 prosent, ODIN Rente 3,5 prosent, Oslo Børs 3,5 prosent og Crowdfunding 3,5 prosent">
+        @for (item of returnComparisons; track item.label) {
+          <div class="chart-column">
+            <strong class="chart-value">3.5%</strong>
+            <div class="bar" [class]="'bar ' + item.className">
+              <span class="bar-front"></span>
+              <span class="bar-side"></span>
+              <span class="bar-top"></span>
+            </div>
+            <span class="chart-label">{{ item.label }}</span>
+          </div>
+        }
+      </div>
+      <p class="returns-note">
+        *Avkastningstall gjelder for år 2024 og er hentet ut fra deres respektive hjemmesider,
+        mens Crowdfunding er basert på antall lån som ble lagt ut av de 4 største aktørene i Norge.
+      </p>
+    </div>
+  </section>
+
+  <section class="prospects-section" aria-labelledby="prospects-title">
+    <div class="prospects-inner">
+      <h2 id="prospects-title">Våre prospekter</h2>
+      <p class="prospects-intro">
+        Her finner du et utvalg av våre prospekter tilgjengelig for investering. For mer
+        informasjon registrer deg eller logg inn.
+      </p>
+
+      <div class="prospect-grid">
+        @for (prospect of prospects; track $index) {
+          <article class="prospect-card">
+            <div class="prospect-image">
+              <img [src]="prospect.image" [alt]="'Kontor og arbeidsplass for ' + prospect.company" />
+              <span class="filled-badge">Fulltegnet</span>
+            </div>
+            <div class="prospect-content">
+              <p class="prospect-company">{{ prospect.company }}</p>
+              <h3>{{ prospect.title }}</h3>
+              <dl class="prospect-facts">
+                <div><dt>Lånebeløp:</dt><dd>{{ prospect.loanAmount }}</dd></div>
+                <div><dt>Netto rente per år:</dt><dd>{{ prospect.netReturn }}</dd></div>
+                <div><dt>Løpetid:</dt><dd>{{ prospect.term }}</dd></div>
+                <div><dt>Risikoklasse:</dt><dd>{{ prospect.riskClass }}</dd></div>
+              </dl>
+              <div
+                class="progress-track"
+                role="progressbar"
+                [attr.aria-valuenow]="prospect.progress"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                [attr.aria-label]="'Prosjektet er ' + prospect.progress + ' prosent finansiert'"
+              >
+                <span [style.width.%]="prospect.progress">{{ prospect.progress }}%</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+      <a class="button button-red view-all" routerLink="/application">View all</a>
+    </div>
+  </section>
+</div>

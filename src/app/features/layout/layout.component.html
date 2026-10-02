@@ -1,0 +1,97 @@
+<div class="site-layout">
+  <header class="site-header">
+    <a class="wordmark header-wordmark" routerLink="/" aria-label="Percentum - hjem">
+      <img src="/assets/logo1.png" alt="Percentum" />
+    </a>
+    <nav class="header-actions" aria-label="Hovedmeny">
+      <a class="header-cta" routerLink="/application" [queryParams]="{ applicantType: applicantType() }">Søk nå</a>
+      <a class="header-login" routerLink="/login" (click)="closeMenu()">Logg inn</a>
+      <button
+        class="menu-toggle"
+        type="button"
+        [attr.aria-expanded]="menuOpen()"
+        [attr.aria-label]="menuOpen() ? 'Lukk meny' : 'Åpne meny'"
+        (click)="toggleMenu()"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    @if (menuOpen()) {
+      <nav class="menu-panel" aria-label="Navigasjon">
+        <a routerLink="/" (click)="closeMenu()">Hjem</a>
+        <a routerLink="/about-us" (click)="closeMenu()">Om oss</a>
+        <a routerLink="/contact-us" (click)="closeMenu()">Kontakt</a>
+        <a routerLink="/blog" (click)="closeMenu()">blogg</a>
+        <a routerLink="/crowdfunding" (click)="closeMenu()">Folkefinansiering</a>
+        <!-- <a routerLink="/application" [queryParams]="{ applicantType: applicantType() }" (click)="closeMenu()">Søk nå</a> -->
+        <a routerLink="/dashboard" (click)="closeMenu()">Min side</a>
+        <a routerLink="/login" (click)="closeMenu()">Logg inn</a>
+      </nav>
+    }
+  </header>
+
+  <main class="page-content">
+    <router-outlet />
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <section class="stats" aria-label="Percentum i tall">
+        <div class="stat">
+          <strong>1 240+</strong>
+          <span>Antall søknader behandlet</span>
+        </div>
+        <div class="stat">
+          <strong>890+</strong>
+          <span>Fornøyde søkere</span>
+        </div>
+        <div class="stat">
+          <strong>4,2 MRDNOK</strong>
+          <span>Volum i NOK alle søknader</span>
+        </div>
+      </section>
+
+      <div class="footer-main">
+        <section class="footer-contact" aria-label="Kontaktinformasjon">
+          <a class="wordmark footer-wordmark" routerLink="/" aria-label="Percentum - hjem">
+            <img src="/assets/logo2.png" alt="Percentum" />
+          </a>
+          <div class="contact-row">
+            <span class="footer-icon pi pi-mobile" aria-hidden="true"></span>
+            <p><strong>Adresse</strong><br />Kabelkroken 1 0954 Oslo NO</p>
+          </div>
+          <div class="contact-row">
+            <span class="footer-icon pi pi-map-marker" aria-hidden="true"></span>
+            <p><strong>Kontakt</strong><br /><a href="tel:+4767791900">+47 67 79 19 00</a></p>
+          </div>
+          <small>Copyright © 2026 Percentum Prosjektfinansiering AS</small>
+        </section>
+
+        <nav class="footer-links" aria-label="Nyttige lenker">
+          <h2>Nyttige lenker</h2>
+          <a routerLink="/" routerLinkActive="highlight" [routerLinkActiveOptions]="{ exact: true }">Hjem</a>
+          <a routerLink="/contact-us" routerLinkActive="highlight" [routerLinkActiveOptions]="{ exact: true }">Kontakt</a>
+          <a routerLink="/about-us" routerLinkActive="highlight" [routerLinkActiveOptions]="{ exact: true }">Om oss</a>
+          <a href="/rente-risiko">Rente &amp; Risiko</a>
+          <a href="/forretningsvilkar">Forretningsvilkår</a>
+          <a href="/regulering">Regulering</a>
+          <a routerLink="/blog" routerLinkActive="highlight">Blogg</a>
+        </nav>
+
+        <section class="footer-hours">
+          <h2>Åpningstider</h2>
+          <p>Telefontid: Mandag – fredag<br />09:00–17:00</p>
+        </section>
+
+        <section class="footer-social">
+          <h2>Følg oss her</h2>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/" aria-label="LinkedIn"><i class="pi pi-linkedin" aria-hidden="true"></i></a>
+            <a href="https://www.instagram.com/" aria-label="Instagram"><i class="pi pi-instagram" aria-hidden="true"></i></a>
+            <a href="https://x.com/" aria-label="X"><i class="pi pi-times" aria-hidden="true"></i></a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </footer>
+</div>

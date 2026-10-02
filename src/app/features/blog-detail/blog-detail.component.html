@@ -1,0 +1,116 @@
+<div class="blog-detail-page">
+  @if (article(); as post) {
+    <section class="detail-hero">
+      <div class="detail-hero-inner">
+        <div class="detail-intro">
+          <p class="article-date"><i class="pi pi-calendar" aria-hidden="true"></i>{{ post.date }}</p>
+          <h1>{{ post.title }}</h1>
+          <p>{{ post.summary }}</p>
+        </div>
+        <img
+          class="detail-hero-image"
+          [src]="post.image"
+          [alt]="post.title"
+        />
+      </div>
+    </section>
+
+    <section class="topic-panels" aria-label="Temaer i artikkelen">
+      <article class="topic-panel">
+        <h2>For privatpersoner</h2>
+        <ul>
+          <li>Hvordan styrke en søknad om boliglån – også ved begrenset egenkapital</li>
+          <li>Refinansiering – når kan det være lønnsomt, og hva bør vurderes?</li>
+          <li>Fast eller flytende rente – hvilke forhold bør ligge til grunn for valget?</li>
+          <li>Vanlige årsaker til avslag på finansiering – og hvilke muligheter som kan finnes</li>
+          <li>Gjeldsgrad, betjeningsevne og bankenes krav til låntakere</li>
+          <li>Mellomfinansiering, tilleggslån og refinansiering med sikkerhet i bolig</li>
+        </ul>
+      </article>
+      <article class="topic-panel">
+        <h2>For bedrifter og investorer</h2>
+        <ul>
+          <li>Hvordan banker vurderer og strukturerer finansiering av eiendomsprosjekter</li>
+          <li>Krav til egenkapital, sikkerheter og betjeningsevne ved næringsfinansiering</li>
+          <li>Kassekreditt, rammelån, byggelån og andre finansieringsformer</li>
+          <li>Prosjektfinansiering og finansiering av næringseiendom</li>
+          <li>Refinansiering og restrukturering av eksisterende bankengasjement</li>
+          <li>Alternative finansieringsformer, herunder crowdfunding</li>
+          <li>Regulatoriske endringer og hvilken betydning de kan få for låntakere og virksomheter</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="analysis-banner">
+      <div class="analysis-content">
+        <h2>Marked og analyse</h2>
+        <ul>
+          <li>Renteutvikling og forventninger til markedet</li>
+          <li>Utviklingen i bolig- og eiendomsmarkedet</li>
+          <li>Endringer i bankenes kredittpraksis og finansieringsvilkår</li>
+          <li>Nye regulatoriske krav og retningslinjer</li>
+          <li>Anonymiserte eksempler som illustrerer hvordan ulike finansieringsbehov kan struktureres og løses</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="insight-section">
+      <div class="section-shell">
+        <h2>Relevant innsikt – når den har verdi</h2>
+        <p>
+          Vi publiserer ikke innhold for innholdets skyld. Ambisjonen er at våre artikler skal gi
+          konkret og anvendbar kunnskap som kan bidra til bedre forberedelser, mer effektive
+          finansieringsprosesser og et bedre beslutningsgrunnlag.
+        </p>
+      </div>
+    </section>
+
+    <section class="stay-updated section-shell">
+      <h2>Hold deg oppdatert</h2>
+      <p>Ønsker du å motta informasjon om nye artikler og faglige oppdateringer?</p>
+      <p>
+        Send en e-post til <a href="mailto:ks@percentum.no?subject=Artikler">ks@percentum.no</a>
+        med emnefeltet «Artikler», så kan du motta våre månedlige fagoppdateringer.
+      </p>
+      <p><em>Vi sender kun relevant faglig innhold.</em></p>
+      <div class="topic-suggestion">
+        <h3>Har du forslag til et tema?</h3>
+        <p>
+          Mange av de mest relevante problemstillingene oppstår gjennom spørsmål fra kunder og
+          samarbeidspartnere. Har du et tema innen finansiering, kreditt eller eiendom som du
+          ønsker at vi skal belyse, er du velkommen til å kontakte oss.
+        </p>
+      </div>
+    </section>
+
+    <section class="detail-contact">
+      <div class="section-shell">
+        <div class="contact-main">
+          <div class="contact-copy">
+            <h2>Kontakt</h2>
+            <p>Percentum AS – Finansagent med konsesjon<br />fra Finanstilsynet</p>
+          </div>
+          <div class="contact-options">
+            <a href="mailto:ks@percentum.no" class="contact-option">
+              <span class="contact-icon pi pi-envelope" aria-hidden="true"></span>
+              <span><small>E-post:</small><strong>ks@percentum.no</strong></span>
+            </a>
+            <a href="tel:+4767791900" class="contact-option">
+              <span class="contact-icon pi pi-phone" aria-hidden="true"></span>
+              <span><small>Telefon:</small><strong>67 79 19 00</strong></span>
+            </a>
+          </div>
+        </div>
+        <p class="contact-note">
+          For en konfidensiell og uforpliktende vurdering av dine finansieringsbehov,
+          vennligst kontakt oss direkte.
+        </p>
+      </div>
+    </section>
+  } @else {
+    <section class="article-not-found">
+      <h1>Artikkelen ble ikke funnet</h1>
+      <a routerLink="/blog">Tilbake til bloggen</a>
+    </section>
+  }
+</div>

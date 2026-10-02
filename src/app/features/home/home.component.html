@@ -1,0 +1,156 @@
+<div class="home-page">
+  <section class="home-hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="audience-toggle" aria-label="Velg søknadstype">
+          <button type="button" [class.active]="heroCustomerType() === 'private'" [attr.aria-pressed]="heroCustomerType() === 'private'" (click)="setHeroCustomerType('private')">Privat</button>
+          <button type="button" [class.active]="heroCustomerType() === 'business'" [attr.aria-pressed]="heroCustomerType() === 'business'" (click)="setHeroCustomerType('business')">Bedrift</button>
+        </div>
+        @if (heroCustomerType() === 'business') {
+          <h1>Få fart på veksten<br />med riktig <span>finansiering</span></h1>
+          <p class="hero-lead">
+            Når bedriften skal vokse, investere eller gjennomføre nye prosjekter, er riktig
+            finansiering avgjørende. Vi hjelper deg å finne fleksible løsninger tilpasset
+            bedriftens behov og planer.
+          </p>
+          <h2 class="benefits-title">Slik hjelper vi deg:</h2>
+          <ul class="hero-points">
+            <li><strong>Likviditetslån:</strong> Styrk kontantstrømmen og skap økonomisk handlingsrom til løpende drift og nye muligheter.</li>
+            <li><strong>Prosjektlån:</strong> Finansiering tilpasset prosjektets behov – fra oppstart til ferdigstillelse.</li>
+            <li><strong>Eiendomslån:</strong> Finansiering til kjøp, utvikling, investering og refinansiering av eiendom.</li>
+          </ul>
+        } @else {
+          <h1>Smarte finansiering<br />– <span>uansett behov</span></h1>
+          <p class="hero-lead">
+            Skal du kjøpe drømmeboligen, senke de månedlige kostnadene dine, eller trenger du ekstra
+            kapital til et personlig prosjekt? Vi gjør jobben med å sammenligne bankene for deg,
+            slik at du alltid får de beste betingelsene.
+          </p>
+          <h2 class="benefits-title">Slik hjelper vi deg:</h2>
+          <ul class="hero-points">
+            <li><strong>Boliglån:</strong> Sikre deg lånebevis før budrunden eller få hjelp til kjøp av ny bolig.</li>
+            <li><strong>Refinansiering:</strong> Flytt boliglånet for lavere rente, eller samle dyre smålån for en mer oversiktlig økonomi.</li>
+            <li><strong>Privatlån:</strong> Fleksibel finansiering til oppussing eller uforutsette utgifter uten krav om sikkerhet.</li>
+          </ul>
+        }
+        <div class="hero-actions">
+          <a class="button button-red" routerLink="/application" [queryParams]="{ applicantType: heroCustomerType() === 'private' ? 'private' : 'company' }">Søk nå <span aria-hidden="true">→</span></a>
+          <a class="button button-light" href="tel:+4767791900">Ring oss <span aria-hidden="true">→</span></a>
+        </div>
+        @if (heroCustomerType() === 'business') {
+          <p class="hero-promise">Ta kontakt med oss i dag for en gratis og uforpliktende vurdering.</p>
+        }
+      </div>
+
+      <section class="calculator-card" aria-labelledby="calculator-title">
+        <h2 id="calculator-title">Lånekalkulator</h2>
+
+        <label class="range-label" for="loan-amount"><span>Lånebeløp</span><span>{{ formatCurrency(loanAmount()) }} kr</span></label>
+        <input id="loan-amount" class="range-input" type="range" min="100000" max="2000000" step="50000" [style.--range-progress]="rangeProgress(loanAmount(), 100000, 2000000)" [ngModel]="loanAmount()" (ngModelChange)="loanAmount.set($event)" />
+
+        <label class="range-label" for="repayment-years"><span>Nedbetalingstid</span><span>{{ repaymentYears() }} år</span></label>
+        <input id="repayment-years" class="range-input" type="range" min="1" max="30" [style.--range-progress]="rangeProgress(repaymentYears(), 1, 30)" [ngModel]="repaymentYears()" (ngModelChange)="repaymentYears.set($event)" />
+
+        <label class="rate-label" for="interest-rate">Nom. rente</label>
+        <input id="interest-rate" class="rate-input" type="number" min="0" max="40" step="0.05" [ngModel]="interestRate()" (ngModelChange)="interestRate.set($event)" placeholder="Legg inn rente" />
+
+        <div class="calculation-summary" aria-live="polite">
+          <div><span>Månedlig betaling</span><strong>kr {{ formatCurrency(monthlyPayment()) }}</strong></div>
+          <div><span>Totalt kostnad</span><strong>{{ formatCurrency(totalInterest()) }} kr</strong></div>
+          <div><span>Totalt beløp</span><strong>{{ formatCurrency(totalPayment()) }} kr</strong></div>
+          <div><span>Eff. rente</span><strong>{{ effectiveRate() }}%</strong></div>
+        </div>
+
+        <a class="button button-red continue-button" routerLink="/application" [queryParams]="{ applicantType: heroCustomerType() === 'private' ? 'private' : 'company' }">Fortsett <span aria-hidden="true">→</span></a>
+      </section>
+    </div>
+  </section>
+
+  <section class="financing-carousel" aria-labelledby="financing-title">
+    <div class="section-shell">
+      <div class="carousel-heading">
+        <h2 id="financing-title">Velg finansiering som passer deg</h2>
+        <div class="audience-toggle carousel-toggle" aria-label="Velg finansieringstype">
+          <button type="button" [class.active]="financingCustomerType() === 'private'" [attr.aria-pressed]="financingCustomerType() === 'private'" (click)="setFinancingCustomerType('private')">Privat</button>
+          <button type="button" [class.active]="financingCustomerType() === 'business'" [attr.aria-pressed]="financingCustomerType() === 'business'" (click)="setFinancingCustomerType('business')">Bedrift</button>
+        </div>
+      </div>
+      <div class="financing-slider">
+        <button class="slider-arrow financing-prev" type="button" aria-label="Forrige finansiering" (click)="moveFinancing(-1)">
+          <i class="pi pi-arrow-left" aria-hidden="true"></i>
+        </button>
+        <div class="financing-track" aria-live="polite">
+          @for (option of visibleFinancingOptions(); track option.title; let index = $index) {
+            <article class="financing-card" [class.is-active]="index === 1" [attr.aria-hidden]="index !== 1">
+              <span class="financing-icon {{ option.icon }}" aria-hidden="true"></span>
+              <h3>{{ option.title }}</h3>
+              <p>{{ option.description }}</p>
+              <a class="button button-red" routerLink="/application" [queryParams]="{ applicantType: financingCustomerType() === 'private' ? 'private' : 'company' }">Søk nå <span aria-hidden="true">→</span></a>
+            </article>
+          }
+        </div>
+        <button class="slider-arrow financing-next" type="button" aria-label="Neste finansiering" (click)="moveFinancing(1)">
+          <i class="pi pi-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="simple-process section-shell" style="width: 100%;">
+    <header class="section-heading">
+      <h2>Enkel søkeprosess</h2>
+    </header>
+    <div class="process-cards">
+      <article class="process-card">
+        <span class="process-icon pi pi-file-edit" aria-hidden="true"></span>
+        <h3>Søknad</h3>
+        <p>Fyll ut den forenklede søknaden vår og vi tar kontakt med deg for viderebehandling</p>
+      </article>
+      <article class="process-card">
+        <span class="process-icon pi pi-sliders-h" aria-hidden="true"></span>
+        <h3>Evaluering</h3>
+        <p>Når søknaden er komplett så jobber vi å finne gode løsninger i samarbeid med våre banker.</p>
+      </article>
+      <article class="process-card">
+        <span class="process-icon pi pi-check-circle" aria-hidden="true"></span>
+        <h3>Ferdig</h3>
+        <p>Vi utarbeider relevante løsningsforslag og skreddersyr den beste løsningen så langt som mulig.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="reviews-section">
+    <div class="section-shell">
+      <div class="reviews-topline">
+        <span class="review-eyebrow">Våre kunder sier om oss</span>
+        <a class="review-invite" href="mailto:ks@percentum.no"><i class="pi pi-file-edit" aria-hidden="true"></i> Skriv en anmeldelse</a>
+      </div>
+      <div class="reviews-heading">
+        <h2>Fornøyde kunder i hele landet</h2>
+      </div>
+      <div class="reviews-window" aria-live="polite">
+        <div class="reviews-track" [style.transform]="'translateX(-' + reviewPage() * 50 + '%)'">
+          @for (page of currentReviews; track $index) {
+            <div class="review-page" [attr.aria-hidden]="$index !== reviewPage()">
+              @for (review of page; track $index) {
+                <article class="review-card">
+                  <header class="review-author">
+                    <span class="review-avatar">{{ review.initials }}</span>
+                    <span class="review-details"><strong>{{ review.name }}</strong><small>{{ review.company }}</small></span>
+                    <span class="google-mark" aria-label="Google">G</span>
+                  </header>
+                  <p class="review-stars" [attr.aria-label]="review.rating + ' av 5 stjerner'">★★★★★</p>
+                  <p class="review-text">{{ review.text }}</p>
+                </article>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="review-controls">
+        <button type="button" aria-label="Forrige anmeldelser" (click)="moveReview(-1)"><i class="pi pi-angle-left" aria-hidden="true"></i></button>
+        <button type="button" aria-label="Neste anmeldelser" (click)="moveReview(1)"><i class="pi pi-angle-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,118 @@
+<div class="contact-page">
+  <section class="contact-hero">
+    <div class="contact-heading">
+      <h1>Kontakt</h1>
+      <p>Percentum er alltid tilgjengelig når du ønsker å komme i kontakt med oss.</p>
+    </div>
+
+    <div class="contact-card">
+      <div class="contact-information">
+        <h2>Riktig finansiering starter<br />med riktig rådgivning.</h2>
+        <p>
+          Hos Percentum får du personlig oppfølging fra rådgivere som setter seg grundig inn
+          i din økonomi, dine behov og dine mål. Vi vurderer mulighetene, finner riktig
+          finansieringsstruktur og tar dialogen med bankene på dine vegne.
+        </p>
+        <p>
+          Enten du skal kjøpe bolig, refinansiere eksisterende lån eller finansiere
+          investeringer og vekst i bedriften, arbeider vi for å finne en løsning som gir deg
+          best mulig utgangspunkt.
+        </p>
+
+        <div class="contact-methods">
+          <a href="tel:+4767791900" class="contact-method">
+            <span class="method-icon pi pi-phone" aria-hidden="true"></span>
+            <span><small>Telefon:</small><strong>67 79 19 00</strong></span>
+          </a>
+          <a href="mailto:ks@percentum.no" class="contact-method">
+            <span class="method-icon pi pi-envelope" aria-hidden="true"></span>
+            <span><small>E-post:</small><strong>ks@percentum.no</strong></span>
+          </a>
+        </div>
+
+        <p class="contact-promise">
+          Ta kontakt for en gratis og uforpliktende vurdering. Det kan være flere muligheter
+          enn du tror.
+        </p>
+      </div>
+
+      <div class="form-panel">
+        <form [formGroup]="contactForm" (ngSubmit)="submit()" novalidate>
+          <div class="field-grid">
+            <div class="field">
+              <label for="first-name">Fornavn*</label>
+              <input id="first-name" type="text" formControlName="firstName" autocomplete="given-name" />
+              @if (contactForm.controls.firstName.touched && contactForm.controls.firstName.invalid) {
+                <p class="field-error">Fornavn er påkrevd.</p>
+              }
+            </div>
+            <div class="field">
+              <label for="last-name">Etternavn*</label>
+              <input id="last-name" type="text" formControlName="lastName" autocomplete="family-name" />
+              @if (contactForm.controls.lastName.touched && contactForm.controls.lastName.invalid) {
+                <p class="field-error">Etternavn er påkrevd.</p>
+              }
+            </div>
+            <div class="field">
+              <label for="email">E-post*</label>
+              <input id="email" type="email" formControlName="email" autocomplete="email" />
+              @if (contactForm.controls.email.touched && contactForm.controls.email.hasError('required')) {
+                <p class="field-error">E-post er påkrevd.</p>
+              } @else if (contactForm.controls.email.touched && contactForm.controls.email.hasError('email')) {
+                <p class="field-error">Skriv inn en gyldig e-postadresse.</p>
+              }
+            </div>
+            <div class="field">
+              <label for="phone">Telefonnummer*</label>
+              <input id="phone" type="tel" formControlName="phone" autocomplete="tel" />
+              @if (contactForm.controls.phone.touched && contactForm.controls.phone.invalid) {
+                <p class="field-error">Telefonnummer er påkrevd.</p>
+              }
+            </div>
+          </div>
+
+          <div class="field message-field">
+            <label for="message">Skriv din melding</label>
+            <textarea id="message" formControlName="message" rows="4"></textarea>
+          </div>
+
+          <button
+            class="consultation-toggle"
+            type="button"
+            role="switch"
+            [attr.aria-checked]="consultationRequested()"
+            (click)="toggleConsultation()"
+          >
+            <span class="switch-track" [class.checked]="consultationRequested()"><span></span></span>
+            <span>Bestill en samtale</span>
+          </button>
+
+          <button class="submit-button" type="submit">Send inn</button>
+          @if (submitted() && contactForm.valid) {
+            <p class="submit-status" role="status">
+              Takk for henvendelsen. Vi tar kontakt så snart som mulig.
+            </p>
+          }
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="service-promises" aria-label="Vår kundeservice">
+    <article class="promise-card">
+      <span class="promise-icon pi pi-headphones" aria-hidden="true"></span>
+      <h2>Vi svarer innen 24 timer</h2>
+      <p>Send oss en melding, så tar teamet vårt kontakt med deg neste virkedag.</p>
+    </article>
+    <article class="promise-card">
+      <span class="promise-icon pi pi-comments" aria-hidden="true"></span>
+      <h2>Dedikert menneskelig kundestøtte</h2>
+      <p>Ingen robot, ingen køer, en ekte rådgiver er alltid klar til å hjelpe deg.</p>
+    </article>
+    <article class="promise-card">
+      <span class="promise-icon pi pi-shield" aria-hidden="true"></span>
+      <h2>Dine data er trygge hos oss</h2>
+      <p>Vi opererer under norsk lov med strenge krav til personvern og full etterlevelse av gjeldende regelverk.</p>
+    </article>
+  </section>
+</div>
