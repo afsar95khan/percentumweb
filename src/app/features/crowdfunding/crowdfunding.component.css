@@ -130,7 +130,7 @@
   width: .35rem;
   height: .35rem;
   border-radius: 50%;
-  background: #ff2b18;
+  background: #FE0200;
   content: "";
 }
 
@@ -149,7 +149,7 @@
 }
 
 .button-red {
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
 }
 
@@ -344,7 +344,7 @@
   left: .8rem;
   padding: .35rem .85rem;
   border-radius: 1rem;
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
   font-size: .63rem;
 }
@@ -405,7 +405,7 @@
   align-items: center;
   justify-content: center;
   border-radius: inherit;
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
   font-size: .52rem;
 }

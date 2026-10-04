@@ -92,7 +92,7 @@
   height: .65rem;
   place-items: center;
   border-radius: 50%;
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
   content: "\2713";
   font-size: .45rem;
@@ -152,7 +152,7 @@ form {
 }
 
 .input-wrap:focus-within {
-  border-color: #ff2b18;
+  border-color: #FE0200;
   box-shadow: 0 0 0 2px rgb(255 43 24 / 10%);
 }
 
@@ -194,7 +194,7 @@ form {
   min-height: 2.9rem;
   border: 0;
   border-radius: .55rem;
-  background: #ff2b12;
+  background: #FE0200;
   color: #fff;
   cursor: pointer;
   font: inherit;
@@ -279,7 +279,7 @@ form {
   place-items: center;
   margin-right: .2rem;
   border-radius: 50%;
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
   font-size: .48rem;
 }

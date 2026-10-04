@@ -31,7 +31,7 @@
 .eyebrow {
   display: block;
   margin-bottom: .35rem;
-  color: #ff2b18;
+  color: #FE0200;
   font-size: .62rem;
   font-weight: 700;
   letter-spacing: .025em;
@@ -110,13 +110,13 @@
 }
 
 :host ::ng-deep .application-stepper .p-step-active .p-step-number {
-  border-color: #ff2b18;
-  background: #ff2b18;
+  border-color: #FE0200;
+  background: #FE0200;
   color: #fff;
 }
 
 :host ::ng-deep .application-stepper .p-step-active .p-step-title {
-  color: #ff2b18;
+  color: #FE0200;
   font-weight: 600;
 }
 
@@ -240,7 +240,7 @@
 }
 
 .choice-card.selected {
-  border: 2px solid #ff2b18;
+  border: 2px solid #FE0200;
   background: #fff7f6;
   box-shadow: 0 0 0 1px rgb(255 43 24 / 5%);
 }
@@ -319,7 +319,7 @@
 .field textarea:focus,
 .field select:focus,
 .input-affix:focus-within {
-  border-color: #ff2b18;
+  border-color: #FE0200;
   box-shadow: 0 0 0 2px rgb(255 43 24 / 10%);
 }
 
@@ -376,7 +376,7 @@
 .amount-range::-webkit-slider-runnable-track {
   height: .45rem;
   border-radius: 1rem;
-  background: linear-gradient(to right, #ff2b18 0 var(--range-progress), #ededed var(--range-progress) 100%);
+  background: linear-gradient(to right, #FE0200 0 var(--range-progress), #ededed var(--range-progress) 100%);
 }
 
 .amount-range::-moz-range-track {
@@ -388,7 +388,7 @@
 .amount-range::-moz-range-progress {
   height: .45rem;
   border-radius: 1rem;
-  background: #ff2b18;
+  background: #FE0200;
 }
 
 .amount-range::-webkit-slider-thumb {
@@ -396,7 +396,7 @@
   height: 1.05rem;
   margin-top: -.3rem;
   appearance: none;
-  border: 2px solid #ff2b18;
+  border: 2px solid #FE0200;
   border-radius: 50%;
   background: #fff;
 }
@@ -404,7 +404,7 @@
 .amount-range::-moz-range-thumb {
   width: .8rem;
   height: .8rem;
-  border: 2px solid #ff2b18;
+  border: 2px solid #FE0200;
   border-radius: 50%;
   background: #fff;
 }
@@ -489,7 +489,7 @@
 }
 
 .switch-track.checked {
-  background: #ff2b18;
+  background: #FE0200;
 }
 
 .switch-track.checked > span {

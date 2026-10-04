@@ -78,11 +78,11 @@
   height: .95rem;
   flex: 0 0 auto;
   margin: 0;
-  accent-color: #ff2b18;
+  accent-color: #FE0200;
 }
 
 .consent-card a {
-  color: #ff2b18;
+  color: #FE0200;
   text-decoration: underline;
 }
 
@@ -120,8 +120,8 @@
 }
 
 .primary-button {
-  border: 1px solid #ff2b18;
-  background: #ff2b18;
+  border: 1px solid #FE0200;
+  background: #FE0200;
   color: #fff;
   font-weight: 600;
 }
@@ -177,7 +177,7 @@
   align-items: center;
   justify-content: center;
   padding: .5rem .8rem;
-  border: 1px solid #ff2b18;
+  border: 1px solid #FE0200;
   border-radius: .45rem;
   background: transparent;
   color: #102440;

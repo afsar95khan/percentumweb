@@ -95,7 +95,7 @@
   margin-bottom: .45rem;
   padding: .4rem .7rem;
   border-radius: 1rem;
-  background: #25282d;
+  background: #2D2D2D;
   color: #fff;
   font-size: .64rem;
 }
@@ -136,7 +136,7 @@
   height: .7rem;
   place-items: center;
   border-radius: 50%;
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
   content: "✓";
   font-size: .48rem;
@@ -294,7 +294,7 @@
 
 .contact-copy h2 {
   margin: 0 0 .4rem;
-  color: #ff2b18;
+  color: #FE0200;
   font-size: 1.35rem;
   font-weight: 600;
 }
@@ -318,7 +318,7 @@
   gap: .65rem;
   padding: .75rem;
   border-radius: .75rem;
-  background: #101a2d;
+  background: #0F172A;
   color: #fff;
   text-decoration: none;
 }
@@ -330,7 +330,7 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: .45rem;
-  background: #ff2b18;
+  background: #FE0200;
   font-size: .85rem;
 }
 

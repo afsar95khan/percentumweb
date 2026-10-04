@@ -81,7 +81,7 @@
 
       @if (step() === 1) {
         <section class="form-card" aria-labelledby="applicant-type-heading">
-          <h3 id="applicant-type-heading" class="section-title"><span>A</span> Velge søknadstype</h3>
+          <h3 id="applicant-type-heading" class="section-title"><span>A</span> Velge søknadstype ((Select Application Type))</h3>
           <div class="choice-grid applicant-choices">
             <button
               class="choice-card"
@@ -109,7 +109,7 @@
         </section>
 
         <section class="form-card" aria-labelledby="loan-type-heading">
-          <h3 id="loan-type-heading" class="section-title"><span>B</span> Lånetype</h3>
+          <h3 id="loan-type-heading" class="section-title"><span>B</span> Lånetype ((Loan Type))</h3>
           <div class="choice-grid loan-choices">
             @for (option of options(); track option.title) {
               <button
@@ -130,9 +130,9 @@
 
       @if (step() === 2) {
         <section class="form-card" aria-labelledby="loan-details-heading">
-          <h3 id="loan-details-heading" class="section-title"><span>1</span> Lånebeløp og formål</h3>
+          <h3 id="loan-details-heading" class="section-title"><span>1</span> Lånebeløp og formål ((Loan amount and purpose))</h3>
           <div class="field">
-            <label for="loan-amount">Lånebeløp</label>
+            <label for="loan-amount">Lånebeløp ((Loan amount))</label>
             <div class="input-affix">
               <input id="loan-amount" type="number" min="0" step="10000" formControlName="loanAmount" placeholder="0000 NOK" />
               <span>NOK</span>
@@ -152,7 +152,7 @@
             />
           </div>
           <div class="field">
-            <label for="loan-purpose">Formål</label>
+            <label for="loan-purpose">Formål ((Purpose))</label>
             <textarea id="loan-purpose" rows="3" formControlName="purpose" placeholder="Beskriv hva du skal bruke lånet til..."></textarea>
             @if (hasError('purpose')) { <small class="field-error">Beskriv kort hva lånet skal brukes til.</small> }
           </div>
@@ -160,7 +160,7 @@
 
         @if (applicantType() === 'private') {
           <section class="form-card" aria-labelledby="personal-heading">
-            <h3 id="personal-heading" class="section-title"><span>2</span> Personopplysninger</h3>
+            <h3 id="personal-heading" class="section-title"><span>2</span> Personopplysninger ((Personal Information))</h3>
             <div class="field-grid">
               <div class="field full-width">
                 <label for="full-name">Fullt navn</label>
@@ -181,15 +181,15 @@
           </section>
 
           <section class="form-card" aria-labelledby="economy-heading">
-            <h3 id="economy-heading" class="section-title"><span>3</span> Økonomiske opplysninger</h3>
+            <h3 id="economy-heading" class="section-title"><span>3</span> Økonomiske opplysninger ((Financial information))</h3>
             <div class="field">
-              <label for="annual-income">Årsinntekt</label>
+              <label for="annual-income">Årsinntekt ((Annual Income))</label>
               <input id="annual-income" type="number" min="0" formControlName="annualIncome" placeholder="13,0000 NOK" />
               @if (hasError('annualIncome')) { <small class="field-error">Oppgi årsinntekten din.</small> }
             </div>
             <div class="field-grid economy-grid">
               <div class="field">
-                <label for="marital-status">Sivilstand</label>
+                <label for="marital-status">Sivilstand ((Marital Status))</label>
                 <select id="marital-status" formControlName="maritalStatus">
                   <option value="">Velg status</option>
                   <option value="single">Singel</option>
@@ -200,7 +200,7 @@
                 @if (hasError('maritalStatus')) { <small class="field-error">Velg sivilstand.</small> }
               </div>
               <div class="field count-field">
-                <label>Barn u/18 år</label>
+                <label>Barn u/18 år ((Children under 18))</label>
                 <div class="count-control">
                   <button type="button" aria-label="Færre barn" (click)="updateCount('children', -1)">−</button>
                   <output>{{ applicationForm.controls.children.value.toString().padStart(2, '0') }}</output>
@@ -208,7 +208,7 @@
                 </div>
               </div>
               <div class="field count-field">
-                <label>Biler</label>
+                <label>Biler ((Cars))</label>
                 <div class="count-control">
                   <button type="button" aria-label="Færre biler" (click)="updateCount('cars', -1)">−</button>
                   <output>{{ applicationForm.controls.cars.value.toString().padStart(2, '0') }}</output>
@@ -226,24 +226,24 @@
             (click)="hasCoApplicant.update((enabled) => !enabled); invalidFields.set([])"
           >
             <span class="switch-track" [class.checked]="hasCoApplicant()"><span></span></span>
-            <span><strong>Legg til medsøker</strong><small>En medsøker kan øke sjansene dine for å få innvilget lånet og gi et høyere lånebeløp.</small></span>
+            <span><strong>Legg til medsøker ((Add co-applicant))</strong><small>En medsøker kan øke sjansene dine for å få innvilget lånet og gi et høyere lånebeløp.</small></span>
           </button>
           @if (hasCoApplicant()) {
             <section class="form-card" aria-labelledby="co-applicant-heading">
-              <h3 id="co-applicant-heading" class="section-title"><span>4</span> Medsøker</h3>
+              <h3 id="co-applicant-heading" class="section-title"><span>4</span> Medsøker ((Co-Applicant))</h3>
               <div class="field-grid">
                 <div class="field full-width">
-                  <label for="co-applicant-name">Fullt navn</label>
+                  <label for="co-applicant-name">Fullt navn ((Full Name))</label>
                   <input id="co-applicant-name" type="text" formControlName="coApplicantName" placeholder="Oppgi medsøkers navn" />
                   @if (hasError('coApplicantName')) { <small class="field-error">Navn på medsøker er påkrevd.</small> }
                 </div>
                 <div class="field">
-                  <label for="co-applicant-email">E-post</label>
+                  <label for="co-applicant-email">E-post ((Email))</label>
                   <input id="co-applicant-email" type="email" formControlName="coApplicantEmail" placeholder="E-postadresse" />
                   @if (hasError('coApplicantEmail')) { <small class="field-error">Oppgi en gyldig e-postadresse.</small> }
                 </div>
                 <div class="field">
-                  <label for="co-applicant-phone">Telefon</label>
+                  <label for="co-applicant-phone">Telefon ((Phone))</label>
                   <input id="co-applicant-phone" type="tel" formControlName="coApplicantPhone" placeholder="Telefonnummer" />
                   @if (hasError('coApplicantPhone')) { <small class="field-error">Telefonnummer er påkrevd.</small> }
                 </div>
@@ -252,20 +252,20 @@
           }
         } @else {
           <section class="form-card" aria-labelledby="company-heading">
-            <h3 id="company-heading" class="section-title"><span>2</span> Firmainformasjon</h3>
+            <h3 id="company-heading" class="section-title"><span>2</span> Firmainformasjon ((Company Information))</h3>
             <div class="field-grid">
               <div class="field full-width">
-                <label for="company-name">Firmanavn</label>
+                <label for="company-name">Firmanavn ((Company Name))</label>
                 <input id="company-name" type="text" formControlName="companyName" placeholder="Oppgi firmanavnet" />
                 @if (hasError('companyName')) { <small class="field-error">Firmanavn er påkrevd.</small> }
               </div>
               <div class="field">
-                <label for="company-email">E-post</label>
+                <label for="company-email">E-post ((Email))</label>
                 <input id="company-email" type="email" formControlName="companyEmail" placeholder="Oppgi bedriftens e-postadresse" />
                 @if (hasError('companyEmail')) { <small class="field-error">Oppgi en gyldig e-postadresse.</small> }
               </div>
               <div class="field">
-                <label for="company-phone">Telefon</label>
+                <label for="company-phone">Telefon ((Phone))</label>
                 <input id="company-phone" type="tel" formControlName="companyPhone" placeholder="Oppgi selskapets telefonnummer" />
                 @if (hasError('companyPhone')) { <small class="field-error">Telefonnummer er påkrevd.</small> }
               </div>
@@ -273,20 +273,20 @@
           </section>
 
           <section class="form-card" aria-labelledby="company-economy-heading">
-            <h3 id="company-economy-heading" class="section-title"><span>3</span> Økonomisk informasjon</h3>
+            <h3 id="company-economy-heading" class="section-title"><span>3</span> Økonomisk informasjon ((Financial information))</h3>
             <div class="field-grid">
               <div class="field">
-                <label for="annual-revenue">Siste årsomsetning</label>
+                <label for="annual-revenue">Siste årsomsetning ((Latest annual turnover))</label>
                 <input id="annual-revenue" type="number" min="0" formControlName="annualRevenue" placeholder="13,0000 NOK" />
                 @if (hasError('annualRevenue')) { <small class="field-error">Oppgi siste årsomsetning.</small> }
               </div>
               <div class="field">
-                <label for="annual-profit">Årsresultat før skatt</label>
+                <label for="annual-profit">Årsresultat før skatt ((Annual Profit Before Tax))</label>
                 <input id="annual-profit" type="number" formControlName="annualProfit" placeholder="13,0000 NOK" />
                 @if (hasError('annualProfit')) { <small class="field-error">Oppgi årsresultat før skatt.</small> }
               </div>
               <div class="field full-width">
-                <label for="accounting-year">Siste regnskapsår</label>
+                <label for="accounting-year">Siste regnskapsår ((Last financial Year))</label>
                 <select id="accounting-year" formControlName="accountingYear">
                   <option value="">Velg år</option>
                   <option value="2025">2025</option>
@@ -302,16 +302,16 @@
 
       @if (step() === 3) {
         <section class="form-card" aria-labelledby="existing-debt-heading">
-          <h3 id="existing-debt-heading" class="section-title"><span>1</span> Eksisterende gjeld</h3>
+          <h3 id="existing-debt-heading" class="section-title"><span>1</span> Eksisterende gjeld ((Existing Debt))</h3>
           <div class="field">
-            <label for="existing-debt">Legg inn lånebeløp</label>
+            <label for="existing-debt">Legg inn lånebeløp ((Enter Loan Amount))</label>
             <div class="input-affix">
               <input id="existing-debt" type="number" min="0" formControlName="existingDebt" placeholder="0000 NOK" />
               <span>NOK</span>
             </div>
           </div>
           <div class="field">
-            <label for="debt-type">Gjeldstype</label>
+            <label for="debt-type">Gjeldstype ((Debt Type))</label>
             <select id="debt-type" formControlName="debtType">
               <option value="">Velg gjeldstype</option>
               <option value="mortgage">Boliglån</option>
@@ -325,7 +325,7 @@
         </section>
 
         <section class="form-card" aria-labelledby="security-heading">
-          <h3 id="security-heading" class="section-title"><span>2</span> Pantesikkerhet</h3>
+          <h3 id="security-heading" class="section-title"><span>2</span> Pantesikkerhet ((Collateral security))</h3>
           <div class="choice-grid collateral-choices">
             <button
               class="choice-card"
@@ -335,7 +335,7 @@
               (click)="collateralType.set('property')"
             >
               <i class="pi pi-home" aria-hidden="true"></i>
-              <strong>Eiendom</strong>
+              <strong>Eiendom ((Property))</strong>
             </button>
             <button
               class="choice-card"
@@ -345,11 +345,11 @@
               (click)="collateralType.set('other')"
             >
               <i class="pi pi-verified" aria-hidden="true"></i>
-              <strong>Annen sikkerhet</strong>
+              <strong>Annen sikkerhet ((Other Security))</strong>
             </button>
           </div>
           <div class="field">
-            <label for="security-value">Estimert sikkerhetsverdi</label>
+            <label for="security-value">Estimert sikkerhetsverdi ((Estimated Security Value))</label>
             <div class="input-affix">
               <input id="security-value" type="number" min="0" formControlName="securityValue" placeholder="0000 NOK" />
               <span>NOK</span>
@@ -362,59 +362,59 @@
 
       @if (step() === 4) {
         <section class="review-card">
-          <header><h3>Søknadsinformasjon</h3><button type="button" (click)="editStep(1)">✎ Edit</button></header>
+          <header><h3>Søknadsinformasjon ((Application Information))</h3><button type="button" (click)="editStep(1)">✎ Edit</button></header>
           <dl>
-            <div><dt>Søknadstype</dt><dd>{{ applicantLabel() }}</dd></div>
-            <div><dt>Lånetype</dt><dd>{{ loanType() }}</dd></div>
+            <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicantLabel() }}</dd></div>
+            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ loanType() }}</dd></div>
           </dl>
         </section>
 
         @if (applicantType() === 'private') {
           <section class="review-card">
-            <header><h3>Personopplysninger</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
+            <header><h3>Personopplysninger ((Personal Information))</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
             <dl>
-              <div><dt>Fullt navn</dt><dd>{{ applicationForm.controls.fullName.value }}</dd></div>
-              <div><dt>E-post</dt><dd>{{ applicationForm.controls.email.value }}</dd></div>
-              <div><dt>Telefon</dt><dd>{{ applicationForm.controls.phone.value }}</dd></div>
-              <div><dt>Årsinntekt</dt><dd>{{ applicationForm.controls.annualIncome.value }} kr</dd></div>
-              <div><dt>Sivilstand</dt><dd>{{ maritalStatusLabel() }}</dd></div>
-              <div><dt>Barn under 18 år</dt><dd>{{ applicationForm.controls.children.value }}</dd></div>
-              <div><dt>Antall biler</dt><dd>{{ applicationForm.controls.cars.value }}</dd></div>
+              <div><dt>Fullt navn ((Full Name))</dt><dd>{{ applicationForm.controls.fullName.value }}</dd></div>
+              <div><dt>E-post ((Email))</dt><dd>{{ applicationForm.controls.email.value }}</dd></div>
+              <div><dt>Telefon ((Phone))</dt><dd>{{ applicationForm.controls.phone.value }}</dd></div>
+              <div><dt>Årsinntekt ((Annual Income))</dt><dd>{{ applicationForm.controls.annualIncome.value }} kr</dd></div>
+              <div><dt>Sivilstand ((Marital Status))</dt><dd>{{ maritalStatusLabel() }}</dd></div>
+              <div><dt>Barn under 18 år ((Children under 18))</dt><dd>{{ applicationForm.controls.children.value }}</dd></div>
+              <div><dt>Antall biler ((Number of Cars))</dt><dd>{{ applicationForm.controls.cars.value }}</dd></div>
               @if (hasCoApplicant()) {
-                <div><dt>Medsøker</dt><dd>{{ applicationForm.controls.coApplicantName.value }}</dd></div>
-                <div><dt>Medsøkers e-post</dt><dd>{{ applicationForm.controls.coApplicantEmail.value }}</dd></div>
+                <div><dt>Medsøker ((Co-Applicant))</dt><dd>{{ applicationForm.controls.coApplicantName.value }}</dd></div>
+                <div><dt>Medsøkers e-post ((Co-Applicant's Email))</dt><dd>{{ applicationForm.controls.coApplicantEmail.value }}</dd></div>
               }
             </dl>
           </section>
         } @else {
           <section class="review-card">
-            <header><h3>Firmainformasjon</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
+            <header><h3>Firmainformasjon ((Company Information))</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
             <dl>
-              <div><dt>Firmanavn</dt><dd>{{ applicationForm.controls.companyName.value }}</dd></div>
-              <div><dt>E-post</dt><dd>{{ applicationForm.controls.companyEmail.value }}</dd></div>
-              <div><dt>Telefon</dt><dd>{{ applicationForm.controls.companyPhone.value }}</dd></div>
-              <div><dt>Siste årsomsetning</dt><dd>{{ applicationForm.controls.annualRevenue.value }} kr</dd></div>
-              <div><dt>Årsresultat før skatt</dt><dd>{{ applicationForm.controls.annualProfit.value }} kr</dd></div>
-              <div><dt>Siste regnskapsår</dt><dd>{{ applicationForm.controls.accountingYear.value }}</dd></div>
+              <div><dt>Firmanavn ((Company Name))</dt><dd>{{ applicationForm.controls.companyName.value }}</dd></div>
+              <div><dt>E-post ((Email))</dt><dd>{{ applicationForm.controls.companyEmail.value }}</dd></div>
+              <div><dt>Telefon ((Phone))</dt><dd>{{ applicationForm.controls.companyPhone.value }}</dd></div>
+              <div><dt>Siste årsomsetning ((Annual Revenue))</dt><dd>{{ applicationForm.controls.annualRevenue.value }} kr</dd></div>
+              <div><dt>Årsresultat før skatt ((Annual Profit))</dt><dd>{{ applicationForm.controls.annualProfit.value }} kr</dd></div>
+              <div><dt>Siste regnskapsår ((Accounting Year))</dt><dd>{{ applicationForm.controls.accountingYear.value }}</dd></div>
             </dl>
           </section>
         }
 
         <section class="review-card">
-          <header><h3>Låneinformasjon</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
+          <header><h3>Låneinformasjon ((Loan Information))</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
           <dl>
-            <div><dt>Lånebeløp</dt><dd>{{ formatCurrency(applicationForm.controls.loanAmount.value) }} kr</dd></div>
-            <div><dt>Formål</dt><dd>{{ applicationForm.controls.purpose.value }}</dd></div>
+            <div><dt>Lånebeløp ((Loan Amount))</dt><dd>{{ formatCurrency(applicationForm.controls.loanAmount.value) }} kr</dd></div>
+            <div><dt>Formål ((Purpose))</dt><dd>{{ applicationForm.controls.purpose.value }}</dd></div>
           </dl>
         </section>
 
         <section class="review-card">
-          <header><h3>Gjeldsinformasjon</h3><button type="button" (click)="editStep(3)">✎ Edit</button></header>
+          <header><h3>Gjeldsinformasjon ((Debt Information))</h3><button type="button" (click)="editStep(3)">✎ Edit</button></header>
           <dl>
-            <div><dt>Eksisterende gjeld</dt><dd>{{ formatCurrency(applicationForm.controls.existingDebt.value) }} kr</dd></div>
-            <div><dt>Gjeldstype</dt><dd>{{ debtTypeLabel() }}</dd></div>
-            <div><dt>Sikkerhetstype</dt><dd>{{ collateralType() === 'property' ? 'Eiendom' : 'Annen sikkerhet' }}</dd></div>
-            <div><dt>Sikkerhetsverdi</dt><dd>{{ formatCurrency(applicationForm.controls.securityValue.value) }} kr</dd></div>
+            <div><dt>Eksisterende gjeld ((Existing Debt))</dt><dd>{{ formatCurrency(applicationForm.controls.existingDebt.value) }} kr</dd></div>
+            <div><dt>Gjeldstype ((Debt Type))</dt><dd>{{ debtTypeLabel() }}</dd></div>
+            <div><dt>Sikkerhetstype ((Collateral Type))</dt><dd>{{ collateralType() === 'property' ? 'Eiendom' : 'Annen sikkerhet' }}</dd></div>
+            <div><dt>Sikkerhetsverdi ((Collateral Value))</dt><dd>{{ formatCurrency(applicationForm.controls.securityValue.value) }} kr</dd></div>
           </dl>
         </section>
 

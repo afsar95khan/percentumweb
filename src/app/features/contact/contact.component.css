@@ -92,7 +92,7 @@
   height: 1.9rem;
   place-items: center;
   border-radius: 50%;
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
   font-size: .72rem;
 }
@@ -214,7 +214,7 @@
 }
 
 .switch-track.checked {
-  background: #ff2b18;
+  background: #FE0200;
 }
 
 .switch-track.checked > span {
@@ -226,7 +226,7 @@
   min-height: 2.25rem;
   border: 0;
   border-radius: .5rem;
-  background: #ff2b18;
+  background: #FE0200;
   color: #fff;
   cursor: pointer;
   font: inherit;
@@ -273,7 +273,7 @@
   place-items: center;
   margin-bottom: .65rem;
   border-radius: 50%;
-  background: #ff2b18;
+  background: #FE0200;
   box-shadow: 0 0 0 .35rem rgb(255 43 24 / 15%);
   color: #fff;
   font-size: .78rem;
