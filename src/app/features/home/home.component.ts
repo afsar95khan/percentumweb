@@ -8,6 +8,7 @@ import { A11y, Keyboard } from 'swiper/modules';
 import { catchError, map, of, Subject, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environment';
 
 type Tab = 'privat' | 'bedrift';
 type Icon = 'house' | 'card' | 'chart' | 'briefcase' | 'building' | 'project';
@@ -115,6 +116,7 @@ interface CustomerReview {
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
+  baseUrl = environment.apiUrl;
   private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
   private readonly api = inject(APIService);
@@ -148,7 +150,7 @@ export class HomeComponent {
         this.loanCalculation.set(null);
         this.calculationError.set(null);
         return this.http.post<LoanCalculationResponse>(
-          'http://localhost:7000/api/loan/calculator/calculate',
+          `${this.baseUrl}/loan/calculator/calculate`,
           request,
         ).pipe(
           map((response) => ({ response })),
