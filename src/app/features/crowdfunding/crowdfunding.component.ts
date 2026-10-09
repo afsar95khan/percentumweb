@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { APIService } from '../../core/services/api.service';
 
-interface Prospect {
+interface Project {
   company: string;
   title: string;
   loanAmount: string;
@@ -20,6 +21,7 @@ interface Prospect {
   templateUrl: './crowdfunding.component.html',
 })
 export class CrowdfundingComponent {
+  private readonly api = inject(APIService);
   protected readonly returnComparisons = [
     { label: 'DNB Fastrenteinnskudd', className: 'bar-navy' },
     { label: 'ODIN Rente', className: 'bar-green' },
@@ -27,15 +29,19 @@ export class CrowdfundingComponent {
     { label: 'Crowdfunding', className: 'bar-gold' },
   ];
 
-  protected readonly prospects: Prospect[] = Array.from({ length: 3 }, () => ({
-    company: 'Oslo Flytte- og Renholdservice AS',
-    title:
-      'Oppføring av 20 leiligheter ved Krokstadelva i Mjøndalen med 75 % forhåndssalg i byggetrinn 1 – fase 13',
-    loanAmount: '2 100 000 NOK',
-    netReturn: '13,00 %',
-    term: '8 mnd',
-    riskClass: 'B',
-    progress: 80,
-    image: '/assets/about-workspace.png',
-  }));
+
+
+  protected projects = signal<any[]>([]);
+
+  ngOnInit() {
+    this.getProjects()
+  }
+  getProjects() {
+    const endpoint = 'project/all-project';
+     this.api.get('', endpoint).subscribe((res: any) => {
+      if (res.success) {
+           this.projects.set(res.data.filter((item:any)=>item.project_type=='internal'))
+      }
+    });
+  }
 }

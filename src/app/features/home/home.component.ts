@@ -1,13 +1,102 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApplicationAudienceService } from '../../core/services/application-audience.service';
+import { APIService } from '../../core/services/api.service';
+import Swiper from 'swiper';
+import { A11y, Keyboard } from 'swiper/modules';
+import { catchError, map, of, Subject, switchMap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-interface FinancingOption {
-  icon: string;
-  title: string;
-  description: string;
+type Tab = 'privat' | 'bedrift';
+type Icon = 'house' | 'card' | 'chart' | 'briefcase' | 'building' | 'project';
+
+interface LoanCalculationRequest {
+  loanAmount: number;
+  years: number;
+  nominalInterestRate: number;
+  applicant: {
+    taxable_income: number;
+    tax_free_income: number;
+  };
+  co_applicants: any[];
+  marital_status: any;
+  children: {     
+    full_custody: number;
+    shared_custody: number;
+  };
+  mortgage: {
+    form_of_living: number;
+    size: number;
+    property_value: number;
+    additional_properties: number;
+    rental_income: number;
+  };
+  expenses: {
+    daycare: number;
+    manual_adjustment: number;
+    number_of_cars: number;
+  };
+  debt: any[];  
 }
+
+interface LoanCalculationBreakdown {
+  totalLoanCost: number;
+  monthlyPayment: number;
+  effectiveRate: number;
+}
+
+interface LoanCalculationResponse {
+  success: boolean;
+  message?: string;
+  data?: {
+    breakdown?: Partial<LoanCalculationBreakdown>;
+  };
+}
+
+interface LoanCard {
+  title: string;
+  text: string;
+  icon: Icon;
+}
+
+const DATA: Record<Tab, LoanCard[]> = {
+  privat: [
+    {
+      title: 'Boliglån',
+      text: 'Få et boliglån som er tilpasset dine behov og økonomi. Vi hjelper deg med konkurransedyktige renter, fleksible vilkår og en trygg vei til ditt nye hjem.',
+      icon: 'house',
+    },
+    {
+      title: 'Forbrukslån',
+      text: 'Enten du planlegger oppussing, kjøp av bil eller andre personlige prosjekter, kan et privatlån gi deg fleksibiliteten du trenger uten å stille sikkerhet.',
+      icon: 'card',
+    },
+    {
+      title: 'Refinansiering',
+      text: 'Refinansier eksisterende lån og kreditter i én oversiktlig løsning. Oppnå bedre kontroll over økonomien og potensielt lavere månedlige utgifter.',
+      icon: 'chart',
+    },
+  ],
+  bedrift: [
+    {
+      title: 'Bedriftslån',
+      text: 'Skaff finansiering til investeringer, drift eller ekspansjon. Våre bedriftslån gir virksomheten muligheten til å vokse med forutsigbare vilkår.',
+      icon: 'briefcase',
+    },
+    {
+      title: 'Næringseiendom',
+      text: 'Vi hjelper bedrifter med finansiering av kjøp, utvikling eller refinansiering av næringseiendom. Få løsninger som støtter dine langsiktige mål.',
+      icon: 'building',
+    },
+    {
+      title: 'Prosjektfinansiering',
+      text: 'Fra eiendomsutvikling til større prosjekter – vi tilbyr skreddersydde finansieringsløsninger som hjelper deg med å realisere dem effektivt.',
+      icon: 'project',
+    },
+  ],
+};
 
 interface CustomerReview {
   name: string;
@@ -21,68 +110,122 @@ interface CustomerReview {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, RouterLink],
   selector: 'app-home',
-  styleUrl: './home.component.css',
+  standalone: true,
+  styleUrls: ['./home.component.css', './home.component.scss'],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
+  private readonly http = inject(HttpClient);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly api = inject(APIService);
   private readonly applicationAudience = inject(ApplicationAudienceService);
   protected readonly heroCustomerType = this.applicationAudience.selected;
   protected readonly financingCustomerType = signal<'private' | 'business'>('private');
   protected readonly loanAmount = signal(500000);
   protected readonly repaymentYears = signal(10);
   protected readonly interestRate = signal<number | null>(null);
+  protected readonly loanCalculation = signal<LoanCalculationBreakdown | null>(null);
+  protected readonly calculationError = signal<string | null>(null);
+  protected readonly isCalculating = signal(false);
   protected readonly selectedFinancing = signal(0);
   protected readonly reviewPage = signal(0);
+  private readonly calculationRequests = new Subject<LoanCalculationRequest>();
 
-  private readonly privateFinancing: FinancingOption[] = [
-    {
-      icon: 'pi pi-home',
-      title: 'Boliglån',
-      description: 'Få et boliglån som er tilpasset dine behov og din økonomi. Vi hjelper deg med en trygg vei til ditt nye hjem.',
-    },
-    {
-      icon: 'pi pi-credit-card',
-      title: 'Forbrukslån',
-      description: 'Enten du planlegger oppussing, kjøp av bil eller andre personlige prosjekter, kan et privatlån gi deg fleksibiliteten du trenger uten å stille sikkerhet.',
-    },
-    {
-      icon: 'pi pi-chart-line',
-      title: 'Refinansiering',
-      description: 'Refinansier eksisterende lån og kreditter i én oversiktlig løsning. Oppnå bedre kontroll over økonomien og potensielt lavere månedlige utgifter.',
-    }
-   
-  ];
 
-  private readonly businessFinancing: FinancingOption[] = [
-    {
-      icon: 'pi pi-briefcase',
-      title: 'Bedriftslån',
-      description: 'Skaff finansiering til investeringer, drift eller ekspansjon. Våre bedriftslån gir virksomheten muligheten til å vokse med forutsigbare vilkår.',
-    },
-    {
-      icon: 'pi pi-building',
-      title: 'Næringseiendom',
-      description: 'Vi hjelper bedrifter med finansiering av kjøp, utvikling eller refinansiering av næringseiendom. Få løsninger som støtter dine langsiktige mål.',
-    },
-    {
-      icon: 'pi pi-box',
-      title: 'Prosjektfinansiering',
-      description: 'Fra eiendomsutvikling til større prosjekter – vi tilbyr skreddersydde finansieringsløsninger som hjelper deg med å realisere planene dine effektivt.',
-    },  
-  ];
+  // private readonly cdr = inject(ChangeDetectorRef);
+  private readonly swiperHost = viewChild.required<ElementRef<HTMLElement>>('swiperHost');
+  private swiper?: Swiper;
 
-  protected readonly financingOptions = () =>
-    this.financingCustomerType() === 'private' ? this.privateFinancing : this.businessFinancing;
+  readonly tab = signal<Tab>('privat');
+  readonly cards = computed(() => DATA[this.tab()]);
+  // Loop mode needs more slides than are visible, so each set is rendered twice.
+  readonly slides = computed(() => [...this.cards(), ...this.cards()]);
 
-  protected readonly visibleFinancingOptions = () => {
-    const options = this.financingOptions();
-    const selected = this.selectedFinancing();
-    return [
-      options[(selected + options.length - 1) % options.length],
-      options[selected],
-      options[(selected + 1) % options.length],
-    ];
-  };
+  constructor() {
+    this.calculationRequests.pipe(
+      switchMap((request) => {
+        this.isCalculating.set(true);
+        this.loanCalculation.set(null);
+        this.calculationError.set(null);
+        return this.http.post<LoanCalculationResponse>(
+          'http://localhost:7000/api/loan/calculator/calculate',
+          request,
+        ).pipe(
+          map((response) => ({ response })),
+          catchError(() => of({ error: 'Kunne ikke hente låneberegningen. Prøv igjen.' })),
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((result) => {
+      this.isCalculating.set(false);
+      if ('error' in result) {
+        this.calculationError.set(result.error);
+        return;
+      }
+
+      const breakdown = result.response.data?.breakdown;
+      if (
+        !result.response.success
+        || typeof breakdown?.totalLoanCost !== 'number'
+        || typeof breakdown.monthlyPayment !== 'number'
+        || typeof breakdown.effectiveRate !== 'number'
+      ) {
+        this.calculationError.set(result.response.message ?? 'Låneberegningen returnerte ugyldige data.');
+        return;
+      }
+
+      this.loanCalculation.set({
+        totalLoanCost: breakdown.totalLoanCost,
+        monthlyPayment: breakdown.monthlyPayment,
+        effectiveRate: breakdown.effectiveRate,
+      });
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.initSwiper();
+    this.requestLoanCalculation()
+  }
+
+  setTab(next: Tab): void {
+    if (next === this.tab()) return;
+    this.destroySwiper(); // removes loop clones before Angular re-renders slides
+    this.tab.set(next);
+    // this.cdr.detectChanges(); // render new slides now, then init
+    this.initSwiper();
+  }
+
+  prev(): void {
+    this.swiper?.slidePrev(600);
+  }
+
+  next(): void {
+    this.swiper?.slideNext(600);
+  }
+
+  private initSwiper(): void {
+    this.swiper = new Swiper(this.swiperHost().nativeElement, {
+      modules: [Keyboard, A11y],
+      loop: true,
+      initialSlide: 0,
+      centeredSlides: true,
+      slidesPerView: 'auto',
+      spaceBetween: 0,
+      speed: 600,
+      grabCursor: true,
+      keyboard: { enabled: true },
+    });
+  }
+
+  private destroySwiper(): void {
+    this.swiper?.destroy(true, true);
+    this.swiper = undefined;
+  }
+
+  ngOnDestroy(): void {
+    this.destroySwiper();
+  }
+
 
   protected readonly currentReviews: CustomerReview[][] = [
     [
@@ -119,48 +262,57 @@ export class HomeComponent {
     ],
   ];
 
-  protected readonly monthlyPayment = () => {
-    const principal = this.loanAmount();
-    const monthlyRate = this.annualRate() / 100 / 12;
-    const months = this.repaymentYears() * 12;
-    if (monthlyRate === 0) {
-      return Math.round(principal / months);
-    }
-    return Math.round((principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months)));
-  };
-
-  protected readonly totalPayment = () => this.monthlyPayment() * this.repaymentYears() * 12;
-
-  protected readonly effectiveRate = () => {
-    const monthlyRate = this.annualRate() / 100 / 12;
-    return ((Math.pow(1 + monthlyRate, 12) - 1) * 100).toFixed(2);
-  };
-
-  protected readonly totalInterest = () => Math.max(this.totalPayment() - this.loanAmount(), 0);
+  protected readonly totalPayment = () =>
+    this.loanAmount() + (this.loanCalculation()?.totalLoanCost ?? 0);
 
   protected readonly formatCurrency = (amount: number) =>
     new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 }).format(amount);
 
+  protected requestLoanCalculation(): void {
+    const nominalInterestRate = Math.max(this.interestRate() ?? 5.65, 0);
+
+    this.calculationRequests.next({
+      loanAmount: this.loanAmount(),
+      years: this.repaymentYears(),
+      nominalInterestRate,
+      "applicant": {
+        "taxable_income": 0,
+        "tax_free_income": 0
+      },
+      "co_applicants": [],
+      "marital_status": null,
+      "children": {
+        "full_custody": 0,
+        "shared_custody": 0
+      },
+      "mortgage": {
+        "form_of_living": 0,
+        "size": 0,
+        "property_value": 0,
+        "additional_properties": 0,
+        "rental_income": 0
+      },
+      "expenses": {
+        "daycare": 0,
+        "manual_adjustment": 0,
+        "number_of_cars": 0
+      },
+      "debt": []
+
+    });
+  }
+
+  protected readonly totalCost = () => this.loanCalculation()?.totalLoanCost;
+
+  protected readonly monthlyPayment = () => this.loanCalculation()?.monthlyPayment;
+
+  protected readonly effectiveRate = () => this.loanCalculation()?.effectiveRate.toFixed(2);
+
   protected rangeProgress(value: number, minimum: number, maximum: number): string {
     return `${((value - minimum) / (maximum - minimum)) * 100}%`;
   }
-
-  private annualRate(): number {
-    return Math.max(this.interestRate() ?? 5.65, 0);
-  }
-
   protected setHeroCustomerType(type: 'private' | 'business'): void {
     this.applicationAudience.set(type);
-  }
-
-  protected setFinancingCustomerType(type: 'private' | 'business'): void {
-    this.financingCustomerType.set(type);
-    this.selectedFinancing.set(0);
-  }
-
-  protected moveFinancing(direction: -1 | 1): void {
-    const options = this.financingOptions();
-    this.selectedFinancing.update((index) => (index + direction + options.length) % options.length);
   }
 
   protected moveReview(direction: -1 | 1): void {

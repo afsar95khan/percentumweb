@@ -341,7 +341,7 @@
   padding: 0 .7rem;
 }
 
-.input-affix input {
+.input-affix input{
   min-height: 2.2rem;
   padding: .5rem 0;
   border: 0;
@@ -349,6 +349,9 @@
   background: transparent;
   box-shadow: none;
 }
+ .input-affix .p-inputnumber  {
+  width: 100%;
+ }
 
 .input-affix span {
   color: #737980;

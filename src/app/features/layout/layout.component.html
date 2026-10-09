@@ -38,15 +38,15 @@
     <div class="footer-inner">
       <section class="stats" aria-label="Percentum i tall">
         <div class="stat">
-          <strong>1 240+</strong>
+          <strong>{{ states()?.loan?.total || '0' }}+</strong>
           <span>Antall søknader behandlet</span>
         </div>
         <div class="stat">
-          <strong>890+</strong>
+          <strong>{{ states()?.customer?.total || '0' }}+</strong>
           <span>Fornøyde søkere</span>
         </div>
         <div class="stat">
-          <strong>4,2 MRDNOK</strong>
+          <strong>NOK {{ states()?.loan?.totalLoanAmount || '0' }}</strong>
           <span>Volum i NOK alle søknader</span>
         </div>
       </section>

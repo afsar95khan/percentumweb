@@ -78,36 +78,38 @@
       </p>
 
       <div class="prospect-grid">
-        @for (prospect of prospects; track $index) {
+        @for (prospect of projects(); track $index) {
           <article class="prospect-card">
             <div class="prospect-image">
-              <img [src]="prospect.image" [alt]="'Kontor og arbeidsplass for ' + prospect.company" />
-              <span class="filled-badge">Fulltegnet</span>
+              <img [src]="prospect.featured_image" [alt]="'Kontor og arbeidsplass for ' + prospect.company" />
+              <span class="filled-badge">{{prospect.project_type}}</span>
             </div>
             <div class="prospect-content">
-              <p class="prospect-company">{{ prospect.company }}</p>
+              <p class="prospect-company">{{ prospect?.company }}</p>
               <h3>{{ prospect.title }}</h3>
               <dl class="prospect-facts">
-                <div><dt>Lånebeløp:</dt><dd>{{ prospect.loanAmount }}</dd></div>
-                <div><dt>Netto rente per år:</dt><dd>{{ prospect.netReturn }}</dd></div>
-                <div><dt>Løpetid:</dt><dd>{{ prospect.term }}</dd></div>
-                <div><dt>Risikoklasse:</dt><dd>{{ prospect.riskClass }}</dd></div>
+                <div><dt>Lånebeløp:</dt><dd>{{ prospect.loan_amount?prospect.loan_amount:'0' }} NOK</dd></div>
+                <div><dt>Netto rente per år:</dt><dd>{{ prospect.rente_pa?prospect.rente_pa:'0' }}%</dd></div>
+                <div><dt>Status:</dt><dd>{{ prospect.status }}</dd></div>
+                <div><dt>Risikoklasse:</dt><dd>{{ prospect.running_time }}</dd></div>
               </dl>
               <div
                 class="progress-track"
                 role="progressbar"
-                [attr.aria-valuenow]="prospect.progress"
+                [attr.aria-valuenow]="prospect.progress_percentage"
                 aria-valuemin="0"
                 aria-valuemax="100"
-                [attr.aria-label]="'Prosjektet er ' + prospect.progress + ' prosent finansiert'"
+                [attr.aria-label]="'Prosjektet er ' + prospect.progress_percentage + ' prosent finansiert'"
               >
-                <span [style.width.%]="prospect.progress">{{ prospect.progress }}%</span>
+                <span [style.width.%]="prospect.progress_percentage">{{ (+prospect.progress_percentage).toFixed(2) }}%</span>
               </div>
             </div>
           </article>
         }
       </div>
-      <a class="button button-red view-all" routerLink="/application">View all</a>
+      @if(projects().length > 6) {
+        <a class="button button-red view-all" routerLink="/">View all</a>
+      }
     </div>
   </section>
 </div>

@@ -393,7 +393,7 @@
 }
 
 .progress-track {
-  height: .8rem;
+  height: 1rem;
   overflow: hidden;
   border-radius: 1rem;
   background: #f0f0f0;
@@ -407,7 +407,7 @@
   border-radius: inherit;
   background: #FE0200;
   color: #fff;
-  font-size: .52rem;
+  font-size: .65rem;
 }
 
 .view-all {

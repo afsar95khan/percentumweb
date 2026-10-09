@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { StepperModule } from 'primeng/stepper';
 import { ApplicationAudienceService } from '../../core/services/application-audience.service';
+import { APIService } from '../../core/services/api.service';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 type ApplicantType = 'private' | 'company';
 type CollateralType = 'property' | 'other';
@@ -15,12 +17,13 @@ interface ApplicationOption {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, StepperModule],
+  imports: [ReactiveFormsModule, StepperModule,InputNumberModule,FormsModule],
   selector: 'app-application',
   styleUrls: ['./application.component.css', './application-review.component.css'],
   templateUrl: './application.component.html',
 })
 export class ApplicationComponent {
+  private readonly api = inject(APIService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly applicationAudience = inject(ApplicationAudienceService);
@@ -34,14 +37,13 @@ export class ApplicationComponent {
   protected readonly hasCoApplicant = signal(false);
   protected readonly submissionUnavailable = signal(false);
   protected readonly invalidFields = signal<string[]>([]);
-
   protected readonly applicationForm = this.formBuilder.nonNullable.group({
     loanAmount: [0],
     purpose: [''],
     fullName: [''],
     email: ['', Validators.email],
     phone: [''],
-    annualIncome: [''],
+    annualIncome: [0],
     maritalStatus: [''],
     children: [0],
     cars: [0],
@@ -80,7 +82,12 @@ export class ApplicationComponent {
     const applicantType = this.route.snapshot.queryParamMap.get('applicantType');
     if (applicantType === 'company' || applicantType === 'private') {
       this.applicationAudience.set(applicantType === 'company' ? 'business' : 'private');
+      this.loanType.set(applicantType === 'private' ? 'Boliglån' : 'Kassekreditt');
     }
+  }
+  
+  ngOnInit() {
+
   }
 
   protected options(): ApplicationOption[] {

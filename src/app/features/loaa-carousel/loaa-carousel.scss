@@ -1,0 +1,201 @@
+:host {
+  display: block;
+  background: #0c1f3d;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.finance {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 56px 24px 72px;
+  color: #fff;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  &__stage {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+}
+
+/* ---------- Privat / Bedrift toggle ---------- */
+.toggle {
+  display: inline-flex;
+  padding: 8px;
+  gap: 4px;
+  border-radius: 16px;
+  background: #1c2c44;
+
+  &__btn {
+    border: 0;
+    cursor: pointer;
+    padding: 10px 17px;
+    border-radius: 10px;
+    background: transparent;
+    color: #8f9bb0;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.25s, color 0.25s;
+
+    &.is-active {
+      background: #f00;
+      color: #fff;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+  }
+}
+
+/* ---------- Swiper ---------- */
+.swiper {
+  flex: 0 1 760px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 36px 0;
+}
+
+.swiper-slide {
+  width: 240px; // narrower than the card, so neighbours overlap behind the active one
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+  transform: scale(0.96);
+  opacity: 0.4;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+
+  &.swiper-slide-active {
+    transform: scale(1.15);
+    opacity: 1;
+    z-index: 2;
+  }
+}
+
+.card {
+  flex: none;
+  width: 300px;
+  min-height: 258px;
+  box-sizing: border-box;
+  padding: 24px 24px 26px;
+  border-radius: 26px;
+  background: #1c2c44;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__icon {
+    width: 62px;
+    height: 62px;
+    border-radius: 16px;
+    background: #fff;
+    display: grid;
+    place-items: center;
+  }
+
+  &__title {
+    margin: 18px 0 10px;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  &__text {
+    flex: 1;
+    margin: 0 0 20px;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+
+  &__cta {
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 10px;
+    background: #f00;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    &:hover {
+      filter: brightness(1.15);
+    }
+  }
+}
+
+/* ---------- Arrow buttons ---------- */
+.nav-btn {
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: #f00;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+
+  &:hover {
+    transform: scale(1.08);
+    filter: brightness(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 720px) {
+  .finance {
+    padding: 32px 12px 48px;
+
+    &__title {
+      font-size: 22px;
+    }
+
+    &__head {
+      margin-bottom: 24px;
+    }
+  }
+
+  .nav-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .swiper-slide {
+    width: 200px;
+  }
+
+  .card {
+    width: 250px;
+  }
+}

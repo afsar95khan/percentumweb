@@ -6,6 +6,7 @@ import { ContactComponent } from './features/contact/contact.component';
 import { CrowdfundingComponent } from './features/crowdfunding/crowdfunding.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { LoginComponent } from './features/login/login.component';
+import { LoaaCarousel } from './features/loaa-carousel/loaa-carousel';
 
 export const routes: Routes = [
   {
@@ -24,5 +25,6 @@ export const routes: Routes = [
   { path: 'crowdfunding', component: CrowdfundingComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'loan', component: LoaaCarousel },
   { path: '**', redirectTo: '' },
 ];

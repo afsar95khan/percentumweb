@@ -134,11 +134,12 @@
           <div class="field">
             <label for="loan-amount">Lånebeløp ((Loan amount))</label>
             <div class="input-affix">
-              <input id="loan-amount" type="number" min="0" step="10000" formControlName="loanAmount" placeholder="0000 NOK" />
+              <p-inputnumber mode="decimal" formControlName="loanAmount" [showButtons]="false" inputId="loan-amount" [min]="0" [max]="100" placeholder="0000 NOK" />
+              <!-- <input id="loan-amount" type="number" mode="decimal" min="0" step="10000" formControlName="loanAmount" placeholder="0000 NOK" /> -->
               <span>NOK</span>
             </div>
             @if (hasError('loanAmount')) { <small class="field-error">Oppgi et lånebeløp over 0 kr.</small> }
-            <div class="range-values"><span>0 kr</span><span>500 000 kr</span></div>
+            <!-- <div class="range-values"><span>0 kr</span><span>500 000 kr</span></div>
             <input
               class="amount-range"
               type="range"
@@ -149,7 +150,7 @@
               [style.--range-progress]="(applicationForm.controls.loanAmount.value / 500000 * 100) + '%'"
               aria-label="Velg lånebeløp"
               (input)="updateLoanAmount($event)"
-            />
+            /> -->
           </div>
           <div class="field">
             <label for="loan-purpose">Formål ((Purpose))</label>
@@ -184,7 +185,9 @@
             <h3 id="economy-heading" class="section-title"><span>3</span> Økonomiske opplysninger ((Financial information))</h3>
             <div class="field">
               <label for="annual-income">Årsinntekt ((Annual Income))</label>
-              <input id="annual-income" type="number" min="0" formControlName="annualIncome" placeholder="13,0000 NOK" />
+              <div class="input-affix">
+                <p-inputnumber inputId="annual-income" [min]="0" formControlName="annualIncome" placeholder="13,0000 NOK" />
+                </div>
               @if (hasError('annualIncome')) { <small class="field-error">Oppgi årsinntekten din.</small> }
             </div>
             <div class="field-grid economy-grid">
@@ -306,7 +309,7 @@
           <div class="field">
             <label for="existing-debt">Legg inn lånebeløp ((Enter Loan Amount))</label>
             <div class="input-affix">
-              <input id="existing-debt" type="number" min="0" formControlName="existingDebt" placeholder="0000 NOK" />
+              <p-inputnumber inputId="existing-debt" [min]="0" formControlName="existingDebt" placeholder="0000 NOK" />
               <span>NOK</span>
             </div>
           </div>
@@ -351,7 +354,7 @@
           <div class="field">
             <label for="security-value">Estimert sikkerhetsverdi ((Estimated Security Value))</label>
             <div class="input-affix">
-              <input id="security-value" type="number" min="0" formControlName="securityValue" placeholder="0000 NOK" />
+              <p-inputnumber inputId="security-value" [min]="0" formControlName="securityValue" placeholder="0000 NOK" />
               <span>NOK</span>
             </div>
             @if (hasError('securityValue')) { <small class="field-error">Oppgi estimert sikkerhetsverdi.</small> }
