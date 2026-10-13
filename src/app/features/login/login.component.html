@@ -77,9 +77,11 @@
         }
       </div>
 
-      <button class="submit-button" type="submit">Logg inn</button>
-      @if (submitted() && loginForm.valid) {
-        <p class="form-status" role="status">Innloggingsdetaljene dine er klare til å sendes inn.</p>
+      <button class="submit-button" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Logger inn…' : 'Logg inn' }}
+      </button>
+      @if (loginError()) {
+        <p class="error" role="alert">{{ loginError() }}</p>
       }
       </form>
 

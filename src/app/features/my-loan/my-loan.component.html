@@ -1,0 +1,194 @@
+<main class="account-page">
+  <section class="account-content" aria-labelledby="loans-title">
+    <a class="back-link" routerLink="/dashboard">
+      <i class="pi pi-arrow-left" aria-hidden="true"></i>
+      Tilbake til oversikten
+    </a>
+
+    <header class="page-heading">
+      <span class="heading-icon pi pi-file" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow">SØKNADENE DINE</p>
+        <h1 id="loans-title">Mine lån</h1>
+        <p class="heading-description">Følg status og se detaljene for lånesøknadene dine.</p>
+      </div>
+    </header>
+
+    @if (error()) {
+      <div class="state-message error-message" role="alert">
+        <p>{{ error() }}</p>
+        <button type="button" class="text-button" (click)="loadLoans()">Prøv igjen</button>
+      </div>
+    } @else if (loaded() && loans().length === 0) {
+      <section class="empty-state">
+        <span class="empty-icon pi pi-inbox" aria-hidden="true"></span>
+        <h2>Du har ingen lånesøknader ennå</h2>
+        <p>Søknadene dine vises her når du har sendt inn en lånesøknad.</p>
+      </section>
+    } @else if (loans().length > 0) {
+      <div class="loan-list">
+        @for (loan of loans(); track loan.loan_number ?? $index) {
+          <article class="loan-card">
+            <header class="loan-header">
+              <div>
+                <p class="loan-reference">Søknad {{ loan.loan_number || '–' }}</p>
+                <h2>{{ loan.loan_type || 'Lånesøknad' }}</h2>
+              </div>
+              @if (loan.status) {
+                <span class="status-badge">{{ loan.status }}</span>
+              }
+            </header>
+
+            <div class="loan-highlight">
+              <span>Søknadsbeløp</span>
+              <strong>{{ formatAmount(loan.loan_amount) }}</strong>
+            </div>
+
+            <dl class="loan-details">
+              <div class="detail-item">
+                <dt>Søkertype</dt>
+                <dd>{{ loan.applicant_type === 'company' ? 'Bedrift' : loan.applicant_type === 'private' ? 'Privat' : 'Ikke oppgitt' }}</dd>
+              </div>
+              <div class="detail-item">
+                <dt>Rente</dt>
+                <dd>{{ formatValue(loan.interest_rate, '%') }}</dd>
+              </div>
+              <div class="detail-item">
+                <dt>Nedbetalingstid</dt>
+                <dd>{{ formatValue(loan.tenure, ' år') }}</dd>
+              </div>
+              <div class="detail-item">
+                <dt>Søker</dt>
+                <dd>{{ loan.customer_name || loan.companyName || 'Ikke oppgitt' }}</dd>
+              </div>
+              <div class="detail-item">
+                <dt>E-postadresse</dt>
+                <dd>{{ loan.email || 'Ikke oppgitt' }}</dd>
+              </div>
+              <div class="detail-item">
+                <dt>Telefonnummer</dt>
+                <dd>{{ loan.phone || 'Ikke oppgitt' }}</dd>
+              </div>
+              @if (hasValue(loan.annualIncome)) {
+                <div class="detail-item">
+                  <dt>Årlig inntekt</dt>
+                  <dd>{{ formatAmount(loan.annualIncome) }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.maritalStatus)) {
+                <div class="detail-item">
+                  <dt>Sivilstatus</dt>
+                  <dd>{{ loan.maritalStatus }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.children)) {
+                <div class="detail-item">
+                  <dt>Barn</dt>
+                  <dd>{{ loan.children }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.cars)) {
+                <div class="detail-item">
+                  <dt>Biler</dt>
+                  <dd>{{ loan.cars }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.existingDebt)) {
+                <div class="detail-item">
+                  <dt>Eksisterende gjeld</dt>
+                  <dd>{{ formatAmount(loan.existingDebt) }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.debtType)) {
+                <div class="detail-item">
+                  <dt>Type gjeld</dt>
+                  <dd>{{ loan.debtType }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.securityValue)) {
+                <div class="detail-item">
+                  <dt>Sikkerhetsverdi</dt>
+                  <dd>{{ formatAmount(loan.securityValue) }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.coApplicantName)) {
+                <div class="detail-item">
+                  <dt>Medlåntaker</dt>
+                  <dd>{{ loan.coApplicantName }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.coApplicantEmail)) {
+                <div class="detail-item">
+                  <dt>Medlåntakers e-post</dt>
+                  <dd>{{ loan.coApplicantEmail }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.coApplicantPhone)) {
+                <div class="detail-item">
+                  <dt>Medlåntakers telefon</dt>
+                  <dd>{{ loan.coApplicantPhone }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.companyName)) {
+                <div class="detail-item">
+                  <dt>Bedrift</dt>
+                  <dd>{{ loan.companyName }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.companyEmail)) {
+                <div class="detail-item">
+                  <dt>Bedriftens e-post</dt>
+                  <dd>{{ loan.companyEmail }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.companyPhone)) {
+                <div class="detail-item">
+                  <dt>Bedriftens telefon</dt>
+                  <dd>{{ loan.companyPhone }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.annualRevenue)) {
+                <div class="detail-item">
+                  <dt>Årlig omsetning</dt>
+                  <dd>{{ formatAmount(loan.annualRevenue) }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.annualProfit)) {
+                <div class="detail-item">
+                  <dt>Årlig overskudd</dt>
+                  <dd>{{ formatAmount(loan.annualProfit) }}</dd>
+                </div>
+              }
+              @if (hasValue(loan.accountingYear)) {
+                <div class="detail-item">
+                  <dt>Regnskapsår</dt>
+                  <dd>{{ loan.accountingYear }}</dd>
+                </div>
+              }
+              @if (loan.termsAccepted !== undefined) {
+                <div class="detail-item">
+                  <dt>Vilkår godtatt</dt>
+                  <dd>{{ formatBoolean(loan.termsAccepted) }}</dd>
+                </div>
+              }
+              @if (loan.privacyAccepted !== undefined) {
+                <div class="detail-item">
+                  <dt>Personvern godtatt</dt>
+                  <dd>{{ formatBoolean(loan.privacyAccepted) }}</dd>
+                </div>
+              }
+              @if (loan.description) {
+                <div class="detail-item full-width">
+                  <dt>Beskrivelse</dt>
+                  <dd>{{ loan.description }}</dd>
+                </div>
+              }
+            </dl>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="state-message" role="status">Henter lånesøknadene dine …</div>
+    }
+  </section>
+</main>

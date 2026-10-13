@@ -1,16 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ApplicationAudienceService } from '../../core/services/application-audience.service';
 import { APIService } from '../../core/services/api.service';
+import { ApiLoaderComponent } from '../../core/components/api-loader/api-loader.component';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [ApiLoaderComponent, RouterLink, RouterLinkActive, RouterOutlet],
   selector: 'app-layout',
   styleUrl: './layout.component.css',
   templateUrl: './layout.component.html',
 })
 export class LayoutComponent {
+  public readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
    private readonly api = inject(APIService);
   private readonly applicationAudience = inject(ApplicationAudienceService);
   protected readonly applicantType = () =>
@@ -36,5 +40,10 @@ export class LayoutComponent {
 
   protected closeMenu(): void {
     this.menuOpen.set(false);
+  }
+  
+  logout() {
+    this.auth.logout(); 
+    this.router.navigate(['/home']);  
   }
 }

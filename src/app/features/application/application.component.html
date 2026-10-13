@@ -15,7 +15,7 @@
       @for (stepName of privateStepNames; track stepName; let index = $index) {
         <p-step
           [value]="index + 1"
-          [disabled]="highestStep() < index + 1"
+          [disabled]="true"
           [class.step-complete]="step() > index + 1"
         >
           {{ stepName }}
@@ -27,23 +27,24 @@
     </p-step-list>
   </p-stepper>
 
-  @if (submissionUnavailable()) {
+  @if (submissionComplete()) {
     <section class="application-panel success-panel submission-notice" aria-labelledby="submission-title" role="status">
-      <div class="success-icon"><i class="pi pi-info-circle" aria-hidden="true"></i></div>
-      <h2 id="submission-title">Søknaden er klar</h2>
+      <div class="success-icon"><i class="pi pi-check" aria-hidden="true"></i></div>
+      <h2 id="submission-title">Søknaden er sendt inn</h2>
       <p>
-        Opplysningene er validert, men søknaden kan ikke sendes inn ennå.
-        <br class="desktop-break" />Innsendingstjenesten er ikke koblet til.
+        Søknaden din er mottatt. En rådgiver vil ta kontakt 
+        <br class="desktop-break" />med deg så snart som mulig.
       </p>
       <div class="success-actions">
-        <button
+        <span class="reference-button">{{ loanNumber() }}</span>
+        <!-- <button
           class="reference-button"
           type="button"
           disabled
           aria-label="Demoreferanse NC-3456-3566; søknaden er ikke sendt inn"
         >
           NC-3456-3566
-        </button>
+        </button> -->
         <button class="primary-button" type="button" (click)="startNewApplication()">
           Start ny søknad
         </button>
@@ -111,13 +112,13 @@
         <section class="form-card" aria-labelledby="loan-type-heading">
           <h3 id="loan-type-heading" class="section-title"><span>B</span> Lånetype ((Loan Type))</h3>
           <div class="choice-grid loan-choices">
-            @for (option of options(); track option.title) {
+            @for (option of options(); track option.id) {
               <button
                 class="choice-card"
                 [class.selected]="loanType() === option.title"
                 [attr.aria-pressed]="loanType() === option.title"
                 type="button"
-                (click)="loanType.set(option.title)"
+                (click)="selectLoanType(option.title)"
               >
                 <i [class]="option.icon" aria-hidden="true"></i>
                 <strong>{{ option.title }}</strong>
@@ -131,31 +132,41 @@
       @if (step() === 2) {
         <section class="form-card" aria-labelledby="loan-details-heading">
           <h3 id="loan-details-heading" class="section-title"><span>1</span> Lånebeløp og formål ((Loan amount and purpose))</h3>
-          <div class="field">
-            <label for="loan-amount">Lånebeløp ((Loan amount))</label>
-            <div class="input-affix">
-              <p-inputnumber mode="decimal" formControlName="loanAmount" [showButtons]="false" inputId="loan-amount" [min]="0" [max]="100" placeholder="0000 NOK" />
-              <!-- <input id="loan-amount" type="number" mode="decimal" min="0" step="10000" formControlName="loanAmount" placeholder="0000 NOK" /> -->
-              <span>NOK</span>
+          <div class="field-grid">
+            <div class="field full-width">
+              <label for="loan-amount">Lånebeløp ((Loan amount))</label>
+              <div class="input-affix">
+                <p-inputnumber mode="decimal" formControlName="loanAmount" [showButtons]="false" inputId="loan-amount" [min]="0"  placeholder="0000 NOK" />
+                <!-- <input id="loan-amount" type="number" mode="decimal" min="0" step="10000" formControlName="loanAmount" placeholder="0000 NOK" /> -->
+                <span>NOK</span>
+              </div>
+              @if (hasError('loanAmount')) { <small class="field-error">Oppgi et lånebeløp over 0 kr.</small> }
+              <!-- <div class="range-values"><span>0 kr</span><span>500 000 kr</span></div>
+              <input
+                class="amount-range"
+                type="range"
+                min="0"
+                max="500000"
+                step="10000"
+                [value]="applicationForm.controls.loanAmount.value"
+                [style.--range-progress]="(applicationForm.controls.loanAmount.value / 500000 * 100) + '%'"
+                aria-label="Velg lånebeløp"
+                (input)="updateLoanAmount($event)"
+              /> -->
             </div>
-            @if (hasError('loanAmount')) { <small class="field-error">Oppgi et lånebeløp over 0 kr.</small> }
-            <!-- <div class="range-values"><span>0 kr</span><span>500 000 kr</span></div>
-            <input
-              class="amount-range"
-              type="range"
-              min="0"
-              max="500000"
-              step="10000"
-              [value]="applicationForm.controls.loanAmount.value"
-              [style.--range-progress]="(applicationForm.controls.loanAmount.value / 500000 * 100) + '%'"
-              aria-label="Velg lånebeløp"
-              (input)="updateLoanAmount($event)"
-            /> -->
-          </div>
-          <div class="field">
-            <label for="loan-purpose">Formål ((Purpose))</label>
-            <textarea id="loan-purpose" rows="3" formControlName="purpose" placeholder="Beskriv hva du skal bruke lånet til..."></textarea>
-            @if (hasError('purpose')) { <small class="field-error">Beskriv kort hva lånet skal brukes til.</small> }
+            <div class="field">
+              <label for="loan-tenure">Nedbetalingstid (år) ((Tenure))</label>
+              <input id="loan-tenure" type="number" min="0" step="1" formControlName="tenure" placeholder="e.g. 20" />
+            </div>
+            <div class="field">
+              <label for="interest-rate">Rente ((Interest rate)) (%)</label>
+              <input id="interest-rate" type="number" min="0" step="0.01" formControlName="interest_rate" placeholder="e.g. 5.25" />
+            </div>
+            <div class="field full-width">
+              <label for="loan-purpose">Formål ((Purpose))</label>
+              <textarea id="loan-purpose" rows="3" formControlName="description" placeholder="Beskriv hva du skal bruke lånet til..."></textarea>
+              @if (hasError('description')) { <small class="field-error">Beskriv kort hva lånet skal brukes til.</small> }
+            </div>
           </div>
         </section>
 
@@ -367,8 +378,10 @@
         <section class="review-card">
           <header><h3>Søknadsinformasjon ((Application Information))</h3><button type="button" (click)="editStep(1)">✎ Edit</button></header>
           <dl>
-            <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicantLabel() }}</dd></div>
-            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ loanType() }}</dd></div>
+            <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicationForm.controls.applicantType.value === 'private' ? 'Privat' : 'Bedrift' }}</dd></div>
+            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ applicationForm.controls.loanType.value }}</dd></div>
+            <!-- <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicantLabel() }}</dd></div>
+            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ loanType() }}</dd></div> -->
           </dl>
         </section>
 
@@ -407,7 +420,9 @@
           <header><h3>Låneinformasjon ((Loan Information))</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
           <dl>
             <div><dt>Lånebeløp ((Loan Amount))</dt><dd>{{ formatCurrency(applicationForm.controls.loanAmount.value) }} kr</dd></div>
-            <div><dt>Formål ((Purpose))</dt><dd>{{ applicationForm.controls.purpose.value }}</dd></div>
+            <div><dt>Rente ((Interest rate))</dt><dd>{{ applicationForm.controls.interest_rate.value }}%</dd></div>
+            <div><dt>Nedbetalingstid ((Tenure))</dt><dd>{{ applicationForm.controls.tenure.value }} år</dd></div>
+            <div><dt>Formål ((Purpose))</dt><dd>{{ applicationForm.controls.description.value }}</dd></div>
           </dl>
         </section>
 
@@ -430,12 +445,15 @@
         </section>
       }
 
-      <footer class="form-actions">
+     <footer class="form-actions">
+        @if (submissionError()) { <small class="field-error" role="alert">{{ submissionError() }}</small> }
         <button class="back-button" type="button" [disabled]="step() === 1" (click)="previousStep()">← Gå tilbake</button>
         @if (step() < 4) {
           <button class="primary-button" type="button" (click)="nextStep()">Neste <span aria-hidden="true">→</span></button>
         } @else {
-          <button class="primary-button submit-application" type="button" (click)="submitApplication()">Send inn søknad <span aria-hidden="true">→</span></button>
+          <button class="primary-button submit-application" type="button" [disabled]="isSubmitting()" (click)="submitApplication()">
+            {{ isSubmitting() ? 'Sender inn …' : 'Send inn søknad' }} <span aria-hidden="true">→</span>
+          </button>
         }
       </footer>
     </form>

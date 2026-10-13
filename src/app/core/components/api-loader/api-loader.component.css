@@ -1,0 +1,18 @@
+.api-loader-overlay {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(255 255 255 / 65%);
+  --p-content-border-color: #d8dce2;
+  --p-progressspinner-color-one: #fe0200;
+  --p-progressspinner-color-two: #fe0200;
+  --p-progressspinner-color-three: #fe0200;
+  --p-progressspinner-color-four: #fe0200;
+}
+
+.api-loader-overlay p-progress-spinner {
+  width: 4rem;
+  height: 4rem;
+}

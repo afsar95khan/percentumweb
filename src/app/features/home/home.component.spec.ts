@@ -59,13 +59,13 @@ describe('HomeComponent', () => {
     expect(fixture.nativeElement.querySelector('.financing-card.is-active h3')?.textContent).toContain('Prosjektfinansiering');
   });
 
-  it('passes each home audience selection to the matching application link', async () => {
+  it('uses the financing section switch to select its application type independently', async () => {
     const fixture = TestBed.createComponent(HomeComponent);
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(element.querySelector('.hero-actions a')?.getAttribute('href')).toBe('/application?applicantType=private');
-    expect(element.querySelector('.financing-card.is-active a')?.getAttribute('href')).toBe('/application?applicantType=private');
+    const financingLink = () => element.querySelector('.card__cta')?.getAttribute('href');
+    expect(financingLink()).toBe('/application?applicantType=private');
 
     const heroBusinessButton = element.querySelector(
       '.hero-copy .audience-toggle button:last-child',
@@ -75,18 +75,25 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
 
     expect(element.querySelector('.hero-actions a')?.getAttribute('href')).toBe('/application?applicantType=company');
-    expect(element.querySelector('.continue-button')?.getAttribute('href')).toBe('/application?applicantType=company');
-    expect(element.querySelector('.financing-card.is-active a')?.getAttribute('href')).toBe('/application?applicantType=private');
+    expect(financingLink()).toBe('/application?applicantType=private');
 
-    const carouselBusinessButton = element.querySelector(
-      '.carousel-toggle button:last-child',
+    const financingBusinessButton = element.querySelector(
+      '.finance .toggle__btn:last-child',
     ) as HTMLButtonElement;
-    carouselBusinessButton.click();
+    financingBusinessButton.click();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(element.querySelector('.financing-card.is-active a')?.getAttribute('href')).toBe('/application?applicantType=company');
+    expect(financingLink()).toBe('/application?applicantType=company');
     expect(element.querySelector('.hero-actions a')?.getAttribute('href')).toBe('/application?applicantType=company');
+
+    const financingPrivateButton = element.querySelector(
+      '.finance .toggle__btn:first-child',
+    ) as HTMLButtonElement;
+    financingPrivateButton.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(financingLink()).toBe('/application?applicantType=private');
   });
 
   it('updates the loan amount and calculated monthly payment from the range slider', async () => {

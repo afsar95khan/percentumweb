@@ -206,16 +206,15 @@ form {
   background: #e9230d;
 }
 
+.submit-button:disabled {
+  cursor: wait;
+  opacity: .7;
+}
+
 .error {
   margin: 0;
   color: #bf2f27;
   font-size: .75rem;
-}
-
-.form-status {
-  margin: -.5rem 0 0;
-  color: #287a55;
-  font-size: .78rem;
 }
 
 .help-panels {

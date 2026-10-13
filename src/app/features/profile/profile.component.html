@@ -1,0 +1,72 @@
+<main class="account-page">
+  <section class="account-content" aria-labelledby="profile-title">
+    <a class="back-link" routerLink="/dashboard">
+      <i class="pi pi-arrow-left" aria-hidden="true"></i>
+      Tilbake til oversikten
+    </a>
+
+    <header class="page-heading">
+      <span class="heading-icon pi pi-user" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow">KONTOEN DIN</p>
+        <h1 id="profile-title">Min profil</h1>
+        <p class="heading-description">Se kontaktinformasjonen som er knyttet til kontoen din.</p>
+      </div>
+    </header>
+
+    @if (error()) {
+      <div class="state-message error-message" role="alert">
+        <p>{{ error() }}</p>
+        <button type="button" class="text-button" (click)="loadProfile()">Prøv igjen</button>
+      </div>
+    } @else if (profile(); as user) {
+      <section class="profile-card" aria-label="Profilinformasjon">
+        <div class="profile-summary">
+          @if (user.image) {
+            <img class="profile-avatar" [src]="user.image" [alt]="displayName(user)" />
+          } @else {
+            <span class="profile-avatar initials" aria-hidden="true">{{ initials(user) }}</span>
+          }
+          <div class="summary-copy">
+            <h2>{{ displayName(user) }}</h2>
+            <p>{{ user.email }}</p>
+          </div>
+          <span class="role-badge">{{ user.role }}</span>
+        </div>
+
+        <div class="section-heading">
+          <h2>Personopplysninger</h2>
+          <p>Opplysningene dine slik de er registrert hos Percentum.</p>
+        </div>
+        <dl class="profile-details">
+          <div class="detail-item">
+            <dt>Fornavn</dt>
+            <dd>{{ user.firstName || 'Ikke oppgitt' }}</dd>
+          </div>
+          <div class="detail-item">
+            <dt>Etternavn</dt>
+            <dd>{{ user.lastName || 'Ikke oppgitt' }}</dd>
+          </div>
+          <div class="detail-item">
+            <dt>E-postadresse</dt>
+            <dd>{{ user.email || 'Ikke oppgitt' }}</dd>
+          </div>
+          <div class="detail-item">
+            <dt>Telefonnummer</dt>
+            <dd>{{ user.mobile || 'Ikke oppgitt' }}</dd>
+          </div>
+          <div class="detail-item">
+            <dt>Adresse</dt>
+            <dd>{{ user.address || 'Ikke oppgitt' }}</dd>
+          </div>
+          <div class="detail-item">
+            <dt>Sted</dt>
+            <dd>{{ location(user) || 'Ikke oppgitt' }}</dd>
+          </div>
+        </dl>
+      </section>
+    } @else {
+      <div class="state-message" role="status">Henter profilinformasjon …</div>
+    }
+  </section>
+</main>

@@ -1,11 +1,16 @@
 <div class="site-layout">
+  <app-api-loader />
   <header class="site-header">
     <a class="wordmark header-wordmark" routerLink="/" aria-label="Percentum - hjem">
       <img src="/assets/logo1.png" alt="Percentum" />
     </a>
     <nav class="header-actions" aria-label="Hovedmeny">
       <a class="header-cta" routerLink="/application" [queryParams]="{ applicantType: applicantType() }">Søk nå</a>
-      <a class="header-login" routerLink="/login" (click)="closeMenu()">Logg inn</a>
+      @if (auth.isAuthenticated()) {    
+        <a class="header-login" routerLink="/login" (click)="logout()">Logg ut</a>
+        } @else {
+          <a class="header-login" routerLink="/login" (click)="closeMenu()">Logg inn</a>
+        }
       <button
         class="menu-toggle"
         type="button"
@@ -24,8 +29,12 @@
         <a routerLink="/blog" (click)="closeMenu()">blogg</a>
         <a routerLink="/crowdfunding" (click)="closeMenu()">Folkefinansiering</a>
         <!-- <a routerLink="/application" [queryParams]="{ applicantType: applicantType() }" (click)="closeMenu()">Søk nå</a> -->
+        @if (auth.isAuthenticated()) {    
         <a routerLink="/dashboard" (click)="closeMenu()">Min side</a>
-        <a routerLink="/login" (click)="closeMenu()">Logg inn</a>
+        <a routerLink="/login" (click)="logout()">Logg ut</a>
+        } @else {
+          <a routerLink="/login" (click)="closeMenu()">Logg inn</a>
+        }
       </nav>
     }
   </header>

@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { StepperModule } from 'primeng/stepper';
 import { ApplicationAudienceService } from '../../core/services/application-audience.service';
 import { APIService } from '../../core/services/api.service';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { HttpErrorResponse } from '@angular/common/http';
 
 type ApplicantType = 'private' | 'company';
 type CollateralType = 'property' | 'other';
 
 interface ApplicationOption {
+  id: string;
   icon: string;
   title: string;
   description: string;
@@ -37,9 +39,19 @@ export class ApplicationComponent {
   protected readonly hasCoApplicant = signal(false);
   protected readonly submissionUnavailable = signal(false);
   protected readonly invalidFields = signal<string[]>([]);
+  protected readonly loanType = signal('Boliglån');
+  protected readonly privateStepNames = ['Søkertype', 'Lånedetaljer', 'Gjeld og sikkerhet', 'Se over og send inn'];
+  protected readonly submissionComplete = signal(false);
+  protected readonly isSubmitting = signal(false);
+  protected readonly submissionError = signal('');
+  protected readonly loanNumber = signal('');
   protected readonly applicationForm = this.formBuilder.nonNullable.group({
+    applicantType: ['private'],
+    loanType: ['Boliglån'],
     loanAmount: [0],
-    purpose: [''],
+    interest_rate: [0],
+    tenure: [0],
+    description: [''],
     fullName: [''],
     email: ['', Validators.email],
     phone: [''],
@@ -64,26 +76,51 @@ export class ApplicationComponent {
   });
 
   protected readonly privateLoanTypes: ApplicationOption[] = [
-    { icon: 'pi pi-home', title: 'Boliglån', description: 'Kjøp av ny bolig med konkurransedyktige renter' },
-    { icon: 'pi pi-chart-line', title: 'Refinansiering eller', description: 'Refinansier din eksisterende gjeld for å oppnå bedre rente' },
-    { icon: 'pi pi-money-bill', title: 'Forbrukslån', description: 'Lån uten å stille sikkerhet for ethvert personlig behov' },
+    { icon: 'pi pi-home', id: 'Mortgage', title: 'Boliglån', description: 'Kjøp av ny bolig med konkurransedyktige renter' },
+    { icon: 'pi pi-chart-line', id: 'Refinancing', title: 'Refinansiering', description: 'Refinansier din eksisterende gjeld for å oppnå bedre rente' },
+    { icon: 'pi pi-money-bill', id: 'Unsecured loans', title: 'Forbrukslån', description: 'Lån uten å stille sikkerhet for ethvert personlig behov' },
   ];
 
   protected readonly companyLoanTypes: ApplicationOption[] = [
-    { icon: 'pi pi-dollar', title: 'Kassekreditt', description: 'Lån til driftskapital' },
-    { icon: 'pi pi-chart-line', title: 'Prosjektlån', description: 'Finansiering av et spesifikt bedriftsprosjekt' },
-    { icon: 'pi pi-home', title: 'Eiendomslån', description: 'Finansiering av eiendomsportefølje' },
+    { icon: 'pi pi-dollar', id: 'Overdraft facility', title: 'Kassekreditt', description: 'Lån til driftskapital' },
+    { icon: 'pi pi-chart-line', id: 'Project loans', title: 'Prosjektlån', description: 'Finansiering av et spesifikt bedriftsprosjekt' },
+    { icon: 'pi pi-home', id: 'Property loans', title: 'Eiendomslån', description: 'Finansiering av eiendomsportefølje' },
   ];
 
-  protected readonly loanType = signal('Boliglån');
-  protected readonly privateStepNames = ['Søkertype', 'Lånedetaljer', 'Gjeld og sikkerhet', 'Se over og send inn'];
+
+// this.loanType.set(applicantType === 'private' ? 'Boliglån' : 'Kassekreditt');
+  // constructor() {
+  //   const applicantType = this.route.snapshot.queryParamMap.get('applicantType');
+  //   const normalizedApplicantType = applicantType === 'company' ? 'company' : 'private';
+
+  //   if (applicantType === 'company' || applicantType === 'private') {
+  //     this.applicationAudience.set(applicantType === 'company' ? 'business' : 'private');
+  //     this.applicantType.set(normalizedApplicantType);
+  //     this.applicationForm.controls.applicantType.setValue(normalizedApplicantType);
+  //   }
+
+  //   const selectedLoanType = normalizedApplicantType === 'private' ? 'Boliglån' : 'Kassekreditt';
+  //   this.loanType.set(selectedLoanType);
+  //   this.applicationForm.controls.loanType.setValue(selectedLoanType);
+  // }
 
   constructor() {
     const applicantType = this.route.snapshot.queryParamMap.get('applicantType');
+    const normalizedApplicantType = applicantType === 'company' ? 'company' : 'private';
+
     if (applicantType === 'company' || applicantType === 'private') {
       this.applicationAudience.set(applicantType === 'company' ? 'business' : 'private');
-      this.loanType.set(applicantType === 'private' ? 'Boliglån' : 'Kassekreditt');
+      this.applicantType.set(normalizedApplicantType);
+      this.applicationForm.controls.applicantType.setValue(normalizedApplicantType);
     }
+
+    const selectedLoanType = normalizedApplicantType === 'private' ? 'Boliglån' : 'Kassekreditt';
+    this.loanType.set(selectedLoanType);
+    this.applicationForm.controls.loanType.setValue(selectedLoanType);
+
+    this.setNumericQueryParam('loanAmount', this.applicationForm.controls.loanAmount, 0);
+    this.setNumericQueryParam('interest_rate', this.applicationForm.controls.interest_rate, 0);
+    this.setNumericQueryParam('tenure', this.applicationForm.controls.tenure, 1);
   }
   
   ngOnInit() {
@@ -96,9 +133,18 @@ export class ApplicationComponent {
 
   protected selectApplicantType(type: ApplicantType): void {
     this.applicantType.set(type);
+    this.applicationForm.controls.applicantType.setValue(type);
     this.applicationAudience.set(type === 'private' ? 'private' : 'business');
-    this.loanType.set(type === 'private' ? 'Boliglån' : 'Kassekreditt');
+
+    const selectedLoanType = type === 'private' ? 'Boliglån' : 'Kassekreditt';
+    this.loanType.set(selectedLoanType);
+    this.applicationForm.controls.loanType.setValue(selectedLoanType);
     this.invalidFields.set([]);
+  }
+
+  protected selectLoanType(title: string): void {
+    this.loanType.set(title);
+    this.applicationForm.controls.loanType.setValue(title);
   }
 
   protected updateLoanAmount(event: Event): void {
@@ -144,6 +190,9 @@ export class ApplicationComponent {
   }
 
   protected submitApplication(): void {
+    if (this.isSubmitting()) {
+      return;
+    }
     const missing: string[] = [];
     if (!this.applicationForm.controls.termsAccepted.value) {
       missing.push('termsAccepted');
@@ -157,20 +206,77 @@ export class ApplicationComponent {
       return;
     }
 
-    this.submissionUnavailable.set(true);
+    const formValue = this.applicationForm.getRawValue();
+    const payload = {
+      applicantType: formValue.applicantType,
+      loanType: formValue.loanType,
+      loanAmount: formValue.loanAmount,
+      interest_rate: formValue.interest_rate,
+      tenure: formValue.tenure,
+      description: formValue.description,
+      fullName: formValue.fullName,
+      email: formValue.email,
+      phone: formValue.phone,
+      annualIncome: formValue.annualIncome,
+      maritalStatus: formValue.maritalStatus,
+      children: formValue.children,
+      cars: formValue.cars,
+      coApplicantName: formValue.coApplicantName,
+      coApplicantEmail: formValue.coApplicantEmail,
+      coApplicantPhone: formValue.coApplicantPhone,
+      companyName: formValue.companyName,
+      companyEmail: formValue.companyEmail,
+      companyPhone: formValue.companyPhone,
+      annualRevenue: formValue.annualRevenue,
+      annualProfit: formValue.annualProfit,
+      accountingYear: formValue.accountingYear,
+      existingDebt: formValue.existingDebt,
+      debtType: formValue.debtType,
+      securityValue: formValue.securityValue,
+      termsAccepted: formValue.termsAccepted,
+      privacyAccepted: formValue.privacyAccepted,
+    };
+    this.isSubmitting.set(true);
+    this.submissionError.set('');
+    this.api.post(payload, 'loan/user/add-loan').subscribe({
+      next: (response:any) => {
+        this.isSubmitting.set(false);
+        const loanNumber = response?.data?.loan?.loan_number;
+        if (typeof loanNumber !== 'string' || loanNumber.length === 0) {
+          this.submissionError.set(response.message ?? 'Søknaden ble opprettet, men svaret manglet lånenummer.');
+          return;
+        }
+
+        this.loanNumber.set(loanNumber);
+        this.submissionComplete.set(true);
+      },
+      error: (error: unknown) => {
+        this.isSubmitting.set(false);
+        this.submissionError.set(
+          error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
+            ? error.error.message
+            : 'Kunne ikke sende søknaden. Prøv igjen.',
+        );
+      },
+    });
   }
 
   protected startNewApplication(): void {
     this.applicationForm.reset();
+    this.applicationForm.controls.applicantType.setValue('private');
+    this.applicationForm.controls.loanType.setValue('Boliglån');
     this.applicantType.set('private');
     this.applicationAudience.set('private');
     this.loanType.set('Boliglån');
+    this.loanNumber.set('');
+    this.submissionError.set('');
+    this.isSubmitting.set(false);
     this.collateralType.set('property');
     this.hasCoApplicant.set(false);
     this.step.set(1);
     this.highestStep.set(1);
     this.invalidFields.set([]);
-    this.submissionUnavailable.set(false);
+    this.submissionComplete.set(false);
   }
 
   protected hasError(field: string): boolean {
@@ -208,8 +314,8 @@ export class ApplicationComponent {
     if (this.step() === 2) {
       requiredFields =
         this.applicantType() === 'private'
-          ? ['loanAmount', 'purpose', 'fullName', 'email', 'phone', 'annualIncome', 'maritalStatus']
-          : ['loanAmount', 'purpose', 'companyName', 'companyEmail', 'companyPhone', 'annualRevenue', 'annualProfit', 'accountingYear'];
+          ? ['loanAmount', 'description', 'fullName', 'email', 'phone', 'annualIncome', 'maritalStatus']
+          : ['loanAmount', 'description', 'companyName', 'companyEmail', 'companyPhone', 'annualRevenue', 'annualProfit', 'accountingYear'];
 
       if (this.applicantType() === 'private' && this.hasCoApplicant()) {
         requiredFields.push('coApplicantName', 'coApplicantEmail', 'coApplicantPhone');
@@ -236,5 +342,21 @@ export class ApplicationComponent {
 
     this.invalidFields.set(invalid);
     return invalid.length === 0;
+  }
+
+  private setNumericQueryParam(
+    name: string,
+    control: FormControl<number>,
+    minimum: number,
+  ): void {
+    const value = this.route.snapshot.queryParamMap.get(name);
+    if (value === null || value.trim() === '') {
+      return;
+    }
+
+    const parsedValue = Number(value);
+    if (Number.isFinite(parsedValue) && parsedValue >= minimum) {
+      control.setValue(parsedValue);
+    }
   }
 }

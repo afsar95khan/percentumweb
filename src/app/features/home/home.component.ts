@@ -122,7 +122,6 @@ export class HomeComponent {
   private readonly api = inject(APIService);
   private readonly applicationAudience = inject(ApplicationAudienceService);
   protected readonly heroCustomerType = this.applicationAudience.selected;
-  protected readonly financingCustomerType = signal<'private' | 'business'>('private');
   protected readonly loanAmount = signal(500000);
   protected readonly repaymentYears = signal(10);
   protected readonly interestRate = signal<number | null>(null);

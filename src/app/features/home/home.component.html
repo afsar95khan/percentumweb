@@ -74,7 +74,8 @@
         <!-- @if (isCalculating()) { <p class="calculation-status" role="status">Beregner lånet …</p> } -->
         @if (calculationError(); as error) { <p class="field-error" role="alert">{{ error }}</p> }
 
-        <a class="button button-red continue-button" routerLink="/application" [queryParams]="{ applicantType: heroCustomerType() === 'private' ? 'private' : 'company' }">Fortsett <span aria-hidden="true">→</span></a>
+        <!-- <a class="button button-red continue-button" routerLink="/application" [queryParams]="{ applicantType: heroCustomerType() === 'private' ? 'private' : 'company' }">Fortsett <span aria-hidden="true">→</span></a> -->
+        <a class="button button-red continue-button" routerLink="/application" [queryParams]="{ applicantType: heroCustomerType() === 'private' ? 'private' : 'company', loanAmount: loanAmount(), interest_rate: interestRate() ?? 5.65, tenure: repaymentYears() }">Fortsett <span aria-hidden="true">→</span></a>
       </section>
     
     </div>
@@ -169,7 +170,7 @@
               <h3 class="card__title">{{ card.title }}</h3>
               <p class="card__text">{{ card.text }}</p>
 
-              <a href="#" class="card__cta">
+              <a routerLink="/application" [queryParams]="{ applicantType: tab() === 'privat' ? 'private' : 'company' }" class="card__cta">
                 Søk nå
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.6"
                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

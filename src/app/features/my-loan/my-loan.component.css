@@ -1,0 +1,269 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.account-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 24rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.account-page::before,
+.account-page::after {
+  position: absolute;
+  z-index: -1;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 50%;
+  background: #fff3f3;
+  content: "";
+}
+
+.account-page::before {
+  top: -7rem;
+  left: -16rem;
+}
+
+.account-page::after {
+  right: -16rem;
+  bottom: -7rem;
+}
+
+.account-content {
+  width: min(100% - 3rem, 52rem);
+  margin-inline: auto;
+  padding-block: 2rem 3rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  color: #596575;
+  font-size: .78rem;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #fe0200;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.heading-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: .85rem;
+  background: #fff0ef;
+  color: #fe0200;
+  font-size: 1.2rem;
+}
+
+.eyebrow {
+  margin: 0 0 .2rem;
+  color: #fe0200;
+  font-size: .64rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+}
+
+.page-heading h1 {
+  margin: 0;
+  color: #102440;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.heading-description {
+  margin: .3rem 0 0;
+  color: #6d7581;
+  font-size: .82rem;
+}
+
+.loan-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.loan-card,
+.empty-state {
+  padding: 1.35rem;
+  border: 1px solid #e9edf2;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 .35rem 1.5rem rgb(16 36 64 / 8%);
+}
+
+.loan-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #edf0f3;
+}
+
+.loan-reference {
+  margin: 0 0 .25rem;
+  color: #737b86;
+  font-size: .68rem;
+}
+
+.loan-header h2 {
+  margin: 0;
+  color: #102440;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.status-badge {
+  flex: 0 0 auto;
+  padding: .35rem .65rem;
+  border-radius: 2rem;
+  background: #fff2f1;
+  color: #d92a20;
+  font-size: .65rem;
+  font-weight: 600;
+}
+
+.loan-highlight {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-block: 1rem;
+  padding: .8rem 1rem;
+  border-radius: .65rem;
+  background: #f7f8fa;
+}
+
+.loan-highlight span {
+  color: #596575;
+  font-size: .75rem;
+}
+
+.loan-highlight strong {
+  color: #102440;
+  font-size: 1rem;
+}
+
+.loan-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .7rem;
+  margin: 0;
+}
+
+.detail-item {
+  min-width: 0;
+  padding: .75rem;
+  border-radius: .6rem;
+  background: #fbfbfc;
+}
+
+.detail-item dt {
+  margin-bottom: .3rem;
+  color: #737b86;
+  font-size: .67rem;
+}
+
+.detail-item dd {
+  overflow-wrap: anywhere;
+  margin: 0;
+  color: #172b46;
+  font-size: .8rem;
+  font-weight: 500;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.empty-state {
+  display: grid;
+  justify-items: center;
+  padding: 2rem 1.25rem;
+  text-align: center;
+}
+
+.empty-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  margin-bottom: .7rem;
+  border-radius: 50%;
+  background: #fff0ef;
+  color: #fe0200;
+  font-size: 1.1rem;
+}
+
+.empty-state h2 {
+  margin: 0 0 .4rem;
+  color: #102440;
+  font-size: .95rem;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #6d7581;
+  font-size: .78rem;
+}
+
+.state-message {
+  padding: 1.25rem;
+  border: 1px solid #e9edf2;
+  border-radius: .85rem;
+  background: #fff;
+  color: #596575;
+  font-size: .85rem;
+}
+
+.error-message {
+  border-color: #f4d3d0;
+  color: #a3271f;
+}
+
+.error-message p {
+  margin: 0 0 .7rem;
+}
+
+.text-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #c92218;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+@media (max-width: 38rem) {
+  .account-content {
+    width: min(100% - 2rem, 32rem);
+    padding-block: 1.5rem 2rem;
+  }
+
+  .loan-card {
+    padding: 1rem;
+  }
+
+  .loan-details {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+}

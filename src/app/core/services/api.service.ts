@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -71,9 +71,11 @@ export class APIService {
 
 // }
 
-  get = (queryString: string, endpoint: string) => this.http.get(`${this.baseUrl}/${endpoint}${queryString}`);
+  get = <TResponse = unknown>(queryString: string, endpoint: string) =>
+    this.http.get<TResponse>(`${this.baseUrl}/${endpoint}${queryString}`);
 
-  post = (data: any, endpoint: string) => this.http.post(`${this.baseUrl}/${endpoint}`, data);
+  post = <TResponse = unknown>(data: unknown, endpoint: string) =>
+    this.http.post<TResponse>(`${this.baseUrl}/${endpoint}`, data);
 
   put = (data: any, endpoint: string) => this.http.put(`${this.baseUrl}/${endpoint}`, data);
 
