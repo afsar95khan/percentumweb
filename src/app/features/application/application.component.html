@@ -115,10 +115,10 @@
             @for (option of options(); track option.id) {
               <button
                 class="choice-card"
-                [class.selected]="loanType() === option.title"
-                [attr.aria-pressed]="loanType() === option.title"
+                [class.selected]="loanType() === option.id"
+                [attr.aria-pressed]="loanType() === option.id"
                 type="button"
-                (click)="selectLoanType(option.title)"
+                (click)="selectLoanType(option.id)"
               >
                 <i [class]="option.icon" aria-hidden="true"></i>
                 <strong>{{ option.title }}</strong>
@@ -327,12 +327,15 @@
           <div class="field">
             <label for="debt-type">Gjeldstype ((Debt Type))</label>
             <select id="debt-type" formControlName="debtType">
-              <option value="">Velg gjeldstype</option>
-              <option value="mortgage">Boliglån</option>
-              <option value="consumer">Forbrukslån</option>
-              <option value="credit-card">Kredittkort</option>
-              <option value="other">Annen gjeld</option>
-              <option value="none">Ingen eksisterende gjeld</option>
+              <option value="" disabled>Velg gjeldstype</option>
+              <option value="1">Billån</option>
+              <option value="2">Boliglån</option>
+              <option value="3">Fellesgjeld</option>
+              <option value="4">Forbrukslån</option>
+              <option value="5">Kausjonsansvar</option>
+              <option value="6">Kredittkort</option>
+              <option value="7">Studielån</option>
+              <!-- <option value="none">Ingen eksisterende gjeld</option> -->
             </select>
             @if (hasError('debtType')) { <small class="field-error">Velg gjeldstype.</small> }
           </div>

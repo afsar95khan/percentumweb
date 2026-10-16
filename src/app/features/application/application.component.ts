@@ -39,7 +39,7 @@ export class ApplicationComponent {
   protected readonly hasCoApplicant = signal(false);
   protected readonly submissionUnavailable = signal(false);
   protected readonly invalidFields = signal<string[]>([]);
-  protected readonly loanType = signal('Boliglån');
+  protected readonly loanType = signal('1');
   protected readonly privateStepNames = ['Søkertype', 'Lånedetaljer', 'Gjeld og sikkerhet', 'Se over og send inn'];
   protected readonly submissionComplete = signal(false);
   protected readonly isSubmitting = signal(false);
@@ -47,7 +47,7 @@ export class ApplicationComponent {
   protected readonly loanNumber = signal('');
   protected readonly applicationForm = this.formBuilder.nonNullable.group({
     applicantType: ['private'],
-    loanType: ['Boliglån'],
+    loanType: ['1'],
     loanAmount: [0],
     interest_rate: [0],
     tenure: [0],
@@ -76,15 +76,15 @@ export class ApplicationComponent {
   });
 
   protected readonly privateLoanTypes: ApplicationOption[] = [
-    { icon: 'pi pi-home', id: 'Mortgage', title: 'Boliglån', description: 'Kjøp av ny bolig med konkurransedyktige renter' },
-    { icon: 'pi pi-chart-line', id: 'Refinancing', title: 'Refinansiering', description: 'Refinansier din eksisterende gjeld for å oppnå bedre rente' },
-    { icon: 'pi pi-money-bill', id: 'Unsecured loans', title: 'Forbrukslån', description: 'Lån uten å stille sikkerhet for ethvert personlig behov' },
+    { icon: 'pi pi-home', id: '1', title: 'Boliglån', description: 'Kjøp av ny bolig med konkurransedyktige renter' },
+    { icon: 'pi pi-chart-line', id: '2', title: 'Refinansiering', description: 'Refinansier din eksisterende gjeld for å oppnå bedre rente' },
+    { icon: 'pi pi-money-bill', id: '3', title: 'Forbrukslån', description: 'Lån uten å stille sikkerhet for ethvert personlig behov' },
   ];
 
   protected readonly companyLoanTypes: ApplicationOption[] = [
-    { icon: 'pi pi-dollar', id: 'Overdraft facility', title: 'Kassekreditt', description: 'Lån til driftskapital' },
-    { icon: 'pi pi-chart-line', id: 'Project loans', title: 'Prosjektlån', description: 'Finansiering av et spesifikt bedriftsprosjekt' },
-    { icon: 'pi pi-home', id: 'Property loans', title: 'Eiendomslån', description: 'Finansiering av eiendomsportefølje' },
+    { icon: 'pi pi-dollar', id: '4', title: 'Kassekreditt', description: 'Lån til driftskapital' },
+    { icon: 'pi pi-chart-line', id: '5', title: 'Prosjektlån', description: 'Finansiering av et spesifikt bedriftsprosjekt' },
+    { icon: 'pi pi-home', id: '6', title: 'Eiendomslån', description: 'Finansiering av eiendomsportefølje' },
   ];
 
 
@@ -114,7 +114,7 @@ export class ApplicationComponent {
       this.applicationForm.controls.applicantType.setValue(normalizedApplicantType);
     }
 
-    const selectedLoanType = normalizedApplicantType === 'private' ? 'Boliglån' : 'Kassekreditt';
+    const selectedLoanType = normalizedApplicantType === 'private' ? '1' : '4';
     this.loanType.set(selectedLoanType);
     this.applicationForm.controls.loanType.setValue(selectedLoanType);
 
@@ -136,15 +136,15 @@ export class ApplicationComponent {
     this.applicationForm.controls.applicantType.setValue(type);
     this.applicationAudience.set(type === 'private' ? 'private' : 'business');
 
-    const selectedLoanType = type === 'private' ? 'Boliglån' : 'Kassekreditt';
+    const selectedLoanType = type === 'private' ? '1' : '4';
     this.loanType.set(selectedLoanType);
     this.applicationForm.controls.loanType.setValue(selectedLoanType);
     this.invalidFields.set([]);
   }
 
-  protected selectLoanType(title: string): void {
-    this.loanType.set(title);
-    this.applicationForm.controls.loanType.setValue(title);
+  protected selectLoanType(id: string): void {
+    this.loanType.set(id);
+    this.applicationForm.controls.loanType.setValue(id);
   }
 
   protected updateLoanAmount(event: Event): void {
@@ -264,10 +264,10 @@ export class ApplicationComponent {
   protected startNewApplication(): void {
     this.applicationForm.reset();
     this.applicationForm.controls.applicantType.setValue('private');
-    this.applicationForm.controls.loanType.setValue('Boliglån');
+    this.applicationForm.controls.loanType.setValue('1');
     this.applicantType.set('private');
     this.applicationAudience.set('private');
-    this.loanType.set('Boliglån');
+    this.loanType.set('1');
     this.loanNumber.set('');
     this.submissionError.set('');
     this.isSubmitting.set(false);
@@ -299,11 +299,13 @@ export class ApplicationComponent {
 
   protected debtTypeLabel(): string {
     const labels: Record<string, string> = {
-      'credit-card': 'Kredittkort',
-      mortgage: 'Boliglån',
-      none: 'Ingen eksisterende gjeld',
-      other: 'Annen gjeld',
-      consumer: 'Forbrukslån',
+      1: 'Billån',
+      2: 'Boliglån',
+      3: 'Fellesgjeld',
+      4: 'Forbrukslån',
+      5: 'Kausjonsansvar',
+      6: 'Studielån',
+      7: 'Kredittkort'
     };
     return labels[this.applicationForm.controls.debtType.value] ?? '';
   }
