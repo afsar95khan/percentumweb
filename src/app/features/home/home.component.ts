@@ -57,6 +57,7 @@ interface LoanCalculationResponse {
 }
 
 interface LoanCard {
+  id:string;
   title: string;
   text: string;
   icon: Icon;
@@ -65,33 +66,40 @@ interface LoanCard {
 const DATA: Record<Tab, LoanCard[]> = {
   privat: [
     {
+      id:'1',
       title: 'Boliglån',
       text: 'Få et boliglån som er tilpasset dine behov og økonomi. Vi hjelper deg med konkurransedyktige renter, fleksible vilkår og en trygg vei til ditt nye hjem.',
       icon: 'house',
     },
     {
-      title: 'Forbrukslån',
-      text: 'Enten du planlegger oppussing, kjøp av bil eller andre personlige prosjekter, kan et privatlån gi deg fleksibiliteten du trenger uten å stille sikkerhet.',
-      icon: 'card',
-    },
-    {
+      id:'2',
       title: 'Refinansiering',
       text: 'Refinansier eksisterende lån og kreditter i én oversiktlig løsning. Oppnå bedre kontroll over økonomien og potensielt lavere månedlige utgifter.',
       icon: 'chart',
     },
+    {
+      id:'3',
+      title: 'Forbrukslån',
+      text: 'Enten du planlegger oppussing, kjøp av bil eller andre personlige prosjekter, kan et privatlån gi deg fleksibiliteten du trenger uten å stille sikkerhet.',
+      icon: 'card',
+    },
+
   ],
   bedrift: [
     {
+      id:'4',
       title: 'Bedriftslån',
       text: 'Skaff finansiering til investeringer, drift eller ekspansjon. Våre bedriftslån gir virksomheten muligheten til å vokse med forutsigbare vilkår.',
       icon: 'briefcase',
     },
     {
+      id:'5',
       title: 'Næringseiendom',
       text: 'Vi hjelper bedrifter med finansiering av kjøp, utvikling eller refinansiering av næringseiendom. Få løsninger som støtter dine langsiktige mål.',
       icon: 'building',
     },
     {
+      id:'6',
       title: 'Prosjektfinansiering',
       text: 'Fra eiendomsutvikling til større prosjekter – vi tilbyr skreddersydde finansieringsløsninger som hjelper deg med å realisere dem effektivt.',
       icon: 'project',

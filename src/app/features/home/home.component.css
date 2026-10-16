@@ -1,6 +1,8 @@
 :host {
   display: block;
   width: 100%;
+  background: #0c1f3d;
+  font-family: Inter, system-ui, sans-serif;
 }
 
 .home-page {
@@ -305,7 +307,6 @@
   margin-top: .8rem;
 }
 
-.slider-arrow,
 .review-controls button {
   display: grid;
   width: 2.55rem;
@@ -314,37 +315,23 @@
   place-items: center;
   border: 0;
   border-radius: 50%;
-  /* background: #0B1F3A; */
   color: #fff;
   cursor: pointer;
   font-size: 1rem;
   transition: transform .15s ease, background .15s ease;
 }
 
-.slider-arrow button{
-  background: #e82412;
-}
-
 .review-controls button {
   background: #0B1F3A;
 }
+
 .review-controls button:hover {
   transform: scale(1.06);
   background: #e82412;
 }
 
-.financing-prev {
-  position: absolute;
-  left: 0;
-}
-
-.financing-next {
-  position: absolute;
-  right: 0;
-}
-
-.process-cards{
-  padding: 20px 0px;
+.process-cards {
+  padding: 1.25rem 0;
 }
 
 @media (max-width: 48rem) {
@@ -363,14 +350,6 @@
     max-width: 38rem;
   }
 
-  .financing-track {
-    width: min(100% - 4rem, 38rem);
-  }
-
-  .financing-card:not(.is-active) {
-    opacity: .3;
-  }
-
 }
 
 @media (max-width: 36rem) {
@@ -382,27 +361,198 @@
     padding: 1rem;
   }
 
-  .carousel-heading {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: .75rem;
+}
+
+.finance {
+  max-width: 70rem;
+  margin-inline: auto;
+  padding: 3.5rem 1.5rem 4.5rem;
+  color: #fff;
+}
+
+.finance__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 3.5rem;
+}
+
+.finance__title {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', Inter, sans-serif;
+  font-size: 1.875rem;
+  font-weight: 500;
+  letter-spacing: -.01em;
+}
+
+.finance__stage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.toggle {
+  display: inline-flex;
+  gap: .25rem;
+  padding: .5rem;
+  border-radius: 1rem;
+  background: #1c2c44;
+}
+
+.toggle__btn {
+  padding: .625rem 1.0625rem;
+  border: 0;
+  border-radius: .625rem;
+  background: transparent;
+  color: #8f9bb0;
+  cursor: pointer;
+  font-size: .875rem;
+  font-weight: 500;
+  transition: background .25s, color .25s;
+}
+
+.toggle__btn.is-active {
+  background: #f00;
+  color: #fff;
+}
+
+.toggle__btn:focus-visible,
+.nav-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.swiper {
+  flex: 0 1 47.5rem;
+  min-width: 0;
+  overflow: hidden;
+  padding: 2.25rem 0;
+}
+
+.swiper-slide {
+  display: flex;
+  width: 15rem;
+  justify-content: center;
+  overflow: visible;
+  transform: scale(.96);
+  opacity: 0;
+  transition: transform .6s ease, opacity .6s ease;
+}
+
+.swiper-slide-prev,
+.swiper-slide-next {
+  opacity: .4;
+}
+
+.swiper-slide-active {
+  z-index: 2;
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.card {
+  display: flex;
+  flex: none;
+  width: 18.75rem;
+  min-height: 16.125rem;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1.625rem;
+  border-radius: 1.625rem;
+  background: #1c2c44;
+  text-align: center;
+}
+
+.card__icon {
+  display: grid;
+  width: 3.4375rem;
+  height: 3.4375rem;
+  place-items: center;
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.card__title {
+  margin: 1.125rem 0 .625rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.card__text {
+  flex: 1;
+  margin: 0 0 1.25rem;
+  font-size: .75rem;
+  line-height: 1.65;
+}
+
+.card__cta {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: .625rem;
+  padding: .75rem 0;
+  border-radius: .625rem;
+  background: #f00;
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.card__cta:hover {
+  filter: brightness(1.15);
+}
+
+.nav-btn {
+  display: grid;
+  width: 3.625rem;
+  height: 3.625rem;
+  flex: none;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f00;
+  cursor: pointer;
+  transition: transform .2s, filter .2s;
+}
+
+.nav-btn:hover {
+  transform: scale(1.08);
+  filter: brightness(1.1);
+}
+
+.nav-btn:active {
+  transform: scale(.95);
+}
+
+@media (max-width: 45rem) {
+  .finance {
+    padding: 2rem .75rem 3rem;
   }
 
-  .financing-track {
-    width: calc(100% - 3rem);
-    grid-template-columns: 1fr;
+  .finance__title {
+    font-size: 1.375rem;
   }
 
-  .financing-card:not(.is-active) {
-    display: none;
+  .finance__head {
+    margin-bottom: 1.5rem;
   }
 
-  .financing-card.is-active {
-    transform: none;
+  .nav-btn {
+    width: 2.625rem;
+    height: 2.625rem;
   }
 
-  .financing-slider {
-    min-height: 13rem;
+  .swiper-slide {
+    width: 12.5rem;
   }
 
+  .card {
+    width: 15.625rem;
+  }
 }

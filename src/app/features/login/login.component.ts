@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,14 +16,14 @@ export class LoginComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-
+  private toast = inject(ToastService);
   protected readonly showPassword = signal(false);
   protected readonly submitting = signal(false);
   protected readonly loginError = signal('');
 
   protected readonly loginForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   protected submit(): void {
@@ -53,8 +54,11 @@ export class LoginComponent {
             this.auth.saveUser(user);
           }
           void this.router.navigateByUrl('/dashboard');
+          this.toast.success('Suksess', 'Innlogging vellykket!');
         },
-        error: () => {
+        error: (error) => {
+          debugger;
+          this.toast.error('Error', error?.error?.message?.message ||'Det oppstod en feil.');
           this.loginError.set('Kunne ikke logge inn. Prøv igjen senere.');
         },
       });

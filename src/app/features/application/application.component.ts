@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { StepperModule } from 'primeng/stepper';
 import { ApplicationAudienceService } from '../../core/services/application-audience.service';
 import { APIService } from '../../core/services/api.service';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../core/services/toast.service';
 
 type ApplicantType = 'private' | 'company';
-type CollateralType = 'property' | 'other';
+type CollateralType = '2' | '1';
 
 interface ApplicationOption {
   id: string;
@@ -19,12 +20,13 @@ interface ApplicationOption {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, StepperModule,InputNumberModule,FormsModule],
+  imports: [ReactiveFormsModule, StepperModule, InputNumberModule],
   selector: 'app-application',
   styleUrls: ['./application.component.css', './application-review.component.css'],
   templateUrl: './application.component.html',
 })
 export class ApplicationComponent {
+  private toast = inject(ToastService);
   private readonly api = inject(APIService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
@@ -35,7 +37,7 @@ export class ApplicationComponent {
   protected readonly applicantType = signal<ApplicantType>(
     this.route.snapshot.queryParamMap.get('applicantType') === 'company' ? 'company' : 'private',
   );
-  protected readonly collateralType = signal<CollateralType>('property');
+  protected readonly collateralType = signal<CollateralType>('2');
   protected readonly hasCoApplicant = signal(false);
   protected readonly submissionUnavailable = signal(false);
   protected readonly invalidFields = signal<string[]>([]);
@@ -106,15 +108,21 @@ export class ApplicationComponent {
 
   constructor() {
     const applicantType = this.route.snapshot.queryParamMap.get('applicantType');
-    const normalizedApplicantType = applicantType === 'company' ? 'company' : 'private';
+    const queryLoanType = this.route.snapshot.queryParamMap.get('loanType');
+    const validLoanType = queryLoanType !== null && /^[1-6]$/.test(queryLoanType)
+      ? queryLoanType
+      : null;
+    const normalizedApplicantType = validLoanType !== null
+      ? (Number(validLoanType) <= 3 ? 'private' : 'company')
+      : applicantType === 'company' ? 'company' : 'private';
 
-    if (applicantType === 'company' || applicantType === 'private') {
-      this.applicationAudience.set(applicantType === 'company' ? 'business' : 'private');
-      this.applicantType.set(normalizedApplicantType);
-      this.applicationForm.controls.applicantType.setValue(normalizedApplicantType);
+    if (validLoanType !== null || applicantType === 'company' || applicantType === 'private') {
+      this.applicationAudience.set(normalizedApplicantType === 'company' ? 'business' : 'private');
     }
+    this.applicantType.set(normalizedApplicantType);
+    this.applicationForm.controls.applicantType.setValue(normalizedApplicantType);
 
-    const selectedLoanType = normalizedApplicantType === 'private' ? '1' : '4';
+    const selectedLoanType = validLoanType ?? (normalizedApplicantType === 'private' ? '1' : '4');
     this.loanType.set(selectedLoanType);
     this.applicationForm.controls.loanType.setValue(selectedLoanType);
 
@@ -177,6 +185,7 @@ export class ApplicationComponent {
     this.highestStep.update((highest) => Math.max(highest, next));
     this.step.set(next);
     this.invalidFields.set([]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   protected previousStep(): void {
@@ -233,6 +242,7 @@ export class ApplicationComponent {
       existingDebt: formValue.existingDebt,
       debtType: formValue.debtType,
       securityValue: formValue.securityValue,
+      collateralType: this.collateralType(),
       termsAccepted: formValue.termsAccepted,
       privacyAccepted: formValue.privacyAccepted,
     };
@@ -249,9 +259,12 @@ export class ApplicationComponent {
 
         this.loanNumber.set(loanNumber);
         this.submissionComplete.set(true);
+        this.toast.success('Suksess', 'Søknaden er sendt inn!');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       },
-      error: (error: unknown) => {
+      error: (error) => {
         this.isSubmitting.set(false);
+        this.toast.error('Error', typeof error?.error?.message?.message === 'string' ? error.error.message : 'Det oppstod en feil under innlogging.');
         this.submissionError.set(
           error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
             ? error.error.message
@@ -271,7 +284,7 @@ export class ApplicationComponent {
     this.loanNumber.set('');
     this.submissionError.set('');
     this.isSubmitting.set(false);
-    this.collateralType.set('property');
+    this.collateralType.set('2');
     this.hasCoApplicant.set(false);
     this.step.set(1);
     this.highestStep.set(1);
@@ -303,9 +316,9 @@ export class ApplicationComponent {
       2: 'Boliglån',
       3: 'Fellesgjeld',
       4: 'Forbrukslån',
-      5: 'Kausjonsansvar',
-      6: 'Studielån',
-      7: 'Kredittkort'
+      5: 'Kausjonsansvar',     
+      6: 'Kredittkort',
+      7: 'Studielån',
     };
     return labels[this.applicationForm.controls.debtType.value] ?? '';
   }

@@ -198,7 +198,8 @@
               <label for="annual-income">Årsinntekt ((Annual Income))</label>
               <div class="input-affix">
                 <p-inputnumber inputId="annual-income" [min]="0" formControlName="annualIncome" placeholder="13,0000 NOK" />
-                </div>
+                <!-- <input id="annual-income" type="number" min="0" formControlName="annualIncome" placeholder="13,0000 NOK" />                 -->
+              </div>
               @if (hasError('annualIncome')) { <small class="field-error">Oppgi årsinntekten din.</small> }
             </div>
             <div class="field-grid economy-grid">
@@ -208,8 +209,7 @@
                   <option value="">Velg status</option>
                   <option value="single">Singel</option>
                   <option value="married">Gift</option>
-                  <option value="cohabiting">Samboer</option>
-                  <option value="divorced">Skilt</option>
+                  <option value="partner">Samboer</option>
                 </select>
                 @if (hasError('maritalStatus')) { <small class="field-error">Velg sivilstand.</small> }
               </div>
@@ -321,6 +321,7 @@
             <label for="existing-debt">Legg inn lånebeløp ((Enter Loan Amount))</label>
             <div class="input-affix">
               <p-inputnumber inputId="existing-debt" [min]="0" formControlName="existingDebt" placeholder="0000 NOK" />
+              <!-- <input id="existing-debt" type="number" min="0" formControlName="existingDebt" placeholder="0000 NOK" /> -->
               <span>NOK</span>
             </div>
           </div>
@@ -346,20 +347,20 @@
           <div class="choice-grid collateral-choices">
             <button
               class="choice-card"
-              [class.selected]="collateralType() === 'property'"
-              [attr.aria-pressed]="collateralType() === 'property'"
+              [class.selected]="collateralType() === '2'"
+              [attr.aria-pressed]="collateralType() === '2'"
               type="button"
-              (click)="collateralType.set('property')"
+              (click)="collateralType.set('2')"
             >
               <i class="pi pi-home" aria-hidden="true"></i>
               <strong>Eiendom ((Property))</strong>
             </button>
             <button
               class="choice-card"
-              [class.selected]="collateralType() === 'other'"
-              [attr.aria-pressed]="collateralType() === 'other'"
+              [class.selected]="collateralType() === '1'"
+              [attr.aria-pressed]="collateralType() === '1'"
               type="button"
-              (click)="collateralType.set('other')"
+              (click)="collateralType.set('1')"
             >
               <i class="pi pi-verified" aria-hidden="true"></i>
               <strong>Annen sikkerhet ((Other Security))</strong>
@@ -369,6 +370,7 @@
             <label for="security-value">Estimert sikkerhetsverdi ((Estimated Security Value))</label>
             <div class="input-affix">
               <p-inputnumber inputId="security-value" [min]="0" formControlName="securityValue" placeholder="0000 NOK" />
+              <!-- <input id="security-value" type="number" min="0" formControlName="securityValue" placeholder="0000 NOK" /> -->
               <span>NOK</span>
             </div>
             @if (hasError('securityValue')) { <small class="field-error">Oppgi estimert sikkerhetsverdi.</small> }
@@ -382,9 +384,9 @@
           <header><h3>Søknadsinformasjon ((Application Information))</h3><button type="button" (click)="editStep(1)">✎ Edit</button></header>
           <dl>
             <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicationForm.controls.applicantType.value === 'private' ? 'Privat' : 'Bedrift' }}</dd></div>
-            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ applicationForm.controls.loanType.value }}</dd></div>
-            <!-- <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicantLabel() }}</dd></div>
-            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ loanType() }}</dd></div> -->
+            <!-- <div><dt>Lånetype ((Loan Type))</dt><dd>{{ applicationForm.controls.loanType.value }}</dd></div> -->
+            <!-- <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicantLabel() }}</dd></div> -->
+            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ loanType() }}</dd></div>
           </dl>
         </section>
 
@@ -434,7 +436,7 @@
           <dl>
             <div><dt>Eksisterende gjeld ((Existing Debt))</dt><dd>{{ formatCurrency(applicationForm.controls.existingDebt.value) }} kr</dd></div>
             <div><dt>Gjeldstype ((Debt Type))</dt><dd>{{ debtTypeLabel() }}</dd></div>
-            <div><dt>Sikkerhetstype ((Collateral Type))</dt><dd>{{ collateralType() === 'property' ? 'Eiendom' : 'Annen sikkerhet' }}</dd></div>
+            <div><dt>Sikkerhetstype ((Collateral Type))</dt><dd>{{ collateralType() === '2' ? 'Eiendom' : 'Annen sikkerhet' }}</dd></div>
             <div><dt>Sikkerhetsverdi ((Collateral Value))</dt><dd>{{ formatCurrency(applicationForm.controls.securityValue.value) }} kr</dd></div>
           </dl>
         </section>

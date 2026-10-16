@@ -60,16 +60,20 @@
 
 :host ::ng-deep .application-stepper .p-steplist {
   display: flex;
-  width: min(100%, 45rem);
+  width: min(100%, 51rem);
   align-items: flex-start;
   justify-content: center;
   margin-inline: auto;
 }
 
+:host ::ng-deep .application-stepper p-step > p-stepper-separator {
+  display: none;
+}
+
 :host ::ng-deep .application-stepper p-step {
   display: flex;
-  min-width: 7.8rem;
-  flex: 0 0 5.8rem;
+  min-width: 9.2rem;
+  flex: 0 0 9.2rem;
 }
 
 :host ::ng-deep .application-stepper .p-step-header {
@@ -92,19 +96,19 @@
 
 :host ::ng-deep .application-stepper .p-step-number {
   display: grid;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 2.25rem;
+  height: 2.25rem;
   place-items: center;
   border: 1px solid #d8dadd;
   border-radius: 50%;
   background: #fff;
   color: #71777e;
-  font-size: .68rem;
+  font-size: .8rem;
 }
 
 :host ::ng-deep .application-stepper .p-step-title {
   color: #737980;
-  font-size: .59rem;
+  font-size: .75rem;
   text-align: center;
   white-space: nowrap;
 }
@@ -121,8 +125,8 @@
 }
 
 :host ::ng-deep .application-stepper p-step.step-complete .p-step-number {
-  border-color: #0b213d;
-  background: #0b213d;
+  border-color: #0B1F3A;
+  background: #0B1F3A;
   color: transparent;
   font-size: 0;
 }
@@ -130,12 +134,12 @@
 :host ::ng-deep .application-stepper p-step.step-complete .p-step-number::after {
   color: #fff;
   content: "\2713";
-  font-size: .75rem;
-  line-height: 2;
+  font-size: .85rem;
+  line-height: 2.5;
 }
 
 :host ::ng-deep .application-stepper p-step.step-complete .p-step-title {
-  color: #0b213d;
+  color: #0B1F3A;
 }
 
 :host ::ng-deep .application-stepper p-stepper-separator {
@@ -143,12 +147,12 @@
   height: 1px;
   align-self: flex-start;
   flex: 1 1 2rem;
-  margin: .85rem -2rem 0;
+  margin: 2.125rem -2rem 0;
   background: #dedfe1;
 }
 
 :host ::ng-deep .application-stepper p-stepper-separator.step-complete {
-  background: #0b213d;
+  background: #FE0200;
 }
 
 .application-panel {
@@ -297,7 +301,6 @@
   font-size: .72rem;
   font-weight: 500;
 }
-
 .field input,
 .field textarea,
 .field select,
@@ -312,7 +315,14 @@
   background: #f5f5f5;
   color: #20252b;
   font: inherit;
-  font-size: .68rem;
+  font-size: .78rem;
+}
+:host ::ng-deep .input-affix .p-inputnumber .p-inputtext{
+    background: transparent;
+    padding-inline: 0;
+    box-shadow: none;
+    border: 0;
+    font-size: .78rem;
 }
 
 .field input:focus,

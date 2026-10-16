@@ -90,8 +90,8 @@
               <dl class="prospect-facts">
                 <div><dt>Lånebeløp:</dt><dd>{{ prospect.loan_amount?prospect.loan_amount:'0' }} NOK</dd></div>
                 <div><dt>Netto rente per år:</dt><dd>{{ prospect.rente_pa?prospect.rente_pa:'0' }}%</dd></div>
-                <div><dt>Status:</dt><dd>{{ prospect.status }}</dd></div>
-                <div><dt>Risikoklasse:</dt><dd>{{ prospect.running_time }}</dd></div>
+                <div><dt>Løpetid:</dt><dd>{{ prospect.running_time }} mnd</dd></div>
+                <div><dt>Risikoklasse:</dt><dd>-</dd></div>
               </dl>
               <div
                 class="progress-track"

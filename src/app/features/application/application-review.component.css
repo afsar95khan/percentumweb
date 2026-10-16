@@ -205,7 +205,7 @@
 
   :host ::ng-deep .application-stepper .p-step-title {
     max-width: 5rem;
-    font-size: .53rem;
+    font-size: .65rem;
     white-space: normal;
   }
 

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'https://percentum.api.mockcode.co.in/api',
-  //apiUrl: 'http://localhost:7000/api',
+  // apiUrl: 'http://localhost:7000/api',
   webUrl: 'https://percentum.crm.mockcode.co.in'
 };
 

@@ -170,7 +170,7 @@
               <h3 class="card__title">{{ card.title }}</h3>
               <p class="card__text">{{ card.text }}</p>
 
-              <a routerLink="/application" [queryParams]="{ applicantType: tab() === 'privat' ? 'private' : 'company' }" class="card__cta">
+              <a routerLink="/application" [queryParams]="{ applicantType: tab() === 'privat' ? 'private' : 'company',loanType: card.id }" class="card__cta">
                 Søk nå
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.6"
                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
