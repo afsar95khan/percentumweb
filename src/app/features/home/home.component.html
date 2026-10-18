@@ -68,7 +68,7 @@
         <div class="calculation-summary" aria-live="polite">
           <div><span>Månedlig betaling</span><strong>{{ monthlyPayment() === undefined ? '—' : 'kr ' + formatCurrency(monthlyPayment()!) }}</strong></div>
           <div><span>Totalt kostnad</span><strong>{{ totalCost() === undefined ? '—' : formatCurrency(totalCost()!) + ' kr' }}</strong></div>
-          <div><span>Totalt beløp</span><strong>{{ loanCalculation() === null ? '—' : formatCurrency(totalPayment()) + ' kr' }}</strong></div>
+          <div><span>Totalt beløp</span><strong>{{ loanCalculation() === null ? '—' : formatCurrency(totalAmount()) + ' kr' }}</strong></div>
           <div><span>Eff. rente</span><strong>{{ effectiveRate() === undefined ? '—' : effectiveRate() + '%' }}</strong></div>
         </div>
         <!-- @if (isCalculating()) { <p class="calculation-status" role="status">Beregner lånet …</p> } -->

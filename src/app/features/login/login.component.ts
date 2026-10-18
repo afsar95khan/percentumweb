@@ -57,7 +57,6 @@ export class LoginComponent {
           this.toast.success('Suksess', 'Innlogging vellykket!');
         },
         error: (error) => {
-          debugger;
           this.toast.error('Error', error?.error?.message?.message ||'Det oppstod en feil.');
           this.loginError.set('Kunne ikke logge inn. Prøv igjen senere.');
         },

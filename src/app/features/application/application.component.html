@@ -2,7 +2,7 @@
   <header class="application-heading">
     <span class="eyebrow">LÅNESØKNAD</span>
     <h1>Start søknaden din her</h1>
-    <p>Velg søknadstype og fyll ut skjemaet.<br class="desktop-break" /> Du kan endre opplysningene underveis.</p>
+    <p>Velg søknadstype og fyll ut skjemaet. Søknaden <br class="desktop-break" /> din lagres automatisk.</p>
   </header>
 
   <p-stepper
@@ -381,18 +381,18 @@
 
       @if (step() === 4) {
         <section class="review-card">
-          <header><h3>Søknadsinformasjon ((Application Information))</h3><button type="button" (click)="editStep(1)">✎ Edit</button></header>
+          <header><h3>Søknadsinformasjon ((Application Information))</h3><button type="button" (click)="editStep(1)"><i class="pi pi-pencil" aria-hidden="true"></i> Edit</button></header>
           <dl>
             <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicationForm.controls.applicantType.value === 'private' ? 'Privat' : 'Bedrift' }}</dd></div>
             <!-- <div><dt>Lånetype ((Loan Type))</dt><dd>{{ applicationForm.controls.loanType.value }}</dd></div> -->
             <!-- <div><dt>Søknadstype ((Application Type))</dt><dd>{{ applicantLabel() }}</dd></div> -->
-            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ loanType() }}</dd></div>
+            <div><dt>Lånetype ((Loan Type))</dt><dd>{{ loanTypeTitle() }}</dd></div>
           </dl>
         </section>
 
         @if (applicantType() === 'private') {
           <section class="review-card">
-            <header><h3>Personopplysninger ((Personal Information))</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
+            <header><h3>Personopplysninger ((Personal Information))</h3><button type="button" (click)="editStep(2)"><i class="pi pi-pencil" aria-hidden="true"></i> Edit</button></header>
             <dl>
               <div><dt>Fullt navn ((Full Name))</dt><dd>{{ applicationForm.controls.fullName.value }}</dd></div>
               <div><dt>E-post ((Email))</dt><dd>{{ applicationForm.controls.email.value }}</dd></div>
@@ -409,7 +409,7 @@
           </section>
         } @else {
           <section class="review-card">
-            <header><h3>Firmainformasjon ((Company Information))</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
+            <header><h3>Firmainformasjon ((Company Information))</h3><button type="button" (click)="editStep(2)"><i class="pi pi-pencil" aria-hidden="true"></i> Edit</button></header>
             <dl>
               <div><dt>Firmanavn ((Company Name))</dt><dd>{{ applicationForm.controls.companyName.value }}</dd></div>
               <div><dt>E-post ((Email))</dt><dd>{{ applicationForm.controls.companyEmail.value }}</dd></div>
@@ -422,7 +422,7 @@
         }
 
         <section class="review-card">
-          <header><h3>Låneinformasjon ((Loan Information))</h3><button type="button" (click)="editStep(2)">✎ Edit</button></header>
+          <header><h3>Låneinformasjon ((Loan Information))</h3><button type="button" (click)="editStep(2)"><i class="pi pi-pencil" aria-hidden="true"></i> Edit</button></header>
           <dl>
             <div><dt>Lånebeløp ((Loan Amount))</dt><dd>{{ formatCurrency(applicationForm.controls.loanAmount.value) }} kr</dd></div>
             <div><dt>Rente ((Interest rate))</dt><dd>{{ applicationForm.controls.interest_rate.value }}%</dd></div>
@@ -432,7 +432,7 @@
         </section>
 
         <section class="review-card">
-          <header><h3>Gjeldsinformasjon ((Debt Information))</h3><button type="button" (click)="editStep(3)">✎ Edit</button></header>
+          <header><h3>Gjeldsinformasjon ((Debt Information))</h3><button type="button" (click)="editStep(3)"><i class="pi pi-pencil" aria-hidden="true"></i> Edit</button></header>
           <dl>
             <div><dt>Eksisterende gjeld ((Existing Debt))</dt><dd>{{ formatCurrency(applicationForm.controls.existingDebt.value) }} kr</dd></div>
             <div><dt>Gjeldstype ((Debt Type))</dt><dd>{{ debtTypeLabel() }}</dd></div>

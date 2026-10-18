@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApplicationAudienceService } from '../../core/services/application-audience.service';
 import { APIService } from '../../core/services/api.service';
 import Swiper from 'swiper';
 import { A11y, Keyboard } from 'swiper/modules';
+import 'swiper/css';
 import { catchError, map, of, Subject, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -17,43 +18,20 @@ interface LoanCalculationRequest {
   loanAmount: number;
   years: number;
   nominalInterestRate: number;
-  applicant: {
-    taxable_income: number;
-    tax_free_income: number;
-  };
-  co_applicants: any[];
-  marital_status: any;
-  children: {     
-    full_custody: number;
-    shared_custody: number;
-  };
-  mortgage: {
-    form_of_living: number;
-    size: number;
-    property_value: number;
-    additional_properties: number;
-    rental_income: number;
-  };
-  expenses: {
-    daycare: number;
-    manual_adjustment: number;
-    number_of_cars: number;
-  };
-  debt: any[];  
 }
 
 interface LoanCalculationBreakdown {
   totalLoanCost: number;
   monthlyPayment: number;
   effectiveRate: number;
+  totalAmount:number;
+  totalLoan: number,
 }
 
 interface LoanCalculationResponse {
   success: boolean;
   message?: string;
-  data?: {
-    breakdown?: Partial<LoanCalculationBreakdown>;
-  };
+  data?:Partial<LoanCalculationBreakdown>;
 }
 
 interface LoanCard {
@@ -120,7 +98,7 @@ interface CustomerReview {
   imports: [FormsModule, RouterLink],
   selector: 'app-home',
   standalone: true,
-  styleUrls: ['./home.component.css', './home.component.scss'],
+  styleUrls: ['./home.component.css'],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
@@ -141,7 +119,7 @@ export class HomeComponent {
   private readonly calculationRequests = new Subject<LoanCalculationRequest>();
 
 
-  // private readonly cdr = inject(ChangeDetectorRef);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly swiperHost = viewChild.required<ElementRef<HTMLElement>>('swiperHost');
   private swiper?: Swiper;
 
@@ -154,10 +132,10 @@ export class HomeComponent {
     this.calculationRequests.pipe(
       switchMap((request) => {
         this.isCalculating.set(true);
-        this.loanCalculation.set(null);
+        // this.loanCalculation.set(null);
         this.calculationError.set(null);
         return this.http.post<LoanCalculationResponse>(
-          `${this.baseUrl}/loan/calculator/calculate`,
+          `${this.baseUrl}/loan/user/calculator/calculate`,
           request,
         ).pipe(
           map((response) => ({ response })),
@@ -172,12 +150,14 @@ export class HomeComponent {
         return;
       }
 
-      const breakdown = result.response.data?.breakdown;
+      const breakdown = result.response.data;
       if (
         !result.response.success
         || typeof breakdown?.totalLoanCost !== 'number'
         || typeof breakdown.monthlyPayment !== 'number'
         || typeof breakdown.effectiveRate !== 'number'
+        || typeof breakdown.totalAmount !== 'number'
+        || typeof breakdown.totalLoan !== 'number'
       ) {
         this.calculationError.set(result.response.message ?? 'Låneberegningen returnerte ugyldige data.');
         return;
@@ -187,6 +167,8 @@ export class HomeComponent {
         totalLoanCost: breakdown.totalLoanCost,
         monthlyPayment: breakdown.monthlyPayment,
         effectiveRate: breakdown.effectiveRate,
+        totalAmount: breakdown.totalAmount,
+        totalLoan: breakdown.totalLoan,
       });
     });
   }
@@ -200,7 +182,7 @@ export class HomeComponent {
     if (next === this.tab()) return;
     this.destroySwiper(); // removes loop clones before Angular re-renders slides
     this.tab.set(next);
-    // this.cdr.detectChanges(); // render new slides now, then init
+    this.cdr.detectChanges(); // render new slides now, then init
     this.initSwiper();
   }
 
@@ -284,29 +266,6 @@ export class HomeComponent {
       loanAmount: this.loanAmount(),
       years: this.repaymentYears(),
       nominalInterestRate,
-      "applicant": {
-        "taxable_income": 0,
-        "tax_free_income": 0
-      },
-      "co_applicants": [],
-      "marital_status": null,
-      "children": {
-        "full_custody": 0,
-        "shared_custody": 0
-      },
-      "mortgage": {
-        "form_of_living": 0,
-        "size": 0,
-        "property_value": 0,
-        "additional_properties": 0,
-        "rental_income": 0
-      },
-      "expenses": {
-        "daycare": 0,
-        "manual_adjustment": 0,
-        "number_of_cars": 0
-      },
-      "debt": []
 
     });
   }
@@ -316,6 +275,8 @@ export class HomeComponent {
   protected readonly monthlyPayment = () => this.loanCalculation()?.monthlyPayment;
 
   protected readonly effectiveRate = () => this.loanCalculation()?.effectiveRate.toFixed(2);
+  protected readonly totalAmount = () => this.loanCalculation()?.totalAmount;
+  protected readonly totalLoan = () => this.loanCalculation()?.totalLoan;
 
   protected rangeProgress(value: number, minimum: number, maximum: number): string {
     return `${((value - minimum) / (maximum - minimum)) * 100}%`;

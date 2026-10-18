@@ -54,7 +54,7 @@
 .hero-copy h1 {
   margin: 1rem 0 .7rem;
   color: #16191e;
-  font-size: clamp(1.8rem, 3vw, 2.55rem);
+  font-size: clamp(1.8rem, 3vw, 2.85rem);
   font-weight: 500;
   line-height: 1.12;
   letter-spacing: -.035em;
@@ -80,7 +80,7 @@
   color: #777c83;
   cursor: pointer;
   font: inherit;
-  font-size: .72rem;
+  font-size: .85rem;
 }
 
 .audience-toggle button.active {
@@ -92,49 +92,19 @@
 .hero-lead {
   max-width: 31rem;
   margin: 0;
-  color: #373b41;
-  font-size: .86rem;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 400;
   line-height: 1.45;
 }
 
 .benefits-title {
-  margin: .85rem 0 .4rem;
-  font-size: .82rem;
-  font-weight: 700;
+  margin: 1rem 0 .8rem;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.hero-points {
-  display: grid;
-  gap: .43rem;
-  margin: 0 0 1rem;
-  padding: 0;
-  list-style: none;
-}
 
-.hero-points li {
-  position: relative;
-  padding-left: 1.2rem;
-  color: #30343a;
-  font-size: .76rem;
-  line-height: 1.35;
-}
-
-.hero-points li::before {
-  position: absolute;
-    top: .13rem;
-    left: 0;
-    display: grid;
-    width: .65rem;
-    height: .65rem;
-    place-items: center;
-    border-radius: 50%;
-    background: #FE0200;
-    color: #fff;
-    content: "\2713";
-    font-size: .45rem;
-    font-weight: 700;
-    line-height: 1;
-}
 
 .hero-promise {
   margin: .75rem 0 0;
@@ -146,6 +116,7 @@
 .hero-actions {
   display: flex;
   gap: .65rem;
+  margin-top: 2rem;
 }
 
 .button {
@@ -157,8 +128,8 @@
   padding: .55rem 1rem;
   border: 1px solid transparent;
   border-radius: .48rem;
-  font-size: .75rem;
-  font-weight: 600;
+  font-size: .85rem;
+  font-weight: 500;
   text-decoration: none;
   transition: background .15s ease, color .15s ease, transform .15s ease;
 }
@@ -195,7 +166,7 @@
 .calculator-card > h2 {
   margin: 0 0 1.2rem;
   color: #22262b;
-  font-size: 1.05rem;
+  font-size: 1.63rem;
   font-weight: 600;
   text-align: center;
 }
@@ -205,15 +176,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: .8rem 0 .2rem;
-  color: #24282d;
-  font-size: .72rem;
+  margin: 1rem 0 .6rem;
+  color: #000;
+  font-size: 1rem;
 }
 
 .range-input {
   display: block;
   width: 100%;
-  height: 1.3rem;
+  height: 1.5rem;
   margin: 0 0 .2rem;
   appearance: none;
   background: transparent;
@@ -221,26 +192,26 @@
 }
 
 .range-input::-webkit-slider-runnable-track {
-  height: .48rem;
+  height: .88rem;
   border-radius: 1rem;
   background: linear-gradient(to right, #FE0200 0 var(--range-progress), #f0f1f2 var(--range-progress) 100%);
 }
 
 .range-input::-moz-range-track {
-  height: .48rem;
+  height: .88rem;
   border-radius: 1rem;
   background: #f0f1f2;
 }
 
 .range-input::-moz-range-progress {
-  height: .48rem;
+  height: .88rem;
   border-radius: 1rem;
   background: #FE0200;
 }
 
 .range-input::-webkit-slider-thumb {
-  width: 1rem;
-  height: 1rem;
+  width: 1.4rem;
+  height: 1.4rem;
   margin-top: -.26rem;
   appearance: none;
   border: 2px solid #FE0200;
@@ -249,8 +220,8 @@
 }
 
 .range-input::-moz-range-thumb {
-  width: .78rem;
-  height: .78rem;
+  width: 1.18rem;
+  height: 1.18rem;
   border: 2px solid #FE0200;
   border-radius: 50%;
   background: #fff;
@@ -269,7 +240,7 @@
   background: #f4f5f6;
   color: #272b31;
   font: inherit;
-  font-size: .72rem;
+  font-size: .8rem;
 }
 
 .rate-input::placeholder {
@@ -280,8 +251,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem .8rem;
-  margin-top: .85rem;
-  padding: 1rem .85rem;
+  margin-top: 1.5rem;
+  padding: 1.3rem .95rem;
   border: 1px solid #e6e7e8;
   border-radius: .65rem;
   background: #f5f5f5;
@@ -289,22 +260,24 @@
 
 .calculation-summary div {
   display: grid;
-  gap: .28rem;
+  gap: .48rem;
 }
 
 .calculation-summary span {
-  color: #343940;
-  font-size: .7rem;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 400;
 }
 
 .calculation-summary strong {
-  color: #21252b;
-  font-size: .86rem;
+  color: #000;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .continue-button {
   width: 100%;
-  margin-top: .8rem;
+  margin-top: 1.5rem;
 }
 
 .review-controls button {
@@ -382,7 +355,7 @@
 .finance__title {
   margin: 0;
   font-family: 'Plus Jakarta Sans', Inter, sans-serif;
-  font-size: 1.875rem;
+  font-size: 2rem;
   font-weight: 500;
   letter-spacing: -.01em;
 }
@@ -397,8 +370,8 @@
 .toggle {
   display: inline-flex;
   gap: .25rem;
-  padding: .5rem;
-  border-radius: 1rem;
+  padding: .28rem;
+  border-radius: .6rem;
   background: #1c2c44;
 }
 
@@ -409,7 +382,7 @@
   background: transparent;
   color: #8f9bb0;
   cursor: pointer;
-  font-size: .875rem;
+  font-size: 1rem;
   font-weight: 500;
   transition: background .25s, color .25s;
 }
@@ -438,16 +411,19 @@
   justify-content: center;
   overflow: visible;
   transform: scale(.96);
-  opacity: 0;
+  opacity: 0.4;
   transition: transform .6s ease, opacity .6s ease;
 }
 
-.swiper-slide-prev,
-.swiper-slide-next {
-  opacity: .4;
+.swiper-initialized .swiper-slide {
+  opacity: 0;
 }
 
-.swiper-slide-active {
+.swiper-initialized .swiper-slide-prev,
+.swiper-initialized .swiper-slide-next {
+  opacity: .4;
+}
+.swiper-initialized .swiper-slide-active {
   z-index: 2;
   transform: scale(1.15);
   opacity: 1;

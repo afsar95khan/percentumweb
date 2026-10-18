@@ -23,14 +23,14 @@ body {
 }
 
 .home-page .section-heading {
-  margin: 0 auto 1.7rem;
+  margin: 2rem auto 3.5rem;
   text-align: center;
 }
 
 .home-page .section-heading h2 {
   margin: 0;
   color: #252a30;
-  font-size: 1.3rem;
+  font-size: 2rem;
   font-weight: 500;
 }
 
@@ -45,10 +45,10 @@ body {
   min-height: 8.7rem;
   justify-items: center;
   align-content: start;
-  padding: .75rem 1rem 1rem;
+  padding: 1rem 1rem 1rem;
   border: 1px solid #e4e5e6;
-  border-top: 2px solid #FE0200;
-  border-radius: .65rem;
+  border-top: 3px solid #FE0200;
+  border-radius: 1.25rem;
   background: #fff;
   text-align: center;
 }
@@ -68,20 +68,20 @@ body {
 }
 
 .home-page .process-card h3 {
-  margin: 0 0 .5rem;
-  font-size: 1rem;
+  margin: 0.5rem 0 .8rem;
+  font-size: 1.2rem;
 }
 
 .home-page .process-card p {
   max-width: 19rem;
   margin: 0;
-  color: #686d74;
-  font-size: .8rem;
-  line-height: 1.45;
+  color: #000;
+  font-size: 1rem;
+  line-height: 1.55;
 }
 
 .home-page .reviews-section {
-  padding-block: 2rem 2.3rem;
+  padding-block: 4rem 4rem;
   background: #fff;
 }
 
@@ -98,7 +98,7 @@ body {
   border-radius: 1rem;
   background: #FE0200;
   color: #fff;
-  font-size: .62rem;
+  font-size: .85rem;
 }
 
 .home-page .review-invite {
@@ -109,18 +109,18 @@ body {
   border-radius: 1rem;
   background: #0B1F3A;
   color: #fff;
-  font-size: .65rem;
+  font-size: .85rem;
   text-decoration: none;
 }
 
 .home-page .reviews-heading {
-  margin: .7rem 0 1.15rem;
+  margin: 1.3rem 0 2rem;
 }
 
 .home-page .reviews-heading h2 {
   margin: 0;
   color: #20252b;
-  font-size: 1.25rem;
+  font-size: 1.85rem;
   font-weight: 500;
 }
 
@@ -152,7 +152,7 @@ body {
 
 .home-page .review-card {
   min-width: 0;
-  padding: .85rem 1rem;
+  padding: 1.5rem 1.5rem;
   border-radius: .75rem;
   background: #f3f4f5;
 }
@@ -165,8 +165,8 @@ body {
 
 .home-page .review-avatar {
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 3rem;
   flex: 0 0 auto;
   place-items: center;
   border: 2px solid #fff;
@@ -184,18 +184,18 @@ body {
 
 .home-page .review-details strong {
   color: #30343a;
-  font-size: .65rem;
+  font-size: 1rem;
 }
 
 .home-page .review-details small {
   color: #737980;
-  font-size: .58rem;
+  font-size: .75rem;
 }
 
 .home-page .google-mark {
   display: grid;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
   place-items: center;
   margin-left: auto;
   border-radius: 50%;
@@ -208,7 +208,7 @@ body {
 .home-page .review-stars {
   margin: .55rem 0 .25rem;
   color: #ffad24;
-  font-size: .82rem;
+  font-size: 1.2rem;
   letter-spacing: .08em;
 }
 
@@ -217,7 +217,7 @@ body {
   overflow: hidden;
   margin: 0;
   color: #444a51;
-  font-size: .68rem;
+  font-size: .85rem;
   line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
@@ -255,7 +255,38 @@ body {
 .home-page .review-controls button:hover {
   background: #e82412;
 }
+.hero-points {
+  display: grid;
+  gap: .85rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
 
+.hero-points li {
+  position: relative;
+  padding-left: 1.2rem;
+  color: #30343a;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.hero-points li::before {
+  position: absolute;
+    top: .18rem;
+    left: 0;
+    display: grid;
+    width: .85rem;
+    height: .85rem;
+    place-items: center;
+    border-radius: 50%;
+    background: #FE0200;
+    color: #fff;
+    content: "\2713";
+    font-size: .55rem;
+    font-weight: 700;
+    line-height: 1;
+}
 @media (max-width: 48rem) {
   .home-page .simple-process {
     padding-inline: 1rem;

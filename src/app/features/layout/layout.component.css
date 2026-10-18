@@ -14,14 +14,34 @@
 
 .site-header {
   position: relative;
-  z-index: 1;
+  width: 100%;
   display: flex;
-  min-height: 3.8rem;
   align-items: center;
+  min-height: 3.8rem;
   justify-content: space-between;
-  padding: 0 max(2rem, calc((100vw - 73rem) / 2));
   border-bottom: 1px solid #e7e7e7;
-  background: #fff;
+  padding: 0 max(2rem, calc((100vw - 73rem) / 2));
+  background-color: #ffffff;
+  z-index: 1000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.site-header.is-scrolled {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  border-bottom: none;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .wordmark {
@@ -157,7 +177,7 @@
 
 .stat span {
   color: #e1e7ef;
-  font-size: .95rem;
+  font-size: 1rem;
 }
 
 .footer-main {
@@ -169,7 +189,7 @@
 
 .footer-main h2 {
   margin: 0 0 1rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
 }
 
@@ -192,27 +212,27 @@
 
 .footer-icon {
   display: grid;
-  width: 2.7rem;
-  height: 2.7rem;
+  width: 3rem;
+  height: 3rem;
   flex: 0 0 auto;
   place-items: center;
   border-radius: 50%;
   background: #fff;
   color: #102a49;
-  font-size: 1rem;
+  font-size: 1.5rem;
 }
 
 .contact-row p,
 .footer-hours p {
   margin: 0;
   color: #cad4e0;
-  font-size: .78rem;
+  font-size: 1rem;
   line-height: 1.55;
 }
 
 .contact-row strong {
   color: #fff;
-  font-size: .85rem;
+  font-size: 1rem;
   font-weight: 500;
 }
 
@@ -237,12 +257,12 @@
 .footer-links h2,
 .footer-hours h2,
 .footer-social h2 {
-  margin-bottom: .25rem;
+  margin-bottom: 1rem;
 }
 
 .footer-links a {
   color: #cad4e0;
-  font-size: .8rem;
+  font-size: 1rem;
   text-decoration: none;
 }
 

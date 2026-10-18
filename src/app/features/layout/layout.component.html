@@ -1,6 +1,6 @@
 <div class="site-layout">
   <app-api-loader />
-  <header class="site-header">
+  <header class="site-header" [class.is-scrolled]="isScrolled()">
     <a class="wordmark header-wordmark" routerLink="/" aria-label="Percentum - hjem">
       <img src="/assets/logo1.png" alt="Percentum" />
     </a>

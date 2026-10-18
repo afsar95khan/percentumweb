@@ -42,6 +42,7 @@ export class ApplicationComponent {
   protected readonly submissionUnavailable = signal(false);
   protected readonly invalidFields = signal<string[]>([]);
   protected readonly loanType = signal('1');
+  protected readonly loanTypeTitle = signal('Boliglån');
   protected readonly privateStepNames = ['Søkertype', 'Lånedetaljer', 'Gjeld og sikkerhet', 'Se over og send inn'];
   protected readonly submissionComplete = signal(false);
   protected readonly isSubmitting = signal(false);
@@ -123,12 +124,11 @@ export class ApplicationComponent {
     this.applicationForm.controls.applicantType.setValue(normalizedApplicantType);
 
     const selectedLoanType = validLoanType ?? (normalizedApplicantType === 'private' ? '1' : '4');
-    this.loanType.set(selectedLoanType);
-    this.applicationForm.controls.loanType.setValue(selectedLoanType);
-
+    this.setLoanType(selectedLoanType);
     this.setNumericQueryParam('loanAmount', this.applicationForm.controls.loanAmount, 0);
     this.setNumericQueryParam('interest_rate', this.applicationForm.controls.interest_rate, 0);
     this.setNumericQueryParam('tenure', this.applicationForm.controls.tenure, 1);
+
   }
   
   ngOnInit() {
@@ -151,8 +151,7 @@ export class ApplicationComponent {
   }
 
   protected selectLoanType(id: string): void {
-    this.loanType.set(id);
-    this.applicationForm.controls.loanType.setValue(id);
+    this.setLoanType(id);
   }
 
   protected updateLoanAmount(event: Event): void {
@@ -218,6 +217,7 @@ export class ApplicationComponent {
     const formValue = this.applicationForm.getRawValue();
     const payload = {
       applicantType: formValue.applicantType,
+      title: this.loanTypeTitle(),
       loanType: formValue.loanType,
       loanAmount: formValue.loanAmount,
       interest_rate: formValue.interest_rate,
@@ -277,10 +277,9 @@ export class ApplicationComponent {
   protected startNewApplication(): void {
     this.applicationForm.reset();
     this.applicationForm.controls.applicantType.setValue('private');
-    this.applicationForm.controls.loanType.setValue('1');
     this.applicantType.set('private');
     this.applicationAudience.set('private');
-    this.loanType.set('1');
+    this.setLoanType('1');
     this.loanNumber.set('');
     this.submissionError.set('');
     this.isSubmitting.set(false);
@@ -373,5 +372,16 @@ export class ApplicationComponent {
     if (Number.isFinite(parsedValue) && parsedValue >= minimum) {
       control.setValue(parsedValue);
     }
+  }
+
+   private setLoanType(id: string): void {
+    const option = [...this.privateLoanTypes, ...this.companyLoanTypes].find((loanType) => loanType.id === id);
+    if (!option) {
+      throw new Error(`Unknown loan type: ${id}`);
+    }
+
+    this.loanType.set(id);
+    this.loanTypeTitle.set(option.title);
+    this.applicationForm.controls.loanType.setValue(id);
   }
 }
