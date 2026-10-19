@@ -32,10 +32,14 @@
             <header class="loan-header">
               <div>
                 <p class="loan-reference">Søknad {{ loan.loan_number || '–' }}</p>
-                <h2>{{ loan.loan_type || 'Lånesøknad' }}</h2>
+                <h2>{{ loan.title || 'Lånesøknad' }}</h2>
               </div>
               @if (loan.status) {
-                <span class="status-badge">{{ loan.status }}</span>
+                  <p-tag
+                  class="status-badge"
+                    [value]="getStatus(loan.status).label"
+                    [severity]="getStatus(loan.status).severity">
+                </p-tag>
               }
             </header>
 

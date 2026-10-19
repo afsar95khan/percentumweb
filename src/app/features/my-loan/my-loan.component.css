@@ -128,11 +128,6 @@
 }
 
 .status-badge {
-  flex: 0 0 auto;
-  padding: .35rem .65rem;
-  border-radius: 2rem;
-  background: #fff2f1;
-  color: #d92a20;
   font-size: .65rem;
   font-weight: 600;
 }

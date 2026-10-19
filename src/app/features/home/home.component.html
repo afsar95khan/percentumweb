@@ -225,10 +225,10 @@
       <div class="reviews-heading">
         <h2>Fornøyde kunder i hele landet</h2>
       </div>
-      <div class="reviews-window" aria-live="polite">
-        <div class="reviews-track" [style.transform]="'translateX(-' + reviewPage() * 50 + '%)'">
+     <div class="reviews-window swiper" #reviewSwiperHost aria-live="polite">
+        <div class="reviews-track swiper-wrapper">
           @for (page of currentReviews; track $index) {
-          <div class="review-page" [attr.aria-hidden]="$index !== reviewPage()">
+          <div class="review-page swiper-slide" [attr.aria-hidden]="$index !== reviewPage()">
             @for (review of page; track $index) {
             <article class="review-card">
               <header class="review-author">

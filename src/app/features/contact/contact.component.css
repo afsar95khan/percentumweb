@@ -25,8 +25,8 @@
 }
 
 .contact-heading h1 {
-  margin: 0 0 .35rem;
-  font-size: 1.8rem;
+  margin: 0 0 .5rem;
+  font-size: 2.2rem;
   font-weight: 500;
 }
 
@@ -58,7 +58,7 @@
 .contact-information h2 {
   margin: 0 0 .55rem;
   color: #1c222a;
-  font-size: 1.35rem;
+  font-size: 2rem;
   font-weight: 600;
   line-height: 1.25;
 }
@@ -66,7 +66,7 @@
 .contact-information > p {
   margin: 0 0 .55rem;
   color: #333941;
-  font-size: .73rem;
+  font-size: .85rem;
   line-height: 1.48;
 }
 
@@ -94,7 +94,7 @@
   border-radius: 50%;
   background: #FE0200;
   color: #fff;
-  font-size: .72rem;
+  font-size: 1rem;
 }
 
 .contact-method > span:last-child {
@@ -104,7 +104,7 @@
 
 .contact-method small {
   color: #767d85;
-  font-size: .61rem;
+  font-size: .65rem;
 }
 
 .contact-method strong {
@@ -114,7 +114,7 @@
 
 .contact-information .contact-promise {
   margin: 1.15rem 0 0;
-  font-size: .66rem;
+  font-size: .75rem;
 }
 
 .form-panel {
@@ -137,7 +137,7 @@
 
 .field label {
   color: #545a61;
-  font-size: .65rem;
+  font-size: .75rem;
 }
 
 .field input,
@@ -184,7 +184,7 @@
   display: inline-flex;
   align-items: center;
   gap: .45rem;
-  margin: .65rem 0 .55rem;
+  margin: .85rem 0 1rem;
   padding: 0;
   border: 0;
   background: transparent;
@@ -230,7 +230,7 @@
   color: #fff;
   cursor: pointer;
   font: inherit;
-  font-size: .78rem;
+  font-size: .85rem;
   font-weight: 600;
 }
 
@@ -250,7 +250,7 @@
   gap: 1.3rem;
   width: min(100% - 4rem, 70rem);
   margin: 0 auto;
-  padding: 1.5rem 0 2.3rem;
+  padding: 3rem 0 3rem;
 }
 
 .promise-card {
@@ -258,7 +258,7 @@
   justify-items: center;
   align-content: start;
   min-height: 9rem;
-  padding: 1.2rem 1rem;
+  padding: 1.8rem 1rem;
   border: 1px solid #24466f;
   border-radius: .85rem;
   background: linear-gradient(145deg, #0b2341, #1b4a83);
@@ -268,20 +268,20 @@
 
 .promise-icon {
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 3rem;
   place-items: center;
   margin-bottom: .65rem;
   border-radius: 50%;
   background: #FE0200;
-  box-shadow: 0 0 0 .35rem rgb(255 43 24 / 15%);
+  /* box-shadow: 0 0 0 .35rem rgb(255 43 24 / 15%); */
   color: #fff;
-  font-size: .78rem;
+  font-size: 1.25rem;
 }
 
 .promise-card h2 {
   margin: .2rem 0 .45rem;
-  font-size: .82rem;
+  font-size: 1rem;
   font-weight: 500;
 }
 
@@ -289,7 +289,7 @@
   max-width: 17rem;
   margin: 0;
   color: #d6e1f0;
-  font-size: .72rem;
+  font-size: .82rem;
   line-height: 1.42;
 }
 

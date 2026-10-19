@@ -121,7 +121,9 @@ export class HomeComponent {
 
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly swiperHost = viewChild.required<ElementRef<HTMLElement>>('swiperHost');
+  private readonly reviewSwiperHost = viewChild.required<ElementRef<HTMLElement>>('reviewSwiperHost');
   private swiper?: Swiper;
+  private reviewSwiper?: Swiper;
 
   readonly tab = signal<Tab>('privat');
   readonly cards = computed(() => DATA[this.tab()]);
@@ -175,6 +177,7 @@ export class HomeComponent {
 
   ngAfterViewInit(): void {
     this.initSwiper();
+    this.initReviewSwiper();
     this.requestLoanCalculation()
   }
 
@@ -213,8 +216,37 @@ export class HomeComponent {
     this.swiper = undefined;
   }
 
+  protected moveReview(direction: -1 | 1): void {
+    if (direction < 0) {
+      this.reviewSwiper?.slidePrev();
+      return;
+    }
+
+    this.reviewSwiper?.slideNext();
+  }
+
+  private initReviewSwiper(): void {
+    this.reviewSwiper = new Swiper(this.reviewSwiperHost().nativeElement, {
+      modules: [Keyboard, A11y],
+      slidesPerView: 1,
+      rewind: true,
+      speed: 350,
+      grabCursor: true,
+      keyboard: { enabled: true },
+      on: {
+        slideChange: (swiper) => this.reviewPage.set(swiper.realIndex),
+      },
+    });
+  }
+
+  private destroyReviewSwiper(): void {
+    this.reviewSwiper?.destroy(true, true);
+    this.reviewSwiper = undefined;
+  }
+
   ngOnDestroy(): void {
     this.destroySwiper();
+    this.destroyReviewSwiper();
   }
 
 
@@ -285,7 +317,5 @@ export class HomeComponent {
     this.applicationAudience.set(type);
   }
 
-  protected moveReview(direction: -1 | 1): void {
-    this.reviewPage.update((page) => (page + direction + this.currentReviews.length) % this.currentReviews.length);
-  }
+  
 }

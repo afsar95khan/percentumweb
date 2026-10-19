@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { APIService } from '../../core/services/api.service';
+import { TagModule } from 'primeng/tag';
 
 interface LoanApplication {
   loan_number?: string;
@@ -43,7 +44,7 @@ interface MyLoanResponse {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink,TagModule],
   selector: 'app-my-loan',
   styleUrl: './my-loan.component.css',
   templateUrl: './my-loan.component.html',
@@ -54,7 +55,16 @@ export class MyLoanComponent implements OnInit {
   protected readonly loans = signal<LoanApplication[]>([]);
   protected readonly error = signal('');
   protected readonly loaded = signal(false);
-  protected readonly user = signal<any>(null);
+  protected readonly user = signal<any>(null)
+
+  statusMap: Record<number, { label: string; severity: any }> = {
+    0: { label: 'Requested', severity: 'secondary' },
+    1: { label: 'Active', severity: 'info' },
+    2: { label: 'Documents Received', severity: 'contrast' },
+    3: { label: 'In Progress', severity: 'warn' },
+    4: { label: 'Rejected', severity: 'danger' },
+    5: { label: 'Approved', severity: 'success' }
+  };
 
   constructor() {
   }
@@ -105,5 +115,9 @@ export class MyLoanComponent implements OnInit {
 
   protected formatBoolean(value: boolean | undefined): string {
     return value === true ? 'Ja' : 'Nei';
+  }
+  
+  getStatus(status: string) {
+    return this.statusMap[Number(status)] || { label: 'Unknown', severity: 'secondary' };
   }
 }
