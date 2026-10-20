@@ -37,5 +37,10 @@ export const routes: Routes = [
   },
   { path: 'login', component: LoginComponent },
   { path: 'loan', component: LoaaCarousel },
+  {
+    path: 'chart',
+    loadComponent: () =>
+      import('./features/custom3d-chart/custom3d-chart').then((module) => module.Custom3dChart),
+  },
   { path: '**', redirectTo: '' },
 ];
