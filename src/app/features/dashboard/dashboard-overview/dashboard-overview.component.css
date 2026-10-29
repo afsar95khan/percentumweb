@@ -1,0 +1,140 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.account-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 24rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.account-page::before,
+.account-page::after {
+  position: absolute;
+  z-index: -1;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 50%;
+  background: #fff3f3;
+  content: "";
+}
+
+.account-page::before {
+  top: -7rem;
+  left: -16rem;
+}
+
+.account-page::after {
+  right: -16rem;
+  bottom: -7rem;
+}
+
+.account-content {
+  width: min(100% - 3rem, 68rem);
+  margin-inline: auto;
+  padding-block: 2rem 3rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  color: #596575;
+  font-size: .78rem;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #fe0200;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.heading-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: .85rem;
+  background: #fff0ef;
+  color: #fe0200;
+  font-size: 1.2rem;
+}
+
+.eyebrow {
+  margin: 0 0 .2rem;
+  color: #fe0200;
+  font-size: .64rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+}
+
+.page-heading h1 {
+  margin: 0;
+  color: #102440;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.heading-description {
+  margin: .3rem 0 0;
+  color: #6d7581;
+  font-size: .82rem;
+}
+
+.overview-tabs {
+  display: flex;
+  gap: 1.5rem;
+  /* overflow-x: auto; */
+  border-bottom: 1px solid #e9edf2;
+  margin-bottom: 1.25rem;
+}
+
+.overview-tabs a {
+  position: relative;
+  flex: 0 0 auto;
+  padding: .7rem .15rem;
+  color: #596575;
+  font-size: .92rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.overview-tabs a:hover,
+.overview-tabs a.active-tab {
+  color: #b3211b;
+}
+
+.overview-tabs a.active-tab {
+  font-weight: 600;
+}
+
+.overview-tabs a.active-tab::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: #fe0200;
+  content: "";
+}
+
+@media (max-width: 38rem) {
+  .account-content {
+    width: min(100% - 2rem, 34rem);
+    padding-block: 1.5rem 2rem;
+  }
+
+  .overview-tabs {
+    gap: 1rem;
+  }
+}

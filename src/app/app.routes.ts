@@ -8,6 +8,13 @@ import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { LoginComponent } from './features/login/login.component';
 import { LoaaCarousel } from './features/loaa-carousel/loaa-carousel';
+import { MyLoanComponent } from './features/my-loan/my-loan.component';
+import { ProfileComponent } from './features/profile/profile.component';
+import { DashboardInvestmentsComponent } from './features/dashboard/dashboard-investments/dashboard-investments.component';
+import { DashboardMessagesComponent } from './features/dashboard/dashboard-messages/dashboard-messages.component';
+import { DashboardOverviewComponent } from './features/dashboard/dashboard-overview/dashboard-overview.component';
+import { DashboardSummaryComponent } from './features/dashboard/dashboard-summary/dashboard-summary.component';
+import { DashboardTransactionsComponent } from './features/dashboard/dashboard-transactions/dashboard-transactions.component';
 
 export const routes: Routes = [
   {
@@ -24,16 +31,29 @@ export const routes: Routes = [
   { path: 'blog', component: BlogComponent },
   { path: 'blog/:slug', component: BlogDetailComponent },
   { path: 'crowdfunding', component: CrowdfundingComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-  {
-    path: 'profile',
-    loadComponent: () => import('./features/profile/profile.component').then((module) => module.ProfileComponent),
+    {
+    path: 'dashboard',
+    component: DashboardComponent,
     canActivate: [authGuard],
-  },
-  {
-    path: 'my-loan',
-    loadComponent: () => import('./features/my-loan/my-loan.component').then((module) => module.MyLoanComponent),
-    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard-home/dashboard-home.component').then((module) => module.DashboardHomeComponent),
+      },
+      {
+        path: 'overview',
+        component: DashboardOverviewComponent,
+        children: [
+          { path: '', component: DashboardSummaryComponent },
+          { path: 'investere', component: DashboardInvestmentsComponent },
+          { path: 'transaksjoner', component: DashboardTransactionsComponent },
+        ],
+      },
+      { path: 'messages', component: DashboardMessagesComponent },
+      { path: 'profile', component: ProfileComponent },
+      { path: 'loans', component: MyLoanComponent },
+    ],
   },
   { path: 'login', component: LoginComponent },
   { path: 'loan', component: LoaaCarousel },

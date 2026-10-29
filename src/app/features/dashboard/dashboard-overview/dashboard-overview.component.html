@@ -1,0 +1,27 @@
+<main class="account-page">
+  <section class="account-content" aria-labelledby="overview-title">
+    <a class="back-link" routerLink="/dashboard">
+      <i class="pi pi-arrow-left" aria-hidden="true"></i>
+      Tilbake til min side
+    </a>
+
+    <header class="page-heading">
+      <span class="heading-icon pi pi-th-large" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow">INVESTERINGENE DINE</p>
+        <h1 id="overview-title">Oversikt</h1>
+        <p class="heading-description">Se investert kapital, avkastning og kontoaktivitet.</p>
+      </div>
+    </header>
+
+    <nav class="overview-tabs" aria-label="Oversikt">
+      <a routerLink="/dashboard/overview" routerLinkActive="active-tab" [routerLinkActiveOptions]="{ exact: true }">
+        Oversikt
+      </a>
+      <a routerLink="/dashboard/overview/investere" routerLinkActive="active-tab">Mine investeringer</a>
+      <a routerLink="/dashboard/overview/transaksjoner" routerLinkActive="active-tab">Transaksjoner</a>
+    </nav>
+
+    <router-outlet />
+  </section>
+</main>

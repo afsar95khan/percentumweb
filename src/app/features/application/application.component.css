@@ -295,6 +295,78 @@
   margin-bottom: 0;
 }
 
+.repeat-list {
+  display: grid;
+  gap: .7rem;
+}
+
+.repeat-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+
+.repeat-section-heading .section-title {
+  margin-bottom: 0;
+}
+
+.repeat-add-button,
+.repeat-remove-button {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #d5d9df;
+  border-radius: .4rem;
+  background: #fff;
+  cursor: pointer;
+  font-size: .85rem;
+}
+
+.repeat-add-button {
+  color: #0b1f3a;
+}
+
+.repeat-remove-button {
+  color: #a3271f;
+}
+
+.repeat-add-button:hover,
+.repeat-add-button:focus-visible {
+  border-color: #0b1f3a;
+  background: #f5f7fa;
+}
+
+.repeat-remove-button:hover,
+.repeat-remove-button:focus-visible {
+  border-color: #a3271f;
+  background: #fff6f5;
+}
+
+.repeat-row {
+  align-items: end;
+  gap: .65rem;
+  padding: .7rem;
+  border: 1px solid #e8e9eb;
+  border-radius: .6rem;
+}
+
+.co-applicant-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+}
+
+.debt-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+}
+
+.remove-row-button {
+  /* margin-bottom: .9rem; */
+  height: 2.3rem;
+}
+
 .full-width {
   grid-column: 1 / -1;
 }
@@ -369,60 +441,6 @@
 .input-affix span {
   color: #737980;
   font-size: .65rem;
-}
-
-.range-values {
-  display: flex;
-  justify-content: space-between;
-  margin: .25rem .15rem 0;
-  color: #242930;
-  font-size: .67rem;
-  font-weight: 600;
-}
-
-.amount-range {
-  min-height: 1.1rem !important;
-  padding: 0 !important;
-  border: 0 !important;
-  appearance: none;
-  background: transparent !important;
-  cursor: pointer;
-}
-
-.amount-range::-webkit-slider-runnable-track {
-  height: .45rem;
-  border-radius: 1rem;
-  background: linear-gradient(to right, #FE0200 0 var(--range-progress), #ededed var(--range-progress) 100%);
-}
-
-.amount-range::-moz-range-track {
-  height: .45rem;
-  border-radius: 1rem;
-  background: #ededed;
-}
-
-.amount-range::-moz-range-progress {
-  height: .45rem;
-  border-radius: 1rem;
-  background: #FE0200;
-}
-
-.amount-range::-webkit-slider-thumb {
-  width: 1.05rem;
-  height: 1.05rem;
-  margin-top: -.3rem;
-  appearance: none;
-  border: 2px solid #FE0200;
-  border-radius: 50%;
-  background: #fff;
-}
-
-.amount-range::-moz-range-thumb {
-  width: .8rem;
-  height: .8rem;
-  border: 2px solid #FE0200;
-  border-radius: 50%;
-  background: #fff;
 }
 
 .economy-grid {
@@ -537,4 +555,19 @@
 
 .info-note i {
   flex: 0 0 auto;
+}
+
+@media (max-width: 48rem) {
+  .co-applicant-row,
+  .debt-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+@media (max-width: 36rem) {
+  .co-applicant-row,
+  .debt-row {
+    grid-template-columns: 1fr;
+  }
 }

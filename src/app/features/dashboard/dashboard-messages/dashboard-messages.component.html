@@ -1,0 +1,220 @@
+<main class="account-page">
+  <section class="account-content" aria-labelledby="messages-title">
+    <a class="back-link" routerLink="/dashboard">
+      <i class="pi pi-arrow-left" aria-hidden="true"></i>
+      Tilbake til min side
+    </a>
+
+    <header class="page-heading">
+      <span class="heading-icon pi pi-comments" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow">KUNDESERVICE</p>
+        <h1 id="messages-title">Tickets og meldinger</h1>
+        <p class="heading-description">Opprett en ticket eller fortsett samtalen med kundeservice.</p>
+      </div>
+      <button class="primary-button new-ticket-button" type="button" (click)="toggleTicketForm()">
+        <i class="pi pi-plus" aria-hidden="true"></i>
+        Ny ticket
+      </button>
+    </header>
+
+    @if (creatingTicket()) {
+      <section class="compose-card" aria-labelledby="compose-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="compose-title">Opprett en ny ticket</h2>
+            <p>Beskriv hva du trenger hjelp med, så svarer vi her.</p>
+          </div>
+          <button class="icon-button" type="button" aria-label="Lukk skjema" (click)="toggleTicketForm()">
+            <i class="pi pi-times" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form class="ticket-form" [formGroup]="ticketForm" (ngSubmit)="submitTicket()" novalidate>
+          <div class="field">
+            <label for="ticket-subject">Emne</label>
+            <input id="ticket-subject" type="text" formControlName="subject" placeholder="Hva gjelder ticketen?" />
+            @if (ticketForm.controls.subject.touched && ticketForm.controls.subject.invalid) {
+              <small class="field-error">Skriv inn et emne (maks 120 tegn).</small>
+            }
+          </div>
+          <div class="field full-width">
+            <label for="ticket-description">Melding</label>
+            <textarea
+              id="ticket-description"
+              formControlName="message"
+              rows="4"
+              placeholder="Fortell oss litt mer om hva du trenger hjelp med …"
+            ></textarea>
+            @if (ticketForm.controls.message.touched && ticketForm.controls.message.invalid) {
+              <small class="field-error">Skriv en melding (maks 4000 tegn).</small>
+            }
+          </div>
+          @if (ticketFormError()) {
+            <p class="form-error full-width" role="alert">{{ ticketFormError() }}</p>
+          }
+          <div class="form-actions full-width">
+            <button class="secondary-button" type="button" (click)="toggleTicketForm()">Avbryt</button>
+            <button class="primary-button" type="submit" [disabled]="submittingTicket()">
+              {{ submittingTicket() ? 'Oppretter …' : 'Opprett ticket' }}
+            </button>
+          </div>
+        </form>
+      </section>
+    }
+
+    <div class="ticket-workspace" [class.showing-chat]="selectedTicket()">
+      <aside class="ticket-sidebar" aria-label="Ticket-listen din">
+        <div class="list-heading">
+          <div>
+            <h2>Alle tickets</h2>
+            @if (!loadingTickets()) {
+              <span>{{ tickets().length }} {{ tickets().length === 1 ? 'ticket' : 'tickets' }}</span>
+            }
+          </div>
+          <button class="icon-button" type="button" aria-label="Last inn tickets på nytt" (click)="loadTickets()">
+            <i class="pi pi-refresh" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        @if (ticketsError()) {
+          <div class="inline-error" role="alert">
+            <p>{{ ticketsError() }}</p>
+            <button class="text-button" type="button" (click)="loadTickets()">Prøv igjen</button>
+          </div>
+        } @else if (loadingTickets()) {
+          <div class="list-placeholder" role="status">
+            <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+            Henter tickets …
+          </div>
+        } @else if (tickets().length === 0) {
+          <div class="list-placeholder empty-list">
+            <span class="empty-icon pi pi-inbox" aria-hidden="true"></span>
+            <strong>Ingen tickets ennå</strong>
+            <span>Opprett en ticket hvis du trenger hjelp.</span>
+          </div>
+        } @else {
+          <div class="ticket-list">
+            @for (ticket of tickets(); track ticket._id) {
+              <button
+                class="ticket-item"
+                [class.is-selected]="selectedTicket()?._id === ticket._id"
+                type="button"
+                (click)="selectTicket(ticket)"
+              >
+                <span class="ticket-icon pi pi-comments" aria-hidden="true"></span>
+                <span class="ticket-copy">
+                  <span class="ticket-subject">{{ ticket.subject }}</span>
+                  <span class="ticket-preview">{{ ticket.message || 'Ticket opprettet' }}</span>
+                  @if (ticket.lastUpdated || ticket.dateCreated) {
+                    <span class="ticket-date">{{ formatDate(ticket.lastUpdated || ticket.dateCreated) }}</span>
+                  }
+                </span>
+                <span
+                  class="status-dot"
+                  [class.is-closed]="statusLabel(ticket.status) === 'Lukket'"
+                  aria-hidden="true"
+                ></span>
+              </button>
+            }
+          </div>
+        }
+      </aside>
+
+      <section class="conversation-panel" aria-label="Meldinger for ticketen">
+        @if (selectedTicket(); as ticket) {
+          <header class="conversation-header">
+            <button class="icon-button mobile-back" type="button" aria-label="Tilbake til ticket-listen" (click)="backToTickets()">
+              <i class="pi pi-arrow-left" aria-hidden="true"></i>
+            </button>
+            <div class="conversation-title">
+              <span class="conversation-icon pi pi-comments" aria-hidden="true"></span>
+              <div>
+                <span class="ticket-reference">SAK #{{ ticket.ticket_number }}</span>
+                <h2>{{ ticket.subject }}</h2>
+              </div>
+            </div>
+            <span class="status-pill" [class.is-closed]="statusLabel(ticket.status) === 'Lukket'">
+              <span class="status-dot" aria-hidden="true"></span>
+              {{ statusLabel(ticket.status) }}
+            </span>
+          </header>
+
+          <div class="message-history" aria-live="polite">
+            @if (messagesError()) {
+              <div class="inline-error message-load-error" role="alert">
+                <p>{{ messagesError() }}</p>
+                <button class="text-button" type="button" (click)="loadMessages(ticket)">Prøv igjen</button>
+              </div>
+            } @else if (loadingMessages()) {
+              <div class="conversation-placeholder" role="status">
+                <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+                Henter samtalen …
+              </div>
+            } @else if (messages().length === 0) {
+              <div class="conversation-placeholder">
+                <span class="empty-icon pi pi-comment" aria-hidden="true"></span>
+                <strong>Start samtalen</strong>
+                <span>Skriv en melding til kundeservice nedenfor.</span>
+              </div>
+            } @else {
+              @for (message of messages(); track message._id) {
+                <article class="message-row" [class.own-message]="isOwnMessage(message)">
+                  @if (!isOwnMessage(message)) {
+                    <span class="message-avatar" aria-hidden="true">P</span>
+                  }
+                  <div class="message-body">
+                    <div class="message-meta">
+                      <strong>{{ isOwnMessage(message) ? 'Deg' : 'Kundeservice' }}</strong>
+                      @if (message.dateCreated) {
+                        <time [attr.datetime]="message.dateCreated">{{ formatDate(message.dateCreated) }}</time>
+                      }
+                    </div>
+                    <p class="message-bubble">{{ message.message }}</p>
+                  </div>
+                </article>
+              }
+            }
+          </div>
+
+          @if (statusLabel(ticket.status) !== 'Lukket') {
+            <form class="reply-form" [formGroup]="messageForm" (ngSubmit)="submitMessage()" novalidate>
+              @if (messageFormError()) {
+                <p class="form-error" role="alert">{{ messageFormError() }}</p>
+              }
+              <label class="sr-only" for="reply-message">Skriv en melding</label>
+              <textarea
+                id="reply-message"
+                rows="2"
+                formControlName="message"
+                placeholder="Skriv meldingen din …"
+                [disabled]="sendingMessage()"
+              ></textarea>
+              @if (messageForm.controls.message.touched && messageForm.controls.message.invalid) {
+                <small class="field-error">Skriv en melding på opptil 4000 tegn.</small>
+              }
+              <div class="reply-footer">
+                <span>Svarene dine er synlige for kundeservice.</span>
+                <button class="primary-button" type="submit" [disabled]="sendingMessage()">
+                  {{ sendingMessage() ? 'Sender …' : 'Send melding' }}
+                  <i class="pi pi-send" aria-hidden="true"></i>
+                </button>
+              </div>
+            </form>
+          } @else {
+            <p class="closed-notice">Denne ticketen er lukket.</p>
+          }
+        } @else {
+          <div class="conversation-empty">
+            <span class="empty-icon pi pi-comments" aria-hidden="true"></span>
+            <h2>Velg en ticket</h2>
+            <p>Velg en ticket fra listen for å lese og sende meldinger.</p>
+            <button class="primary-button" type="button" (click)="toggleTicketForm()">
+              <i class="pi pi-plus" aria-hidden="true"></i>
+              Opprett ny ticket
+            </button>
+          </div>
+        }
+      </section>
+    </div>
+  </section>
+</main>

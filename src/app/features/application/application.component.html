@@ -12,7 +12,7 @@
     aria-label="Søknadssteg"
   >
     <p-step-list>
-      @for (stepName of privateStepNames; track stepName; let index = $index) {
+      @for (stepName of stepNames(); track stepName; let index = $index) {
         <p-step
           [value]="index + 1"
           [disabled]="true"
@@ -20,7 +20,7 @@
         >
           {{ stepName }}
         </p-step>
-        @if (index < privateStepNames.length - 1) {
+        @if (index < stepNames().length - 1) {
           <p-stepper-separator [class.step-complete]="step() > index + 1" />
         }
       }
@@ -70,8 +70,14 @@
             </p>
           }
           @case (3) {
-            <h2>Gjeld og sikkerhet</h2>
-            <p>Fortell oss om eventuell eksisterende gjeld og hva du kan stille som sikkerhet.</p>
+            <h2>{{ applicantType() === 'private' ? 'Gjeld' : 'Gjeld og sikkerhet' }}</h2>
+            <p>
+              @if (applicantType() === 'private') {
+                Oppgi eventuell eksisterende gjeld.
+              } @else {
+                Fortell oss om eventuell eksisterende gjeld og hva du kan stille som sikkerhet.
+              }
+            </p>
           }
           @case (4) {
             <h2>Se over og send inn</h2>
@@ -157,6 +163,7 @@
             <div class="field">
               <label for="loan-tenure">Nedbetalingstid (år) ((Tenure))</label>
               <input id="loan-tenure" type="number" min="0" step="1" formControlName="tenure" placeholder="e.g. 20" />
+               @if (hasError('tenure')) { <small class="field-error">Nedbetalingstid påkrevd.</small> }
             </div>
             <div class="field">
               <label for="interest-rate">Rente ((Interest rate)) (%)</label>
@@ -237,30 +244,44 @@
             type="button"
             role="switch"
             [attr.aria-checked]="hasCoApplicant()"
-            (click)="hasCoApplicant.update((enabled) => !enabled); invalidFields.set([])"
+            (click)="toggleCoApplicants()"
           >
             <span class="switch-track" [class.checked]="hasCoApplicant()"><span></span></span>
             <span><strong>Legg til medsøker ((Add co-applicant))</strong><small>En medsøker kan øke sjansene dine for å få innvilget lånet og gi et høyere lånebeløp.</small></span>
           </button>
           @if (hasCoApplicant()) {
             <section class="form-card" aria-labelledby="co-applicant-heading">
-              <h3 id="co-applicant-heading" class="section-title"><span>4</span> Medsøker ((Co-Applicant))</h3>
-              <div class="field-grid">
-                <div class="field full-width">
-                  <label for="co-applicant-name">Fullt navn ((Full Name))</label>
-                  <input id="co-applicant-name" type="text" formControlName="coApplicantName" placeholder="Oppgi medsøkers navn" />
-                  @if (hasError('coApplicantName')) { <small class="field-error">Navn på medsøker er påkrevd.</small> }
-                </div>
-                <div class="field">
-                  <label for="co-applicant-email">E-post ((Email))</label>
-                  <input id="co-applicant-email" type="email" formControlName="coApplicantEmail" placeholder="E-postadresse" />
-                  @if (hasError('coApplicantEmail')) { <small class="field-error">Oppgi en gyldig e-postadresse.</small> }
-                </div>
-                <div class="field">
-                  <label for="co-applicant-phone">Telefon ((Phone))</label>
-                  <input id="co-applicant-phone" type="tel" formControlName="coApplicantPhone" placeholder="Telefonnummer" />
-                  @if (hasError('coApplicantPhone')) { <small class="field-error">Telefonnummer er påkrevd.</small> }
-                </div>
+              <div class="repeat-section-heading">
+                <h3 id="co-applicant-heading" class="section-title"><span>4</span> Medsøker ((Co-Applicant))</h3>
+                <button class="repeat-add-button" type="button" aria-label="Legg til medsøker" title="Legg til medsøker" (click)="addCoApplicant()">
+                  <i class="pi pi-plus" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div formArrayName="co_applicants" class="repeat-list">
+                @for (applicant of coApplicants().controls; track $index; let index = $index) {
+                  <div class="field-grid repeat-row co-applicant-row" [formGroupName]="index">
+                    <div class="field">
+                      <label [for]="'co-applicant-name-' + index">Fullt navn ((Full Name))</label>
+                      <input [id]="'co-applicant-name-' + index" type="text" formControlName="name" placeholder="Oppgi medsøkers navn" />
+                      @if (hasError('co_applicants.' + index + '.name')) { <small class="field-error">Navn på medsøker er påkrevd.</small> }
+                    </div>
+                    <div class="field">
+                      <label [for]="'co-applicant-email-' + index">E-post ((Email))</label>
+                      <input [id]="'co-applicant-email-' + index" type="email" formControlName="email" placeholder="E-postadresse" />
+                      @if (hasError('co_applicants.' + index + '.email')) { <small class="field-error">Oppgi en gyldig e-postadresse.</small> }
+                    </div>
+                    <div class="field">
+                      <label [for]="'co-applicant-phone-' + index">Telefon ((Phone))</label>
+                      <input [id]="'co-applicant-phone-' + index" type="tel" formControlName="phone" placeholder="Telefonnummer" />
+                      @if (hasError('co_applicants.' + index + '.phone')) { <small class="field-error">Telefonnummer er påkrevd.</small> }
+                    </div>
+                    @if (coApplicants().length > 1) {
+                    <button class="repeat-remove-button remove-row-button" type="button" (click)="removeCoApplicant(index)" [attr.aria-label]="'Fjern medsøker ' + (index + 1)" [title]="'Fjern medsøker ' + (index + 1)">
+                      <i class="pi pi-trash" aria-hidden="true"></i>
+                    </button>
+                    }
+                  </div>
+                }
               </div>
             </section>
           }
@@ -316,61 +337,77 @@
 
       @if (step() === 3) {
         <section class="form-card" aria-labelledby="existing-debt-heading">
-          <h3 id="existing-debt-heading" class="section-title"><span>1</span> Eksisterende gjeld ((Existing Debt))</h3>
-          <div class="field">
-            <label for="existing-debt">Legg inn lånebeløp ((Enter Loan Amount))</label>
-            <div class="input-affix">
-              <p-inputnumber inputId="existing-debt" [min]="0" formControlName="existingDebt" placeholder="0000 NOK" />
-              <!-- <input id="existing-debt" type="number" min="0" formControlName="existingDebt" placeholder="0000 NOK" /> -->
-              <span>NOK</span>
-            </div>
+          <div class="repeat-section-heading">
+            <h3 id="existing-debt-heading" class="section-title"><span>1</span> Eksisterende gjeld ((Existing Debt))</h3>
+            <button class="repeat-add-button" type="button" aria-label="Legg til gjeld" title="Legg til gjeld" (click)="addDebt()">
+              <i class="pi pi-plus" aria-hidden="true"></i>
+            </button>
           </div>
-          <div class="field">
-            <label for="debt-type">Gjeldstype ((Debt Type))</label>
-            <select id="debt-type" formControlName="debtType">
-              <option value="" disabled>Velg gjeldstype</option>
-              <option value="1">Billån</option>
-              <option value="2">Boliglån</option>
-              <option value="3">Fellesgjeld</option>
-              <option value="4">Forbrukslån</option>
-              <option value="5">Kausjonsansvar</option>
-              <option value="6">Kredittkort</option>
-              <option value="7">Studielån</option>
-              <!-- <option value="none">Ingen eksisterende gjeld</option> -->
-            </select>
-            @if (hasError('debtType')) { <small class="field-error">Velg gjeldstype.</small> }
+          <div formArrayName="debt" class="repeat-list">
+            @for (debtItem of debts().controls; track $index; let index = $index) {
+              <div class="field-grid repeat-row debt-row" [formGroupName]="index">
+                <div class="field">
+                  <label [for]="'debt-type-' + index">Gjeldstype ((Debt Type))</label>
+                  <select [id]="'debt-type-' + index" formControlName="loan_type">
+                    <option value="">Velg gjeldstype</option>
+                    <option value="1">Billån</option>
+                    <option value="2">Boliglån</option>
+                    <option value="3">Fellesgjeld</option>
+                    <option value="4">Forbrukslån</option>
+                    <option value="5">Kausjonsansvar</option>
+                    <option value="6">Kredittkort</option>
+                    <option value="7">Studielån</option>
+                  </select>
+                  @if (hasError('debt.' + index + '.loan_type')) { <small class="field-error">Velg gjeldstype.</small> }
+                </div>
+                <div class="field">
+                  <label [for]="'existing-debt-' + index">Utestående saldo ((Balance))</label>
+                  <div class="input-affix">
+                    <p-inputnumber [inputId]="'existing-debt-' + index" [min]="0" formControlName="balance" placeholder="0000 NOK" />
+                    <span>NOK</span>
+                  </div>
+                  @if (hasError('debt.' + index + '.balance')) { <small class="field-error">Oppgi saldoen.</small> }
+                </div>
+                @if (debts().length > 1) {
+                <button class="repeat-remove-button remove-row-button" type="button" (click)="removeDebt(index)" [attr.aria-label]="'Fjern gjeld ' + (index + 1)" [title]="'Fjern gjeld ' + (index + 1)">
+                  <i class="pi pi-trash" aria-hidden="true"></i>
+                </button>
+                }
+              </div>
+            }
           </div>
         </section>
 
         <section class="form-card" aria-labelledby="security-heading">
           <h3 id="security-heading" class="section-title"><span>2</span> Pantesikkerhet ((Collateral security))</h3>
-          <div class="choice-grid collateral-choices">
-            <button
-              class="choice-card"
-              [class.selected]="collateralType() === '2'"
-              [attr.aria-pressed]="collateralType() === '2'"
-              type="button"
-              (click)="collateralType.set('2')"
-            >
-              <i class="pi pi-home" aria-hidden="true"></i>
-              <strong>Eiendom ((Property))</strong>
-            </button>
-            <button
-              class="choice-card"
-              [class.selected]="collateralType() === '1'"
-              [attr.aria-pressed]="collateralType() === '1'"
-              type="button"
-              (click)="collateralType.set('1')"
-            >
-              <i class="pi pi-verified" aria-hidden="true"></i>
-              <strong>Annen sikkerhet ((Other Security))</strong>
-            </button>
-          </div>
+          @if (applicantType() === 'company') {
+            <div class="choice-grid collateral-choices">
+              <button
+                class="choice-card"
+                [class.selected]="collateralType() === '2'"
+                [attr.aria-pressed]="collateralType() === '2'"
+                type="button"
+                (click)="collateralType.set('2')"
+              >
+                <i class="pi pi-home" aria-hidden="true"></i>
+                <strong>Eiendom ((Property))</strong>
+              </button>
+              <button
+                class="choice-card"
+                [class.selected]="collateralType() === '1'"
+                [attr.aria-pressed]="collateralType() === '1'"
+                type="button"
+                (click)="collateralType.set('1')"
+              >
+                <i class="pi pi-verified" aria-hidden="true"></i>
+                <strong>Annen sikkerhet ((Other Security))</strong>
+              </button>
+            </div>
+          }
           <div class="field">
             <label for="security-value">Estimert sikkerhetsverdi ((Estimated Security Value))</label>
             <div class="input-affix">
               <p-inputnumber inputId="security-value" [min]="0" formControlName="securityValue" placeholder="0000 NOK" />
-              <!-- <input id="security-value" type="number" min="0" formControlName="securityValue" placeholder="0000 NOK" /> -->
               <span>NOK</span>
             </div>
             @if (hasError('securityValue')) { <small class="field-error">Oppgi estimert sikkerhetsverdi.</small> }
@@ -402,8 +439,11 @@
               <div><dt>Barn under 18 år ((Children under 18))</dt><dd>{{ applicationForm.controls.children.value }}</dd></div>
               <div><dt>Antall biler ((Number of Cars))</dt><dd>{{ applicationForm.controls.cars.value }}</dd></div>
               @if (hasCoApplicant()) {
-                <div><dt>Medsøker ((Co-Applicant))</dt><dd>{{ applicationForm.controls.coApplicantName.value }}</dd></div>
-                <div><dt>Medsøkers e-post ((Co-Applicant's Email))</dt><dd>{{ applicationForm.controls.coApplicantEmail.value }}</dd></div>
+                @for (applicant of coApplicants().controls; track $index; let index = $index) {
+                  <div><dt>Medsøker {{ index + 1 }} ((Co-Applicant))</dt><dd>{{ applicant.controls.name.value }}</dd></div>
+                  <div><dt>E-post medsøker {{ index + 1 }} ((Co-Applicant Email))</dt><dd>{{ applicant.controls.email.value }}</dd></div>
+                  <div><dt>Telefon medsøker {{ index + 1 }} ((Co-Applicant Phone))</dt><dd>{{ applicant.controls.phone.value }}</dd></div>
+                }
               }
             </dl>
           </section>
@@ -434,9 +474,19 @@
         <section class="review-card">
           <header><h3>Gjeldsinformasjon ((Debt Information))</h3><button type="button" (click)="editStep(3)"><i class="pi pi-pencil" aria-hidden="true"></i> Edit</button></header>
           <dl>
-            <div><dt>Eksisterende gjeld ((Existing Debt))</dt><dd>{{ formatCurrency(applicationForm.controls.existingDebt.value) }} kr</dd></div>
-            <div><dt>Gjeldstype ((Debt Type))</dt><dd>{{ debtTypeLabel() }}</dd></div>
-            <div><dt>Sikkerhetstype ((Collateral Type))</dt><dd>{{ collateralType() === '2' ? 'Eiendom' : 'Annen sikkerhet' }}</dd></div>
+            @if (hasDebtEntries()) {
+              @for (debtItem of debts().controls; track $index; let index = $index) {
+                @if (debtItem.controls.loan_type.value || debtItem.controls.balance.value > 0) {
+                  <div><dt>Gjeldstype {{ index + 1 }} ((Debt Type))</dt><dd>{{ debtTypeLabel(debtItem.controls.loan_type.value) }}</dd></div>
+                  <div><dt>Saldo {{ index + 1 }} ((Balance))</dt><dd>{{ formatCurrency(debtItem.controls.balance.value) }} kr</dd></div>
+                }
+              }
+            } @else {
+              <div><dt>Eksisterende gjeld ((Existing Debt))</dt><dd>Ingen</dd></div>
+            }
+            @if (applicantType() === 'company') {
+              <div><dt>Sikkerhetstype ((Collateral Type))</dt><dd>{{ collateralType() === '2' ? 'Eiendom' : 'Annen sikkerhet' }}</dd></div>
+            }
             <div><dt>Sikkerhetsverdi ((Collateral Value))</dt><dd>{{ formatCurrency(applicationForm.controls.securityValue.value) }} kr</dd></div>
           </dl>
         </section>

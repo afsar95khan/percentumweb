@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { StepperModule } from 'primeng/stepper';
 import { ApplicationAudienceService } from '../../core/services/application-audience.service';
@@ -43,7 +50,11 @@ export class ApplicationComponent {
   protected readonly invalidFields = signal<string[]>([]);
   protected readonly loanType = signal('1');
   protected readonly loanTypeTitle = signal('Boliglån');
-  protected readonly privateStepNames = ['Søkertype', 'Lånedetaljer', 'Gjeld og sikkerhet', 'Se over og send inn'];
+  protected stepNames(): string[] {
+    return this.applicantType() === 'private'
+      ? ['Søkertype', 'Lånedetaljer', 'Gjeld', 'Se over og send inn']
+      : ['Søkertype', 'Lånedetaljer', 'Gjeld og sikkerhet', 'Se over og send inn'];
+  }
   protected readonly submissionComplete = signal(false);
   protected readonly isSubmitting = signal(false);
   protected readonly submissionError = signal('');
@@ -62,17 +73,21 @@ export class ApplicationComponent {
     maritalStatus: [''],
     children: [0],
     cars: [0],
-    coApplicantName: [''],
-    coApplicantEmail: ['', Validators.email],
-    coApplicantPhone: [''],
+    co_applicants: this.formBuilder.array<FormGroup<{
+      name: FormControl<string>;
+      email: FormControl<string>;
+      phone: FormControl<string>;
+    }>>([]),
     companyName: [''],
     companyEmail: ['', Validators.email],
     companyPhone: [''],
     annualRevenue: [''],
     annualProfit: [''],
     accountingYear: [''],
-    existingDebt: [0],
-    debtType: [''],
+    debt: this.formBuilder.array<FormGroup<{
+      loan_type: FormControl<string>;
+      balance: FormControl<number>;
+    }>>([]),
     securityValue: [0],
     termsAccepted: [false],
     privacyAccepted: [false],
@@ -128,7 +143,7 @@ export class ApplicationComponent {
     this.setNumericQueryParam('loanAmount', this.applicationForm.controls.loanAmount, 0);
     this.setNumericQueryParam('interest_rate', this.applicationForm.controls.interest_rate, 0);
     this.setNumericQueryParam('tenure', this.applicationForm.controls.tenure, 1);
-
+    this.addDebt();
   }
   
   ngOnInit() {
@@ -147,6 +162,65 @@ export class ApplicationComponent {
     const selectedLoanType = type === 'private' ? '1' : '4';
     this.loanType.set(selectedLoanType);
     this.applicationForm.controls.loanType.setValue(selectedLoanType);
+    this.invalidFields.set([]);
+  }
+
+  protected coApplicants(): FormArray<FormGroup<{
+    name: FormControl<string>;
+    email: FormControl<string>;
+    phone: FormControl<string>;
+  }>> {
+    return this.applicationForm.controls.co_applicants;
+  }
+
+  protected debts(): FormArray<FormGroup<{
+    loan_type: FormControl<string>;
+    balance: FormControl<number>;
+  }>> {
+    return this.applicationForm.controls.debt;
+  }
+
+  protected addCoApplicant(): void {
+    this.coApplicants().push(
+      this.formBuilder.nonNullable.group({
+        name: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        phone: ['', Validators.required],
+      }),
+    );
+    this.hasCoApplicant.set(true);
+    this.invalidFields.set([]);
+  }
+
+  protected toggleCoApplicants(): void {
+    if (this.hasCoApplicant()) {
+      this.coApplicants().clear();
+      this.hasCoApplicant.set(false);
+      this.invalidFields.set([]);
+      return;
+    }
+
+    this.addCoApplicant();
+  }
+
+  protected removeCoApplicant(index: number): void {
+    this.coApplicants().removeAt(index);
+    this.hasCoApplicant.set(this.coApplicants().length > 0);
+    this.invalidFields.set([]);
+  }
+
+  protected addDebt(): void {
+    this.debts().push(
+      this.formBuilder.nonNullable.group({
+        loan_type: ['', Validators.required],
+        balance: [0, Validators.min(0)],
+      }),
+    );
+    this.invalidFields.set([]);
+  }
+
+  protected removeDebt(index: number): void {
+    this.debts().removeAt(index);
     this.invalidFields.set([]);
   }
 
@@ -230,22 +304,22 @@ export class ApplicationComponent {
       maritalStatus: formValue.maritalStatus,
       children: formValue.children,
       cars: formValue.cars,
-      coApplicantName: formValue.coApplicantName,
-      coApplicantEmail: formValue.coApplicantEmail,
-      coApplicantPhone: formValue.coApplicantPhone,
+      co_applicants: this.hasCoApplicant() ? formValue.co_applicants : [],
       companyName: formValue.companyName,
       companyEmail: formValue.companyEmail,
       companyPhone: formValue.companyPhone,
       annualRevenue: formValue.annualRevenue,
       annualProfit: formValue.annualProfit,
       accountingYear: formValue.accountingYear,
-      existingDebt: formValue.existingDebt,
-      debtType: formValue.debtType,
+      debt: formValue.debt.filter((item) => item.loan_type !== ''),
       securityValue: formValue.securityValue,
-      collateralType: this.collateralType(),
+      ...(this.applicantType() === 'company'
+        ? { collateralType: this.collateralType() }
+        : {}),
       termsAccepted: formValue.termsAccepted,
       privacyAccepted: formValue.privacyAccepted,
     };
+    debugger;
     this.isSubmitting.set(true);
     this.submissionError.set('');
     this.api.post(payload, 'loan/user/add-loan').subscribe({
@@ -284,6 +358,9 @@ export class ApplicationComponent {
     this.submissionError.set('');
     this.isSubmitting.set(false);
     this.collateralType.set('2');
+    this.coApplicants().clear();
+    this.debts().clear();
+    this.addDebt();
     this.hasCoApplicant.set(false);
     this.step.set(1);
     this.highestStep.set(1);
@@ -309,35 +386,63 @@ export class ApplicationComponent {
     return labels[this.applicationForm.controls.maritalStatus.value] ?? '';
   }
 
-  protected debtTypeLabel(): string {
+  protected debtTypeLabel(type: string): string {
     const labels: Record<string, string> = {
       1: 'Billån',
       2: 'Boliglån',
       3: 'Fellesgjeld',
       4: 'Forbrukslån',
-      5: 'Kausjonsansvar',     
+      5: 'Kausjonsansvar',
       6: 'Kredittkort',
       7: 'Studielån',
     };
-    return labels[this.applicationForm.controls.debtType.value] ?? '';
+    return labels[type] ?? '';
+  }
+
+  protected hasDebtEntries(): boolean {
+    return this.debts().controls.some((debt) =>
+      debt.controls.loan_type.value !== '' || debt.controls.balance.value > 0,
+    );
   }
 
   private validateCurrentStep(): boolean {
     let requiredFields: string[] = [];
+    const invalidFields: string[] = [];
 
     if (this.step() === 2) {
       requiredFields =
         this.applicantType() === 'private'
-          ? ['loanAmount', 'description', 'fullName', 'email', 'phone', 'annualIncome', 'maritalStatus']
-          : ['loanAmount', 'description', 'companyName', 'companyEmail', 'companyPhone', 'annualRevenue', 'annualProfit', 'accountingYear'];
+          ? ['loanAmount', 'tenure', 'fullName', 'email', 'phone', 'annualIncome', 'maritalStatus']
+          : ['loanAmount', 'tenure', 'companyName', 'companyEmail', 'companyPhone', 'annualRevenue', 'annualProfit', 'accountingYear'];
 
       if (this.applicantType() === 'private' && this.hasCoApplicant()) {
-        requiredFields.push('coApplicantName', 'coApplicantEmail', 'coApplicantPhone');
+        this.coApplicants().controls.forEach((applicant, index) => {
+          for (const field of ['name', 'email', 'phone'] as const) {
+            const control = applicant.controls[field];
+            control.markAsTouched();
+            if (control.invalid) {
+              invalidFields.push(`co_applicants.${index}.${field}`);
+            }
+          }
+        });
       }
     } else if (this.step() === 3) {
-      requiredFields = ['debtType', 'securityValue'];
+      this.debts().controls.forEach((debt, index) => {
+        const hasLoanType = debt.controls.loan_type.value.trim().length > 0;
+        const hasBalance = debt.controls.balance.value > 0;
+        if (hasLoanType || hasBalance) {
+          debt.controls.loan_type.markAsTouched();
+          debt.controls.balance.markAsTouched();
+          if (debt.controls.loan_type.invalid) {
+            invalidFields.push(`debt.${index}.loan_type`);
+          }
+          if (!Number.isFinite(debt.controls.balance.value) || debt.controls.balance.value < 0) {
+            invalidFields.push(`debt.${index}.balance`);
+          }
+        }
+      });
+      requiredFields = ['securityValue'];
     }
-
     const invalid = requiredFields.filter((name) => {
       const control = this.applicationForm.get(name);
       control?.markAsTouched();
@@ -347,15 +452,15 @@ export class ApplicationComponent {
         return value.trim().length === 0 || control?.invalid === true;
       }
 
-      if (typeof value === 'number') {
-        return name === 'loanAmount' || name === 'securityValue' ? value <= 0 : false;
+      if (typeof value === 'number' || value === null) {
+        return name === 'loanAmount' || name === 'tenure' || name === 'securityValue' ? value <= 0 : false;
       }
 
       return control?.invalid === true;
     });
 
-    this.invalidFields.set(invalid);
-    return invalid.length === 0;
+    this.invalidFields.set([...invalid, ...invalidFields]);
+    return invalid.length === 0 && invalidFields.length === 0;
   }
 
   private setNumericQueryParam(
@@ -385,3 +490,251 @@ export class ApplicationComponent {
     this.applicationForm.controls.loanType.setValue(id);
   }
 }
+
+
+// const submitLoanApplication = async (req, res) => {
+//   let createdUser = null;
+//   const createdCustomers = [];
+//   let createdLoan = null;
+//   let sendingWelcomeEmail = false;
+
+//   try {
+//     const data = req.body || {};
+//     const applicantType = data.applicantType;
+//     if (!['private', 'company'].includes(applicantType)) {
+//       return res.status(400).json(failureApiResponse('applicantType must be private or company'));
+//     }
+
+//     if (data.termsAccepted !== true || data.privacyAccepted !== true) {
+//       return res.status(400).json(failureApiResponse('Terms and privacy policy must be accepted'));
+//     }
+
+//     const applicant = applicantType === 'private'
+//       ? { name: data.fullName, email: data.email, phone: data.phone }
+//       : { name: data.companyName, email: data.companyEmail, phone: data.companyPhone };
+//     const name = typeof applicant.name === 'string' ? applicant.name.trim() : '';
+//     const email = typeof applicant.email === 'string' ? applicant.email.trim().toLowerCase() : '';
+//     const phone = applicant.phone == null ? '' : String(applicant.phone).trim();
+//     const loanType = typeof data.loanType === 'string' ? data.loanType.trim() : '';
+//     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+//     if (!name || !emailPattern.test(email) || !phone || !loanType) {
+//       return res.status(400).json(failureApiResponse('Applicant name, valid email, phone, and loanType are required'));
+//     }
+
+//     const parseNumber = (value, field, fallback = 0) => {
+//       if (value === undefined || value === null || value === '') return fallback;
+//       const parsed = Number(value);
+//       if (!Number.isFinite(parsed) || parsed < 0) {
+//         throw new Error(`${field} must be a non-negative number`);
+//       }
+//       return parsed;
+//     };
+
+//     const loanAmount = parseNumber(data.loanAmount, 'loanAmount');
+//     if (loanAmount <= 0) {
+//       return res.status(400).json(failureApiResponse('loanAmount must be greater than zero'));
+//     }
+//     const annualIncome = applicantType === 'private'
+//       ? parseNumber(data.annualIncome, 'annualIncome')
+//       : 0;
+//     const annualRevenue = applicantType === 'company'
+//       ? parseNumber(data.annualRevenue, 'annualRevenue')
+//       : undefined;
+//     const annualProfit = applicantType === 'company'
+//       ? parseNumber(data.annualProfit, 'annualProfit')
+//       : undefined;
+//     const existingDebt = parseNumber(data.existingDebt, 'existingDebt');
+//     const securityValue = parseNumber(data.securityValue, 'securityValue');
+//     const children = applicantType === 'private'
+//       ? parseNumber(data.children, 'children')
+//       : 0;
+//     const cars = applicantType === 'private'
+//       ? parseNumber(data.cars, 'cars')
+//       : 0;
+
+//     const coApplicantName = typeof data.coApplicantName === 'string'
+//       ? data.coApplicantName.trim()
+//       : '';
+//     const coApplicantEmail = typeof data.coApplicantEmail === 'string'
+//       ? data.coApplicantEmail.trim().toLowerCase()
+//       : '';
+//     const coApplicantPhone = data.coApplicantPhone == null
+//       ? ''
+//       : String(data.coApplicantPhone).trim();
+//     const hasCoApplicant = Boolean(coApplicantName || coApplicantEmail || coApplicantPhone);
+//     if (hasCoApplicant && (
+//       !coApplicantName
+//       || !emailPattern.test(coApplicantEmail)
+//       || !coApplicantPhone
+//       || coApplicantEmail === email
+//     )) {
+//       return res.status(400).json(failureApiResponse('Co-applicant name, valid email, and phone are required and must be distinct'));
+//     }
+
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser && (existingUser.role !== 'USER' || existingUser.isActive === false)) {
+//       return res.status(409).json(failureApiResponse('This email belongs to an account that cannot submit loan applications'));
+//     }
+
+//     let temporaryPassword;
+//     let user = existingUser;
+//     if (!user) {
+//       temporaryPassword = crypto.randomBytes(18).toString('hex');
+//       const [firstName, ...lastNameParts] = name.split(/\s+/);
+//       user = await User.create({
+//         firstName,
+//         lastName: lastNameParts.join(' '),
+//         email,
+//         mobile: phone,
+//         role: 'USER',
+//         hashedPassword: getHashedPassword(temporaryPassword),
+//       });
+//       createdUser = user;
+//     }
+
+//     const findOrCreateCustomer = async (customerData) => {
+//       const existing = customerData.email
+//         ? await Customer.findOne({ email: customerData.email })
+//         : null;
+//       if (existing) return existing;
+//       const customer = await Customer.create(customerData);
+//       createdCustomers.push(customer);
+//       return customer;
+//     };
+
+//     const customer = await findOrCreateCustomer({
+//       name,
+//       email,
+//       phone,
+//       role: 'subscriber',
+//       createdBy: user._id,
+//     });
+//     let coApplicantCustomer = null;
+//     if (hasCoApplicant) {
+//       coApplicantCustomer = await findOrCreateCustomer({
+//         name: coApplicantName,
+//         email: coApplicantEmail,
+//         phone: coApplicantPhone,
+//         role: 'subscriber',
+//         createdBy: user._id,
+//       });
+//     }
+
+//     const loanNumber = await generateUniqueLoanNumber();
+//     const loan = await Loan.create({
+//       customer_id: customer._id,
+//       customer_name: customer.name,
+//       title: data.title || `Loan Application - ${loanNumber}`,
+//       content: typeof data.description === 'string' ? data.description.trim() : '',
+//       description: typeof data.description === 'string' ? data.description.trim() : '',
+//       loan_number: loanNumber,
+//       loan_amount: loanAmount,
+//       loan_type: loanType,
+//       tenure: data.tenure || 0,
+//       interest_rate: data.interest_rate || 0,
+//       applicant_type: applicantType,
+//       monthly_income: annualIncome / 12,
+//       yearly_income: annualIncome,
+//       marital_status: applicantType === 'private' ? data.maritalStatus || '' : '',
+//       number_of_children: children,
+//       children_fullCustody: children,
+//       number_of_cars: cars,
+//       annual_revenue: annualRevenue,
+//       annual_profit: annualProfit,
+//       accounting_year: applicantType === 'company' ? data.accountingYear || '' : undefined,
+//       security_value: securityValue,
+//       mortgage: { value: securityValue,collateral_type: data.collateralType || '',},
+//       debt: existingDebt > 0
+//         ? [{ loan_type: data.debtType || 'other', balance: existingDebt }]
+//         : [],
+//       co_applicants: coApplicantCustomer
+//         ? [{
+//           customer_id: coApplicantCustomer._id,
+//           customer_name: coApplicantCustomer.name,
+//         }]
+//         : [],
+//       // existing_debt: existingDebt,
+//       // debt_type: data.debtType || '',
+//       // terms_accepted: true,
+//       // privacy_accepted: true,
+//       createdBy: user._id,
+//       status: '0',
+//     });
+//     createdLoan = loan;
+
+//     console.log(`Loan application submitted: ${loan._id} for user: ${user._id}`);
+//     let welcomeEmailSent = user.isEmailSent === true;
+
+//     if (createdUser) {
+//         try {
+//             await sendLoanApplicationWelcomeEmail(
+//                 { name, email },
+//                 temporaryPassword
+//             );
+
+//             await User.updateOne(
+//                 { _id: user._id },
+//                 { $set: { isEmailSent: true } }
+//             );
+
+//             welcomeEmailSent = true;
+
+//             console.log(`Welcome email sent successfully to: ${email}`);
+//         } catch (emailError) {
+//             welcomeEmailSent = false;
+
+//             logError(
+//                 emailError,
+//                 `Welcome email failed for user ${user._id}`
+//             );
+
+//             // Do not throw here.
+//             // The loan application should remain saved.
+//         }
+//     }
+
+//     return res.status(201).json(
+//         successApiResponse({
+//             loan,
+//             customer_id: customer._id,
+//             co_applicant_customer_id: coApplicantCustomer?._id || null,
+//             user_id: user._id,
+//             account_reused: !createdUser,
+//             isEmailSent: welcomeEmailSent,
+//         })
+//     );
+    
+//   } catch (error) {
+//     if (createdLoan) {
+//       await Loan.deleteOne({ _id: createdLoan._id }).catch(cleanupError => {
+//         logError(cleanupError, 'Unable to roll back submitted loan application');
+//       });
+//     }
+//     if (createdCustomers.length) {
+//       await Customer.deleteMany({ _id: { $in: createdCustomers.map(item => item._id) } }).catch(cleanupError => {
+//         logError(cleanupError, 'Unable to roll back loan application customers');
+//       });
+//     }
+//     if (createdUser) {
+//       await User.deleteOne({ _id: createdUser._id }).catch(cleanupError => {
+//         logError(cleanupError, 'Unable to roll back loan application user');
+//       });
+//     }
+
+//     logError(error, 'Issue in submitting loan application');
+//     if (error.name === 'ValidationError') {
+//       return res.status(400).json(failureApiResponse(error.message));
+//     }
+//     if (error.code === 11000) {
+//       return res.status(409).json(failureApiResponse('An account or customer with this email already exists'));
+//     }
+//     if (sendingWelcomeEmail) {
+//       return res.status(502).json(failureApiResponse('Application could not be completed because account details could not be emailed'));
+//     }
+//     if (error.message?.endsWith('must be a non-negative number')) {
+//       return res.status(400).json(failureApiResponse(error.message));
+//     }
+//     return res.status(500).json(failureApiResponse('Some error occurred'));
+//   }
+// };

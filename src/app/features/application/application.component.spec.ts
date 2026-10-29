@@ -1,15 +1,22 @@
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ApplicationComponent } from './application.component';
 
 describe('ApplicationComponent', () => {
   let applicantType = 'private';
+  let httpTesting: HttpTestingController;
 
   beforeEach(async () => {
     applicantType = 'private';
     await TestBed.configureTestingModule({
       imports: [ApplicationComponent],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        MessageService,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -22,7 +29,10 @@ describe('ApplicationComponent', () => {
         },
       ],
     }).compileComponents();
+    httpTesting = TestBed.inject(HttpTestingController);
   });
+
+  afterEach(() => httpTesting.verify());
 
   it('renders the private application start with PrimeNG stepper navigation', async () => {
     const fixture = TestBed.createComponent(ApplicationComponent);
@@ -91,7 +101,7 @@ describe('ApplicationComponent', () => {
     expect(element.querySelector('.field-error')?.textContent).toContain('lånebeløp');
   });
 
-  it('validates the private application flow and reports that submission is not connected', async () => {
+  it('submits private co-applicant, debt, and security value data without collateral type', async () => {
     const fixture = TestBed.createComponent(ApplicationComponent);
     const element = fixture.nativeElement as HTMLElement;
     fixture.detectChanges();
@@ -112,18 +122,34 @@ describe('ApplicationComponent', () => {
     };
 
     await clickNext();
-    setValue('#loan-amount', '250000');
+    fixture.componentInstance['applicationForm'].controls.loanAmount.setValue(250000);
+    setValue('#loan-tenure', '20');
     setValue('#loan-purpose', 'Kjøp av bolig');
     setValue('#full-name', 'Ola Nordmann');
     setValue('#applicant-email', 'ola@example.com');
     setValue('#applicant-phone', '12345678');
-    setValue('#annual-income', '600000');
+    fixture.componentInstance['applicationForm'].controls.annualIncome.setValue(600000);
     setValue('#marital-status', 'single', 'change');
+    fixture.detectChanges();
+    element.querySelector<HTMLButtonElement>('.co-applicant-toggle')?.click();
+    fixture.detectChanges();
+    setValue('#co-applicant-name-0', 'Kari Nordmann');
+    setValue('#co-applicant-email-0', 'kari@example.com');
+    setValue('#co-applicant-phone-0', '87654321');
+    element.querySelector<HTMLButtonElement>('[aria-labelledby="co-applicant-heading"] .repeat-add-button')?.click();
+    fixture.detectChanges();
+    setValue('#co-applicant-name-1', 'Per Nordmann');
+    setValue('#co-applicant-email-1', 'per@example.com');
+    setValue('#co-applicant-phone-1', '88776655');
     await clickNext();
 
-    expect(element.querySelector('.panel-heading h2')?.textContent).toContain('Gjeld og sikkerhet');
-    setValue('#debt-type', 'none', 'change');
-    setValue('#security-value', '1800000');
+    expect(element.querySelector('.panel-heading h2')?.textContent).toContain('Gjeld');
+    expect(element.querySelector('#security-heading')?.textContent).toContain('Pantesikkerhet');
+    expect(element.querySelector('#security-value')).toBeTruthy();
+    expect(element.querySelectorAll('.collateral-choices .choice-card')).toHaveLength(0);
+    setValue('#debt-type-0', '7', 'change');
+    fixture.componentInstance['applicationForm'].controls.debt.at(0).controls.balance.setValue(10000);
+    fixture.componentInstance['applicationForm'].controls.securityValue.setValue(500000);
     await clickNext();
 
     expect(element.querySelector('.panel-heading h2')?.textContent).toContain('Se over og send inn');
@@ -137,12 +163,130 @@ describe('ApplicationComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(element.querySelector('.success-panel h2')?.textContent).toContain('Søknaden er klar');
-    expect(element.querySelector('.success-panel')?.textContent).toContain('Innsendingstjenesten er ikke koblet til');
-    const referenceButton = element.querySelector<HTMLButtonElement>('.reference-button');
-    expect(referenceButton?.textContent?.trim()).toBe('NC-3456-3566');
-    expect(referenceButton?.disabled).toBe(true);
+    const request = httpTesting.expectOne((candidate) => candidate.url.endsWith('/loan/user/add-loan'));
+    expect(request.request.body.co_applicants).toEqual([
+      { name: 'Kari Nordmann', email: 'kari@example.com', phone: '87654321' },
+      { name: 'Per Nordmann', email: 'per@example.com', phone: '88776655' },
+    ]);
+    expect(request.request.body.debt).toEqual([{ loan_type: '7', balance: 10000 }]);
+    expect(request.request.body.securityValue).toBe(500000);
+    expect(request.request.body).not.toHaveProperty('collateralType');
+    request.flush({ data: { loan: { loan_number: 'APP-1234' } } });
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(element.querySelector('.success-panel h2')?.textContent).toContain('Søknaden er sendt inn');
+    expect(element.querySelector('.reference-button')?.textContent?.trim()).toBe('APP-1234');
     expect(element.querySelectorAll('p-step.step-complete')).toHaveLength(3);
     expect(element.querySelectorAll('p-stepper-separator.step-complete')).toHaveLength(3);
+  });
+
+  it('adds and removes multiple co-applicant rows', async () => {
+    const fixture = TestBed.createComponent(ApplicationComponent);
+    const element = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    element.querySelector<HTMLButtonElement>('.form-actions .primary-button')?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const setValue = (selector: string, value: string, eventName = 'input') => {
+      const control = element.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(selector);
+      if (!control) {
+        throw new Error(`Missing form control: ${selector}`);
+      }
+      control.value = value;
+      control.dispatchEvent(new Event(eventName, { bubbles: true }));
+    };
+    fixture.componentInstance['applicationForm'].controls.loanAmount.setValue(250000);
+    setValue('#loan-tenure', '20');
+    setValue('#full-name', 'Ola Nordmann');
+    setValue('#applicant-email', 'ola@example.com');
+    setValue('#applicant-phone', '12345678');
+    fixture.componentInstance['applicationForm'].controls.annualIncome.setValue(600000);
+    setValue('#marital-status', 'single', 'change');
+    fixture.detectChanges();
+
+    element.querySelector<HTMLButtonElement>('.co-applicant-toggle')?.click();
+    fixture.detectChanges();
+
+    expect(element.querySelectorAll('.co-applicant-row')).toHaveLength(1);
+    expect(element.querySelector('.co-applicant-row .remove-row-button')).toBeFalsy();
+    element.querySelector<HTMLButtonElement>('[aria-labelledby="co-applicant-heading"] .repeat-add-button')?.click();
+    fixture.detectChanges();
+    expect(element.querySelectorAll('.co-applicant-row')).toHaveLength(2);
+    expect(element.querySelector('.co-applicant-row .remove-row-button')).toBeTruthy();
+
+    element.querySelector<HTMLButtonElement>('.co-applicant-row .remove-row-button')?.click();
+    fixture.detectChanges();
+    expect(element.querySelectorAll('.co-applicant-row')).toHaveLength(1);
+    expect(element.querySelector('.co-applicant-row .remove-row-button')).toBeFalsy();
+  });
+
+  it('allows existing debt rows to be added and removed', async () => {
+    const fixture = TestBed.createComponent(ApplicationComponent);
+    const element = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    element.querySelector<HTMLButtonElement>('.form-actions .primary-button')?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const setValue = (selector: string, value: string, eventName = 'input') => {
+      const control = element.querySelector<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>(selector);
+      if (!control) {
+        throw new Error(`Missing form control: ${selector}`);
+      }
+      control.value = value;
+      control.dispatchEvent(new Event(eventName, { bubbles: true }));
+    };
+    fixture.componentInstance['applicationForm'].controls.loanAmount.setValue(250000);
+    setValue('#loan-tenure', '20');
+    setValue('#full-name', 'Ola Nordmann');
+    setValue('#applicant-email', 'ola@example.com');
+    setValue('#applicant-phone', '12345678');
+    fixture.componentInstance['applicationForm'].controls.annualIncome.setValue(600000);
+    setValue('#marital-status', 'single', 'change');
+    fixture.detectChanges();
+    element.querySelector<HTMLButtonElement>('.form-actions .primary-button')?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(element.querySelector('.panel-heading h2')?.textContent, Array.from(element.querySelectorAll('.field-error')).map((error) => error.textContent).join('; ')).toContain('Gjeld');
+    expect(element.querySelectorAll('.debt-row')).toHaveLength(1);
+    expect(element.querySelector('.debt-row .remove-row-button')).toBeFalsy();
+    element.querySelector<HTMLButtonElement>('[aria-label="Legg til gjeld"]')?.click();
+    fixture.detectChanges();
+    expect(element.querySelectorAll('.debt-row')).toHaveLength(2);
+    expect(element.querySelector('.debt-row .remove-row-button')).toBeTruthy();
+
+    element.querySelector<HTMLButtonElement>('.debt-row .remove-row-button')?.click();
+    fixture.detectChanges();
+    expect(element.querySelectorAll('.debt-row')).toHaveLength(1);
+    expect(element.querySelector('.debt-row .remove-row-button')).toBeFalsy();
+  });
+
+  it('keeps collateral options visible for company applicants', async () => {
+    applicantType = 'company';
+    const fixture = TestBed.createComponent(ApplicationComponent);
+    const element = fixture.nativeElement as HTMLElement;
+    fixture.detectChanges();
+
+    element.querySelector<HTMLButtonElement>('.form-actions .primary-button')?.click();
+    fixture.detectChanges();
+    fixture.componentInstance['applicationForm'].controls.loanAmount.setValue(250000);
+    fixture.componentInstance['applicationForm'].controls.tenure.setValue(20);
+    fixture.componentInstance['applicationForm'].controls.companyName.setValue('Percentum AS');
+    fixture.componentInstance['applicationForm'].controls.companyEmail.setValue('loan@example.com');
+    fixture.componentInstance['applicationForm'].controls.companyPhone.setValue('12345678');
+    fixture.componentInstance['applicationForm'].controls.annualRevenue.setValue('500000');
+    fixture.componentInstance['applicationForm'].controls.annualProfit.setValue('100000');
+    fixture.componentInstance['applicationForm'].controls.accountingYear.setValue('2025');
+    fixture.detectChanges();
+
+    element.querySelector<HTMLButtonElement>('.form-actions .primary-button')?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(element.querySelector('.panel-heading h2')?.textContent).toContain('Gjeld og sikkerhet');
+    expect(element.querySelectorAll('.collateral-choices .choice-card')).toHaveLength(2);
+    expect(element.querySelector('#security-value')).toBeTruthy();
   });
 });
